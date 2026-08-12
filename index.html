@@ -5,128 +5,56 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turning Turtle Store - Retro Edition</title>
     <style>
-        /* ฟอนต์และพื้นหลังสีคลาสสิกของ Windows 95 */
-        body { 
-            font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; 
-            padding: 20px; 
-            background: #008080; /* สีเขียวอมฟ้าเอกลักษณ์ของยุค 90s */
-            color: #000;
-        }
-
-        /* หัวเว็บตกแต่งด้วยสีของร้าน 💛❤️💙 */
-        h1 {
-            color: white;
-            text-shadow: 2px 2px 0 #000;
-            text-align: center;
-            margin-bottom: 30px;
-        }
+        /* --- ธีม Retro Windows 95 --- */
+        body { font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; padding: 20px; background: #008080; color: #000; padding-bottom: 80px; }
+        h1 { color: white; text-shadow: 2px 2px 0 #000; text-align: center; margin-bottom: 30px; }
         .header-emoji { letter-spacing: 5px; }
 
         /* กรอบโหลดข้อมูล */
-        #loading {
-            background: #c0c0c0;
-            padding: 15px;
-            border: 2px solid;
-            border-color: #fff #000 #000 #fff; /* ขอบนูนแบบ 3D */
-            display: inline-block;
-            font-weight: bold;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-        }
+        .retro-box { background: #c0c0c0; padding: 15px; border: 2px solid; border-color: #fff #000 #000 #fff; box-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
+        #loading { display: inline-block; font-weight: bold; }
 
-        .product-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
-            gap: 25px; 
-            margin-top: 20px; 
-        }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; margin-top: 20px; }
 
-        /* ตัวการ์ดสินค้าทำเป็นหน้าต่าง Window */
-        .product-card { 
-            background: #c0c0c0; /* สีเทา Windows */
-            border: 2px solid;
-            border-color: #fff #000 #000 #fff;
-            padding: 3px; 
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* แถบหัวหน้าต่าง (Title bar) */
-        .window-header {
-            background: #000080; /* สีน้ำเงินเข้ม */
-            color: white;
-            padding: 4px 6px;
-            font-weight: bold;
-            font-size: 0.85em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        /* ปุ่มย่อ/ขยาย/ปิด แบบจำลอง */
+        /* การ์ดสินค้า */
+        .product-card { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 3px; display: flex; flex-direction: column; }
+        .window-header { background: #000080; color: white; padding: 4px 6px; font-weight: bold; font-size: 0.85em; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .window-btn-group { display: flex; gap: 3px; }
-        .window-btn {
-            background: #c0c0c0;
-            border: 1px solid;
-            border-color: #fff #000 #000 #fff;
-            color: black;
-            width: 14px; 
-            height: 14px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 10px; 
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* รูปภาพยุบเป็นกรอบลึกลงไป */
-        .product-image { 
-            max-width: 100%; 
-            height: 220px; 
-            object-fit: cover; 
-            border: 2px solid;
-            border-color: #808080 #fff #fff #808080; /* ขอบยุบ (Inset) */
-            background: #fff;
-            margin-bottom: 10px;
-        }
-
-        /* เนื้อหาด้านใน */
-        .card-content {
-            padding: 10px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
+        .window-btn { background: #c0c0c0; border: 1px solid; border-color: #fff #000 #000 #fff; color: black; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
+        
+        .product-image { max-width: 100%; height: 220px; object-fit: cover; border: 2px solid; border-color: #808080 #fff #fff #808080; background: #fff; margin-bottom: 10px; }
+        .card-content { padding: 10px; text-align: center; display: flex; flex-direction: column; flex-grow: 1; }
         .product-title { margin: 5px 0 10px 0; font-size: 1.1em; }
         .details { font-size: 0.85em; margin: 0; }
-        .price { color: #d10000; font-weight: bold; font-size: 1.2em; margin: 10px 0; } /* สีแดงให้เข้ากับไอจี */
+        .price { color: #d10000; font-weight: bold; font-size: 1.2em; margin: 10px 0; }
         
-        /* ปุ่มแบบ Retro */
-        .btn-cart { 
-            background: #c0c0c0; 
-            color: black; 
-            font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif;
-            font-weight: bold;
-            border: 2px solid; 
-            border-color: #fff #000 #000 #fff;
-            padding: 8px 15px; 
-            cursor: pointer; 
-            width: 100%; 
-            margin-top: auto;
-        }
-        .btn-cart:active:not(:disabled) {
-            border-color: #000 #fff #fff #000; /* กดแล้วปุ่มยุบ */
-            padding: 9px 14px 7px 16px; /* ขยับตัวอักษรลงตอนกด */
-        }
-        .btn-cart:disabled { 
-            color: #808080; 
-            text-shadow: 1px 1px 0 #fff; /* เอฟเฟกต์ตัวอักษรจมๆ ตอนสินค้าหมด */
-            cursor: not-allowed; 
-        }
+        /* ปุ่ม Retro */
+        .btn-retro { background: #c0c0c0; color: black; font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; font-weight: bold; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 8px 15px; cursor: pointer; }
+        .btn-retro:active:not(:disabled) { border-color: #000 #fff #fff #000; padding: 9px 14px 7px 16px; }
+        .btn-retro:disabled { color: #808080; text-shadow: 1px 1px 0 #fff; cursor: not-allowed; }
+        .btn-cart { width: 100%; margin-top: auto; }
+
+        /* --- แถบเมนูตะกร้าสินค้า (Floating Bar) --- */
+        .floating-cart { position: fixed; bottom: 0; left: 0; width: 100%; background: #c0c0c0; border-top: 2px solid #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.2); }
+        
+        /* --- Modal ตะกร้าสินค้าและ Checkout --- */
+        #cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,128,128,0.8); z-index: 1000; justify-content: center; align-items: center; }
+        .modal-content { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 3px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        .modal-body { padding: 15px; }
+        
+        /* ตารางในตะกร้า */
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #808080; padding: 10px 0; }
+        .cart-item-details { flex-grow: 1; text-align: left; margin-right: 10px;}
+        .cart-item-title { font-weight: bold; margin: 0; }
+        .cart-item-qty { display: flex; align-items: center; gap: 5px; }
+        .qty-btn { width: 25px; height: 25px; font-weight: bold; cursor: pointer; }
+
+        /* ฟอร์มข้อมูลลูกค้า */
+        .form-group { margin-top: 15px; text-align: left; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 5px; border: 2px solid; border-color: #808080 #fff #fff #808080; font-family: 'MS Sans Serif', sans-serif; box-sizing: border-box; }
+        
+        .totals { margin-top: 20px; padding-top: 10px; border-top: 2px solid #808080; text-align: right; font-weight: bold; font-size: 1.1em;}
     </style>
 </head>
 <body>
@@ -134,16 +62,83 @@
     <h1><span class="header-emoji">💛❤️💙</span><br>Turning Turtle Store</h1>
     
     <div style="text-align: center;">
-        <div id="loading">⌛ Downloading products... please wait.</div>
+        <div id="loading" class="retro-box">⌛ Downloading products... please wait.</div>
     </div>
     
-    <!-- ตรงนี้คือพื้นที่สำหรับแสดงการ์ดสินค้า -->
+    <!-- พื้นที่แสดงสินค้า -->
     <div class="product-grid" id="product-container"></div>
 
-    <script>
-        // ลิงก์ Web App API ของคุณ
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzOJsYhEszCZkh5QXxNqegGS_daCmBThK1hU2b-vF_NAI1f_Mg1A3O4BYyfRaThjezfbw/exec';
+    <!-- แถบลอยตะกร้าสินค้าด้านล่าง -->
+    <div class="floating-cart">
+        <div style="font-weight: bold; font-size: 1.2em;">
+            🛍️ Cart: <span id="cart-count">0</span> items (<span style="color:#d10000">฿<span id="cart-total">0</span></span>)
+        </div>
+        <button class="btn-retro" onclick="openCart()">View Cart</button>
+    </div>
 
+    <!-- หน้าต่าง (Modal) ตะกร้าและฟอร์ม Checkout -->
+    <div id="cart-modal">
+        <div class="modal-content">
+            <div class="window-header">
+                <span>Checkout.exe</span>
+                <div class="window-btn-group">
+                    <div class="window-btn" onclick="closeCart()">X</div>
+                </div>
+            </div>
+            <div class="modal-body">
+                <h3 style="margin-top: 0;">🛒 Your Order</h3>
+                <div id="cart-items-container">
+                    <!-- รายการสินค้าที่เลือกจะมาโชว์ตรงนี้ -->
+                </div>
+                
+                <div class="totals">
+                    Total: ฿<span id="checkout-total">0</span>
+                </div>
+
+                <hr style="border: 1px solid #808080; margin: 20px 0;">
+                
+                <h3>📝 Shipping Details</h3>
+                <form id="checkout-form" onsubmit="submitOrder(event)">
+                    <div class="form-group">
+                        <label>Name (ชื่อ-นามสกุล)*</label>
+                        <input type="text" id="custName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Phone (เบอร์โทร)*</label>
+                        <input type="tel" id="custPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Address (ที่อยู่จัดส่ง)*</label>
+                        <textarea id="custAddress" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Shipping Method (การจัดส่ง)</label>
+                        <select id="shippingMethod">
+                            <option value="Standard">Standard Delivery (฿50)</option>
+                            <option value="EMS">EMS (฿80)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" id="btn-submit" class="btn-retro" style="width: 100%; margin-top: 20px; font-size: 1.1em; color: #d10000;">
+                        Submit Order (ยืนยันคำสั่งซื้อ)
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // 1. ตั้งค่า API และตัวแปรระบบ
+        // ==========================================
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxfeR9gyKcrHlP_H7knJi21MUWiY85rceoVjKo7Pti1OJ9rtrZdLn1BVpD9jtYpJsygLA/exec'; // <--- เปลี่ยนตรงนี้!
+        
+        let allProducts = []; // เก็บแคตตาล็อกทั้งหมด
+        let cart = []; // เก็บสินค้าในตะกร้า
+
+        // ==========================================
+        // 2. โหลดข้อมูลสินค้าจาก Google Sheets
+        // ==========================================
         async function loadProducts() {
             try {
                 const response = await fetch(API_URL + '?action=getProducts');
@@ -153,50 +148,191 @@
                 const container = document.getElementById('product-container');
 
                 if (result.status === 'success') {
-                    // วนลูปสร้างหน้าต่าง Window ของแต่ละสินค้า
-                    result.data.forEach(product => {
-                        const isOutOfStock = product.stock <= 0;
-                        const stockText = isOutOfStock ? '<span style="color:#d10000; font-weight:bold;">SOLD OUT</span>' : `In Stock: ${product.stock}`;
-                        
-                        const card = `
-                            <div class="product-card">
-                                <!-- Title Bar แบบวินเทจ -->
-                                <div class="window-header">
-                                    <span>${product.name.replace(/\s+/g, '')}.exe</span>
-                                    <div class="window-btn-group">
-                                        <div class="window-btn">_</div>
-                                        <div class="window-btn">□</div>
-                                        <div class="window-btn">X</div>
-                                    </div>
-                                </div>
-
-                                <!-- เนื้อหาสินค้า -->
-                                <div class="card-content">
-                                    ${product.image ? `<img src="${product.image}" alt="${product.name}" class="product-image">` : '<div class="product-image" style="display:flex; align-items:center; justify-content:center; color:#808080;">NO IMAGE</div>'}
-                                    <h3 class="product-title">${product.name}</h3>
-                                    <p class="details">Color: ${product.color} | Size: ${product.size}</p>
-                                    <p class="price">฿${product.price.toLocaleString()}</p>
-                                    <p style="margin-bottom: 15px;"><small>${stockText}</small></p>
-                                    
-                                    <!-- ปุ่มเพิ่มลงตะกร้า -->
-                                    <button class="btn-cart" ${isOutOfStock ? 'disabled' : ''}>
-                                        ${isOutOfStock ? 'OUT OF STOCK' : 'OK'}
-                                    </button>
-                                </div>
-                            </div>
-                        `;
-                        container.innerHTML += card;
-                    });
+                    allProducts = result.data;
+                    renderProducts();
                 } else {
-                    container.innerHTML = `<div id="loading" style="color:#d10000;">Error: ${result.message}</div>`;
+                    container.innerHTML = `<div class="retro-box" style="color:#d10000;">Error: ${result.message}</div>`;
                 }
             } catch (error) {
                 document.getElementById('loading').innerHTML = '<span style="color:#d10000;">System Error. Please refresh.</span>';
-                console.error(error);
             }
         }
 
-        // เริ่มโหลดสินค้าเมื่อเปิดเว็บ
+        // วาดการ์ดสินค้า
+        function renderProducts() {
+            const container = document.getElementById('product-container');
+            container.innerHTML = '';
+            
+            allProducts.forEach(product => {
+                const isOutOfStock = product.stock <= 0;
+                const stockText = isOutOfStock ? '<span style="color:#d10000; font-weight:bold;">SOLD OUT</span>' : `In Stock: ${product.stock}`;
+                
+                // ค้นหาว่าในตะกร้ามีสินค้านี้กี่ชิ้นแล้ว
+                const cartItem = cart.find(item => item.sku === product.sku);
+                const cartQty = cartItem ? cartItem.qty : 0;
+                const disableBtn = isOutOfStock || (cartQty >= product.stock);
+
+                const card = `
+                    <div class="product-card">
+                        <div class="window-header">
+                            <span>${product.name.replace(/\s+/g, '')}.exe</span>
+                            <div class="window-btn-group"><div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">X</div></div>
+                        </div>
+                        <div class="card-content">
+                            ${product.image ? `<img src="${product.image}" alt="${product.name}" class="product-image">` : '<div class="product-image" style="display:flex; align-items:center; justify-content:center; color:#808080;">NO IMAGE</div>'}
+                            <h3 class="product-title">${product.name}</h3>
+                            <p class="details">Color: ${product.color} | Size: ${product.size}</p>
+                            <p class="price">฿${product.price.toLocaleString()}</p>
+                            <p style="margin-bottom: 15px;"><small>${stockText}</small></p>
+                            <button class="btn-retro btn-cart" onclick="addToCart('${product.sku}')" ${disableBtn ? 'disabled' : ''}>
+                                ${disableBtn ? (isOutOfStock ? 'OUT OF STOCK' : 'MAX LIMIT') : 'ADD TO CART'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += card;
+            });
+        }
+
+        // ==========================================
+        // 3. ระบบจัดการตะกร้าสินค้า
+        // ==========================================
+        function addToCart(sku) {
+            const product = allProducts.find(p => p.sku === sku);
+            const existingItem = cart.find(item => item.sku === sku);
+
+            if (existingItem) {
+                if (existingItem.qty < product.stock) existingItem.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartUI();
+            renderProducts(); // อัปเดตปุ่มกันคนกดเกินสต๊อก
+        }
+
+        function changeQty(sku, delta) {
+            const item = cart.find(item => item.sku === sku);
+            const product = allProducts.find(p => p.sku === sku);
+            if (item) {
+                item.qty += delta;
+                if (item.qty <= 0) {
+                    cart = cart.filter(i => i.sku !== sku);
+                } else if (item.qty > product.stock) {
+                    item.qty = product.stock; // ห้ามเกินสต๊อก
+                }
+            }
+            updateCartUI();
+            renderProducts();
+        }
+
+        function updateCartUI() {
+            let count = 0;
+            let total = 0;
+            
+            const cartContainer = document.getElementById('cart-items-container');
+            cartContainer.innerHTML = '';
+
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p>ตะกร้าว่างเปล่า</p>';
+            } else {
+                cart.forEach(item => {
+                    count += item.qty;
+                    total += (item.price * item.qty);
+                    
+                    cartContainer.innerHTML += `
+                        <div class="cart-item">
+                            <div class="cart-item-details">
+                                <p class="cart-item-title">${item.name}</p>
+                                <small>${item.color} / ${item.size} (฿${item.price})</small>
+                            </div>
+                            <div class="cart-item-qty">
+                                <button class="btn-retro qty-btn" onclick="changeQty('${item.sku}', -1)">-</button>
+                                <span style="display:inline-block; width: 20px; text-align:center;">${item.qty}</span>
+                                <button class="btn-retro qty-btn" onclick="changeQty('${item.sku}', 1)">+</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            // อัปเดตตัวเลขแถบด้านล่างและ Modal
+            document.getElementById('cart-count').innerText = count;
+            document.getElementById('cart-total').innerText = total.toLocaleString();
+            document.getElementById('checkout-total').innerText = total.toLocaleString();
+        }
+
+        // เปิด/ปิด Modal
+        function openCart() { document.getElementById('cart-modal').style.display = 'flex'; }
+        function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
+
+        // ==========================================
+        // 4. ส่งข้อมูลคำสั่งซื้อไปที่ Google Sheets (Apps Script)
+        // ==========================================
+        async function submitOrder(event) {
+            event.preventDefault(); // ป้องกันเว็บโหลดหน้าใหม่ตอนกดปุ่ม
+            if (cart.length === 0) { alert('ตะกร้าว่างเปล่า กรุณาเลือกสินค้าก่อนครับ'); return; }
+
+            const btnSubmit = document.getElementById('btn-submit');
+            btnSubmit.innerText = '⏳ กำลังส่งคำสั่งซื้อ...';
+            btnSubmit.disabled = true;
+
+            // คำนวณค่าส่งและยอดรวม
+            const shipMethod = document.getElementById('shippingMethod').value;
+            const shipFee = shipMethod === 'EMS' ? 80 : 50;
+            const merchandiseTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const netTotal = merchandiseTotal + shipFee;
+
+            // จัดเรียงข้อมูลให้ตรงกับที่ submitOrder ของคุณต้องการ
+            const orderData = {
+                orderDate: new Date().toISOString(),
+                customer: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                address: document.getElementById('custAddress').value,
+                method: "Online", 
+                shippingMethod: shipMethod,
+                shippingFee: shipFee,
+                total: merchandiseTotal,
+                discount: 0,
+                netTotal: netTotal,
+                remark: "สั่งจากหน้าเว็บ GitHub",
+                items: cart.map(item => ({
+                    sku: item.sku,
+                    name: item.name,
+                    color: item.color,
+                    size: item.size,
+                    qty: item.qty,
+                    price: item.price
+                }))
+            };
+
+            try {
+                // ส่ง POST Request ไปที่ doPost(e) ใน Apps Script
+                const response = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(orderData)
+                });
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    alert('🎉 ขอบคุณครับ! ' + result.message);
+                    cart = []; // ล้างตะกร้า
+                    updateCartUI();
+                    closeCart();
+                    loadProducts(); // โหลดสต๊อกใหม่เพื่ออัปเดตหน้าเว็บ
+                } else {
+                    alert('❌ ไม่สามารถสั่งซื้อได้: ' + result.message);
+                }
+            } catch (error) {
+                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
+                console.error(error);
+            } finally {
+                btnSubmit.innerText = 'Submit Order (ยืนยันคำสั่งซื้อ)';
+                btnSubmit.disabled = false;
+                document.getElementById('checkout-form').reset();
+            }
+        }
+
+        // เริ่มโหลดข้อมูล
         loadProducts();
     </script>
 </body>
