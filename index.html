@@ -5,18 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turning Turtle Store - Retro Edition</title>
     <style>
-        /* --- ธีม Retro Windows 95 --- */
-        body { font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; padding: 20px; background: #008080; color: #000; padding-bottom: 80px; }
+        body { font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; padding: 20px; background: #008080; color: #000; padding-bottom: 90px; }
         h1 { color: white; text-shadow: 2px 2px 0 #000; text-align: center; margin-bottom: 30px; }
         .header-emoji { letter-spacing: 5px; }
 
-        /* กรอบโหลดข้อมูล */
         .retro-box { background: #c0c0c0; padding: 15px; border: 2px solid; border-color: #fff #000 #000 #fff; box-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
         #loading { display: inline-block; font-weight: bold; }
 
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; margin-top: 20px; }
 
-        /* การ์ดสินค้า */
         .product-card { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 3px; display: flex; flex-direction: column; }
         .window-header { background: #000080; color: white; padding: 4px 6px; font-weight: bold; font-size: 0.85em; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .window-btn-group { display: flex; gap: 3px; }
@@ -25,36 +22,36 @@
         .product-image { max-width: 100%; height: 220px; object-fit: cover; border: 2px solid; border-color: #808080 #fff #fff #808080; background: #fff; margin-bottom: 10px; }
         .card-content { padding: 10px; text-align: center; display: flex; flex-direction: column; flex-grow: 1; }
         .product-title { margin: 5px 0 10px 0; font-size: 1.1em; }
-        .details { font-size: 0.85em; margin: 0; }
+        
+        .options-group { margin: 10px 0; text-align: left; font-size: 0.9em; }
+        .options-group label { display: block; font-weight: bold; margin-bottom: 2px; }
+        .options-group select { width: 100%; padding: 4px; border: 2px solid; border-color: #808080 #fff #fff #808080; font-family: 'MS Sans Serif', sans-serif; }
+
         .price { color: #d10000; font-weight: bold; font-size: 1.2em; margin: 10px 0; }
         
-        /* ปุ่ม Retro */
         .btn-retro { background: #c0c0c0; color: black; font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; font-weight: bold; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 8px 15px; cursor: pointer; }
         .btn-retro:active:not(:disabled) { border-color: #000 #fff #fff #000; padding: 9px 14px 7px 16px; }
         .btn-retro:disabled { color: #808080; text-shadow: 1px 1px 0 #fff; cursor: not-allowed; }
         .btn-cart { width: 100%; margin-top: auto; }
 
-        /* --- แถบเมนูตะกร้าสินค้า (Floating Bar) --- */
         .floating-cart { position: fixed; bottom: 0; left: 0; width: 100%; background: #c0c0c0; border-top: 2px solid #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.2); }
         
-        /* --- Modal ตะกร้าสินค้าและ Checkout --- */
         #cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,128,128,0.8); z-index: 1000; justify-content: center; align-items: center; }
         .modal-content { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 3px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         .modal-body { padding: 15px; }
         
-        /* ตารางในตะกร้า */
         .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #808080; padding: 10px 0; }
         .cart-item-details { flex-grow: 1; text-align: left; margin-right: 10px;}
         .cart-item-title { font-weight: bold; margin: 0; }
         .cart-item-qty { display: flex; align-items: center; gap: 5px; }
         .qty-btn { width: 25px; height: 25px; font-weight: bold; cursor: pointer; }
 
-        /* ฟอร์มข้อมูลลูกค้า */
-        .form-group { margin-top: 15px; text-align: left; }
-        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .form-group { margin-top: 12px; text-align: left; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 3px; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 5px; border: 2px solid; border-color: #808080 #fff #fff #808080; font-family: 'MS Sans Serif', sans-serif; box-sizing: border-box; }
         
-        .totals { margin-top: 20px; padding-top: 10px; border-top: 2px solid #808080; text-align: right; font-weight: bold; font-size: 1.1em;}
+        .totals { margin-top: 15px; padding-top: 10px; border-top: 2px solid #808080; text-align: right; font-weight: bold; font-size: 1.1em;}
+        .qr-section { text-align: center; background: #fff; padding: 10px; border: 2px inset #808080; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -65,10 +62,8 @@
         <div id="loading" class="retro-box">⌛ Downloading products... please wait.</div>
     </div>
     
-    <!-- พื้นที่แสดงสินค้า -->
     <div class="product-grid" id="product-container"></div>
 
-    <!-- แถบลอยตะกร้าสินค้าด้านล่าง -->
     <div class="floating-cart">
         <div style="font-weight: bold; font-size: 1.2em;">
             🛍️ Cart: <span id="cart-count">0</span> items (<span style="color:#d10000">฿<span id="cart-total">0</span></span>)
@@ -76,7 +71,6 @@
         <button class="btn-retro" onclick="openCart()">View Cart</button>
     </div>
 
-    <!-- หน้าต่าง (Modal) ตะกร้าและฟอร์ม Checkout -->
     <div id="cart-modal">
         <div class="modal-content">
             <div class="window-header">
@@ -87,17 +81,17 @@
             </div>
             <div class="modal-body">
                 <h3 style="margin-top: 0;">🛒 Your Order</h3>
-                <div id="cart-items-container">
-                    <!-- รายการสินค้าที่เลือกจะมาโชว์ตรงนี้ -->
-                </div>
+                <div id="cart-items-container"></div>
                 
-                <div class="totals">
-                    Total: ฿<span id="checkout-total">0</span>
+                <div class="totals" id="summary-section">
+                    Subtotal: ฿<span id="sub-total">0</span><br>
+                    Shipping: ฿<span id="shipping-fee">50</span><br>
+                    <span style="color: #d10000;">Total: ฿<span id="checkout-total">0</span></span>
                 </div>
 
-                <hr style="border: 1px solid #808080; margin: 20px 0;">
+                <hr style="border: 1px solid #808080; margin: 15px 0;">
                 
-                <h3>📝 Shipping Details</h3>
+                <h3>📝 Shipping & Payment Details</h3>
                 <form id="checkout-form" onsubmit="submitOrder(event)">
                     <div class="form-group">
                         <label>Name (ชื่อ-นามสกุล)*</label>
@@ -108,18 +102,27 @@
                         <input type="tel" id="custPhone" required>
                     </div>
                     <div class="form-group">
-                        <label>Address (ที่อยู่จัดส่ง)*</label>
-                        <textarea id="custAddress" rows="3" required></textarea>
+                        <label>Email (อีเมลสำหรับรับการแจ้งเตือน)*</label>
+                        <input type="email" id="custEmail" required placeholder="example@email.com">
                     </div>
                     <div class="form-group">
-                        <label>Shipping Method (การจัดส่ง)</label>
-                        <select id="shippingMethod">
-                            <option value="Standard">Standard Delivery (฿50)</option>
-                            <option value="EMS">EMS (฿80)</option>
-                        </select>
+                        <label>Address (ที่อยู่จัดส่ง)*</label>
+                        <textarea id="custAddress" rows="2" required></textarea>
                     </div>
                     
-                    <button type="submit" id="btn-submit" class="btn-retro" style="width: 100%; margin-top: 20px; font-size: 1.1em; color: #d10000;">
+                    <div class="qr-section">
+                        <p style="margin: 0 0 5px 0; font-weight: bold; font-size: 0.9em;">💳 Scan QR Code to Pay (โอนชำระเงิน)</p>
+                        <!-- เปลี่ยนลิงก์ภาพ QR Code พร้อมเพย์ของคุณตรงนี้ -->
+                        <img src="https://promptpay.io/0812345678/0.png" alt="QR Code" style="width: 130px; height: 130px;">
+                        <p style="margin: 5px 0 0 0; font-size: 0.8em; color: #555;">PromptPay: Turning Turtle</p>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Upload Slip (แนบสลิปโอนเงิน)*</label>
+                        <input type="file" id="slipFile" accept="image/*" required style="background: #fff;">
+                    </div>
+
+                    <button type="submit" id="btn-submit" class="btn-retro" style="width: 100%; margin-top: 15px; font-size: 1.1em; color: #d10000;">
                         Submit Order (ยืนยันคำสั่งซื้อ)
                     </button>
                 </form>
@@ -128,17 +131,11 @@
     </div>
 
     <script>
-        // ==========================================
-        // 1. ตั้งค่า API และตัวแปรระบบ
-        // ==========================================
-        const API_URL = 'https://script.google.com/macros/s/AKfycbzy8DhLtdWrTJfaFbZ8Y0hKFobBdxXyw1YQAhvOHm8SLKosbo5DtmQYO4_FLhZFdOs-EA/exec'; // <--- เปลี่ยนตรงนี้!
+        const API_URL = 'https://script.google.com/macros/s/AKfycbz-06HMm1fLlXn2Gl0Itg9dHODp-KuyROkGXNPrlYsuoNkKiuYga6G3JuFqya6t1FVJGw/exec'; // ลิงก์เวอร์ชัน 27 ล่าสุด
         
-        let allProducts = []; // เก็บแคตตาล็อกทั้งหมด
-        let cart = []; // เก็บสินค้าในตะกร้า
+        let groupedProducts = {}; 
+        let cart = []; 
 
-        // ==========================================
-        // 2. โหลดข้อมูลสินค้าจาก Google Sheets
-        // ==========================================
         async function loadProducts() {
             try {
                 const response = await fetch(API_URL + '?action=getProducts');
@@ -148,7 +145,18 @@
                 const container = document.getElementById('product-container');
 
                 if (result.status === 'success') {
-                    allProducts = result.data;
+                    groupedProducts = {};
+                    result.data.forEach(p => {
+                        if (!groupedProducts[p.name]) {
+                            groupedProducts[p.name] = {
+                                name: p.name,
+                                basePrice: p.price,
+                                colors: [...new Set(result.data.filter(item => item.name === p.name).map(item => item.color))],
+                                sizes: [...new Set(result.data.filter(item => item.name === p.name).map(item => item.size))],
+                                items: result.data.filter(item => item.name === p.name)
+                            };
+                        }
+                    });
                     renderProducts();
                 } else {
                     container.innerHTML = `<div class="retro-box" style="color:#d10000;">Error: ${result.message}</div>`;
@@ -158,34 +166,41 @@
             }
         }
 
-        // วาดการ์ดสินค้า
         function renderProducts() {
             const container = document.getElementById('product-container');
             container.innerHTML = '';
             
-            allProducts.forEach(product => {
-                const isOutOfStock = product.stock <= 0;
-                const stockText = isOutOfStock ? '<span style="color:#d10000; font-weight:bold;">SOLD OUT</span>' : `In Stock: ${product.stock}`;
-                
-                // ค้นหาว่าในตะกร้ามีสินค้านี้กี่ชิ้นแล้ว
-                const cartItem = cart.find(item => item.sku === product.sku);
-                const cartQty = cartItem ? cartItem.qty : 0;
-                const disableBtn = isOutOfStock || (cartQty >= product.stock);
+            Object.keys(groupedProducts).forEach(name => {
+                const prodGroup = groupedProducts[name];
+                const firstItem = prodGroup.items[0];
+
+                const colorOptions = prodGroup.colors.map(c => `<option value="${c}">${c}</option>`).join('');
+                const sizeOptions = prodGroup.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
 
                 const card = `
-                    <div class="product-card">
+                    <div class="product-card" id="card-${name.replace(/\s+/g, '')}">
                         <div class="window-header">
-                            <span>${product.name.replace(/\s+/g, '')}.exe</span>
+                            <span>${name.replace(/\s+/g, '')}.exe</span>
                             <div class="window-btn-group"><div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">X</div></div>
                         </div>
                         <div class="card-content">
-                            ${product.image ? `<img src="${product.image}" alt="${product.name}" class="product-image">` : '<div class="product-image" style="display:flex; align-items:center; justify-content:center; color:#808080;">NO IMAGE</div>'}
-                            <h3 class="product-title">${product.name}</h3>
-                            <p class="details">Color: ${product.color} | Size: ${product.size}</p>
-                            <p class="price">฿${product.price.toLocaleString()}</p>
-                            <p style="margin-bottom: 15px;"><small>${stockText}</small></p>
-                            <button class="btn-retro btn-cart" onclick="addToCart('${product.sku}')" ${disableBtn ? 'disabled' : ''}>
-                                ${disableBtn ? (isOutOfStock ? 'OUT OF STOCK' : 'MAX LIMIT') : 'ADD TO CART'}
+                            <img src="${firstItem.image}" alt="${name}" class="product-image" id="img-${name.replace(/\s+/g, '')}">
+                            <h3 class="product-title">${name}</h3>
+                            <p class="price" id="price-${name.replace(/\s+/g, '')}">฿${firstItem.price.toLocaleString()}</p>
+                            
+                            <div class="options-group">
+                                <label>Color:</label>
+                                <select id="color-${name.replace(/\s+/g, '')}" onchange="updateProductVariant('${name}')">${colorOptions}</select>
+                            </div>
+                            <div class="options-group">
+                                <label>Size:</label>
+                                <select id="size-${name.replace(/\s+/g, '')}" onchange="updateProductVariant('${name}')">${sizeOptions}</select>
+                            </div>
+
+                            <p style="margin: 10px 0;"><small id="stock-${name.replace(/\s+/g, '')}">In Stock: ${firstItem.stock}</small></p>
+                            
+                            <button class="btn-retro btn-cart" id="btn-${name.replace(/\s+/g, '')}" onclick="addVaultToCart('${name}')">
+                                ADD TO CART
                             </button>
                         </div>
                     </div>
@@ -194,40 +209,71 @@
             });
         }
 
-        // ==========================================
-        // 3. ระบบจัดการตะกร้าสินค้า
-        // ==========================================
-        function addToCart(sku) {
-            const product = allProducts.find(p => p.sku === sku);
-            const existingItem = cart.find(item => item.sku === sku);
+        function findVariant(name) {
+            const safeName = name.replace(/\s+/g, '');
+            const selectedColor = document.getElementById('color-' + safeName).value;
+            const selectedSize = document.getElementById('size-' + safeName).value;
+            const prodGroup = groupedProducts[name];
+            return prodGroup.items.find(i => i.color === selectedColor && i.size === selectedSize);
+        }
 
+        function updateProductVariant(name) {
+            const variant = findVariant(name);
+            const safeName = name.replace(/\s+/g, '');
+            
+            if (variant) {
+                if(variant.image) document.getElementById('img-' + safeName).src = variant.image;
+                document.getElementById('price-' + safeName).innerText = '฿' + variant.price.toLocaleString();
+                
+                const stockEl = document.getElementById('stock-' + safeName);
+                const btnEl = document.getElementById('btn-' + safeName);
+                
+                if (variant.stock <= 0) {
+                    stockEl.innerHTML = '<span style="color:#d10000; font-weight:bold;">SOLD OUT</span>';
+                    btnEl.disabled = true;
+                    btnEl.innerText = 'OUT OF STOCK';
+                } else {
+                    stockEl.innerText = 'In Stock: ' + variant.stock;
+                    btnEl.disabled = false;
+                    btnEl.innerText = 'ADD TO CART';
+                }
+            }
+        }
+
+        function addVaultToCart(name) {
+            const variant = findVariant(name);
+            if (!variant || variant.stock <= 0) return;
+
+            const existingItem = cart.find(item => item.sku === variant.sku);
             if (existingItem) {
-                if (existingItem.qty < product.stock) existingItem.qty += 1;
+                if (existingItem.qty < variant.stock) existingItem.qty += 1;
+                else alert('สินค้าในสต๊อกหมดแล้วครับ');
             } else {
-                cart.push({ ...product, qty: 1 });
+                cart.push({ ...variant, qty: 1 });
             }
             updateCartUI();
-            renderProducts(); // อัปเดตปุ่มกันคนกดเกินสต๊อก
         }
 
         function changeQty(sku, delta) {
-            const item = cart.find(item => item.sku === sku);
-            const product = allProducts.find(p => p.sku === sku);
-            if (item) {
-                item.qty += delta;
-                if (item.qty <= 0) {
-                    cart = cart.filter(i => i.sku !== sku);
-                } else if (item.qty > product.stock) {
-                    item.qty = product.stock; // ห้ามเกินสต๊อก
-                }
+            const item = cart.find(i => i.sku === sku);
+            if (!item) return;
+
+            const group = Object.values(groupedProducts).find(g => g.items.some(i => i.sku === sku));
+            const variant = group.items.find(i => i.sku === sku);
+
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.sku !== sku);
+            } else if (item.qty > variant.stock) {
+                item.qty = variant.stock;
+                alert('เกินจำนวนสต๊อกที่มี');
             }
             updateCartUI();
-            renderProducts();
         }
 
         function updateCartUI() {
             let count = 0;
-            let total = 0;
+            let subtotal = 0;
             
             const cartContainer = document.getElementById('cart-items-container');
             cartContainer.innerHTML = '';
@@ -237,7 +283,7 @@
             } else {
                 cart.forEach(item => {
                     count += item.qty;
-                    total += (item.price * item.qty);
+                    subtotal += (item.price * item.qty);
                     
                     cartContainer.innerHTML += `
                         <div class="cart-item">
@@ -255,58 +301,72 @@
                 });
             }
 
-            // อัปเดตตัวเลขแถบด้านล่างและ Modal
+            // เงื่อนไขค่าส่ง Flash: >3000 ส่งฟรี ไม่งั้น 50 บาท
+            const shippingFee = (subtotal > 3000 || subtotal === 0) ? 0 : 50;
+            const netTotal = subtotal + shippingFee;
+
             document.getElementById('cart-count').innerText = count;
-            document.getElementById('cart-total').innerText = total.toLocaleString();
-            document.getElementById('checkout-total').innerText = total.toLocaleString();
+            document.getElementById('cart-total').innerText = subtotal.toLocaleString();
+            document.getElementById('sub-total').innerText = subtotal.toLocaleString();
+            document.getElementById('shipping-fee').innerText = shippingFee.toLocaleString() + (shippingFee === 0 && subtotal > 3000 ? ' (ส่งฟรี 🎉)' : '');
+            document.getElementById('checkout-total').innerText = netTotal.toLocaleString();
         }
 
-        // เปิด/ปิด Modal
         function openCart() { document.getElementById('cart-modal').style.display = 'flex'; }
         function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
 
-        // ==========================================
-        // 4. ส่งข้อมูลคำสั่งซื้อไปที่ Google Sheets (Apps Script)
-        // ==========================================
+        // แปลงไฟล์รูปสลิปเป็น Base64
+        function getBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+            });
+        }
+
         async function submitOrder(event) {
-            event.preventDefault(); // ป้องกันเว็บโหลดหน้าใหม่ตอนกดปุ่ม
-            if (cart.length === 0) { alert('ตะกร้าว่างเปล่า กรุณาเลือกสินค้าก่อนครับ'); return; }
+            event.preventDefault();
+            if (cart.length === 0) { alert('ตะกร้าว่างเปล่าครับ'); return; }
+
+            const fileInput = document.getElementById('slipFile');
+            if (fileInput.files.length === 0) { alert('กรุณาแนบสลิปโอนเงินก่อนยืนยันคำสั่งซื้อ'); return; }
 
             const btnSubmit = document.getElementById('btn-submit');
-            btnSubmit.innerText = '⏳ กำลังส่งคำสั่งซื้อ...';
+            btnSubmit.innerText = '⏳ กำลังอัปโหลดสลิปและส่งออเดอร์...';
             btnSubmit.disabled = true;
 
-            // คำนวณค่าส่งและยอดรวม
-            const shipMethod = document.getElementById('shippingMethod').value;
-            const shipFee = shipMethod === 'EMS' ? 80 : 50;
-            const merchandiseTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
-            const netTotal = merchandiseTotal + shipFee;
-
-            // จัดเรียงข้อมูลให้ตรงกับที่ submitOrder ของคุณต้องการ
-            const orderData = {
-                orderDate: new Date().toISOString(),
-                customer: document.getElementById('custName').value,
-                phone: document.getElementById('custPhone').value,
-                address: document.getElementById('custAddress').value,
-                method: "Online", 
-                shippingMethod: shipMethod,
-                shippingFee: shipFee,
-                total: merchandiseTotal,
-                discount: 0,
-                netTotal: netTotal,
-                remark: "สั่งจากหน้าเว็บ GitHub",
-                items: cart.map(item => ({
-                    sku: item.sku,
-                    name: item.name,
-                    color: item.color,
-                    size: item.size,
-                    qty: item.qty,
-                    price: item.price
-                }))
-            };
-
             try {
-                // ส่ง POST Request ไปที่ doPost(e) ใน Apps Script
+                const base64Slip = await getBase64(fileInput.files[0]);
+
+                const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                const shippingFee = subtotal > 3000 ? 0 : 50;
+                const netTotal = subtotal + shippingFee;
+
+                const orderData = {
+                    orderDate: new Date().toISOString(),
+                    customer: document.getElementById('custName').value,
+                    phone: document.getElementById('custPhone').value,
+                    email: document.getElementById('custEmail').value,
+                    address: document.getElementById('custAddress').value,
+                    method: "Online",
+                    shippingMethod: shippingFee === 0 ? "Flash (Free)" : "Flash Express",
+                    shippingFee: shippingFee,
+                    total: subtotal,
+                    discount: 0,
+                    netTotal: netTotal,
+                    remark: "สั่งจากหน้าเว็บ GitHub + แนบสลิป",
+                    slipBase64: base64Slip,
+                    items: cart.map(item => ({
+                        sku: item.sku,
+                        name: item.name,
+                        color: item.color,
+                        size: item.size,
+                        qty: item.qty,
+                        price: item.price
+                    }))
+                };
+
                 const response = await fetch(API_URL, {
                     method: 'POST',
                     body: JSON.stringify(orderData)
@@ -315,12 +375,12 @@
 
                 if (result.status === 'success') {
                     alert('🎉 ขอบคุณครับ! ' + result.message);
-                    cart = []; // ล้างตะกร้า
+                    cart = [];
                     updateCartUI();
                     closeCart();
-                    loadProducts(); // โหลดสต๊อกใหม่เพื่ออัปเดตหน้าเว็บ
+                    loadProducts();
                 } else {
-                    alert('❌ ไม่สามารถสั่งซื้อได้: ' + result.message);
+                    alert('❌ เกิดข้อผิดพลาด: ' + result.message);
                 }
             } catch (error) {
                 alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
@@ -332,7 +392,6 @@
             }
         }
 
-        // เริ่มโหลดข้อมูล
         loadProducts();
     </script>
 </body>
