@@ -5,28 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turning Turtle Store - Retro Edition</title>
     <style>
-        body { font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; padding: 20px; background: #008080; color: #000; padding-bottom: 90px; }
-        h1 { color: white; text-shadow: 2px 2px 0 #000; text-align: center; margin-bottom: 30px; }
+        body { font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; padding: 20px; background: #008080; color: #000; padding-bottom: 90px; margin: 0; }
+        
+        /* Header & Language Toggle */
+        .top-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        h1 { color: white; text-shadow: 2px 2px 0 #000; margin: 0; }
         .header-emoji { letter-spacing: 5px; }
+        .lang-toggle { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 5px 10px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 5px; }
+        .lang-toggle:active { border-color: #000 #fff #fff #000; padding: 6px 9px 4px 11px; }
 
         .retro-box { background: #c0c0c0; padding: 15px; border: 2px solid; border-color: #fff #000 #000 #fff; box-shadow: 2px 2px 0 rgba(0,0,0,0.3); }
         #loading { display: inline-block; font-weight: bold; }
 
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 25px; margin-top: 20px; }
-
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; margin-top: 10px; }
         .product-card { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 3px; display: flex; flex-direction: column; }
+        
         .window-header { background: #000080; color: white; padding: 4px 6px; font-weight: bold; font-size: 0.85em; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
         .window-btn-group { display: flex; gap: 3px; }
-        .window-btn { background: #c0c0c0; border: 1px solid; border-color: #fff #000 #000 #fff; color: black; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; }
+        .window-btn { background: #c0c0c0; border: 1px solid; border-color: #fff #000 #000 #fff; color: black; width: 14px; height: 14px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; cursor: pointer; }
+        .window-btn:active { border-color: #000 #fff #fff #000; }
         
-        .product-image { max-width: 100%; height: 220px; object-fit: cover; border: 2px solid; border-color: #808080 #fff #fff #808080; background: #fff; margin-bottom: 10px; }
+        .product-image { width: 100%; height: 220px; object-fit: cover; border: 2px solid; border-color: #808080 #fff #fff #808080; background: #fff; margin-bottom: 10px; }
         .card-content { padding: 10px; text-align: center; display: flex; flex-direction: column; flex-grow: 1; }
         .product-title { margin: 5px 0 10px 0; font-size: 1.1em; }
-        
-        .options-group { margin: 10px 0; text-align: left; font-size: 0.9em; }
-        .options-group label { display: block; font-weight: bold; margin-bottom: 2px; }
-        .options-group select { width: 100%; padding: 4px; border: 2px solid; border-color: #808080 #fff #fff #808080; font-family: 'MS Sans Serif', sans-serif; }
-
         .price { color: #d10000; font-weight: bold; font-size: 1.2em; margin: 10px 0; }
         
         .btn-retro { background: #c0c0c0; color: black; font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; font-weight: bold; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 8px 15px; cursor: pointer; }
@@ -36,94 +37,153 @@
 
         .floating-cart { position: fixed; bottom: 0; left: 0; width: 100%; background: #c0c0c0; border-top: 2px solid #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; box-sizing: border-box; z-index: 100; box-shadow: 0 -2px 5px rgba(0,0,0,0.2); }
         
-        #cart-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,128,128,0.8); z-index: 1000; justify-content: center; align-items: center; }
-        .modal-content { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 3px; width: 90%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
+        /* Modal Styles (ใช้งานร่วมกันทั้ง Cart และ Product Pop-up) */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,128,128,0.8); z-index: 1000; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box;}
+        .modal-content { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 3px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; }
         .modal-body { padding: 15px; }
+
+        /* Product Pop-up Specifics */
+        .gallery-container { display: flex; gap: 5px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .gallery-thumb { width: 50px; height: 50px; object-fit: cover; border: 2px solid; border-color: #fff #808080 #808080 #fff; cursor: pointer; }
+        .gallery-thumb:active { border-color: #808080 #fff #fff #808080; }
+        .desc-image { width: 100%; margin-top: 15px; border: 2px solid; border-color: #808080 #fff #fff #808080; }
         
+        .options-group { margin: 10px 0; text-align: left; font-size: 0.9em; }
+        .options-group label { display: block; font-weight: bold; margin-bottom: 2px; }
+        .options-group select { width: 100%; padding: 4px; border: 2px solid; border-color: #808080 #fff #fff #808080; font-family: 'MS Sans Serif', sans-serif; }
+
+        /* Cart Specifics */
         .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #808080; padding: 10px 0; }
         .cart-item-details { flex-grow: 1; text-align: left; margin-right: 10px;}
         .cart-item-title { font-weight: bold; margin: 0; }
         .cart-item-qty { display: flex; align-items: center; gap: 5px; }
         .qty-btn { width: 25px; height: 25px; font-weight: bold; cursor: pointer; }
-
+        .totals { margin-top: 15px; padding-top: 10px; border-top: 2px solid #808080; text-align: right; font-weight: bold; font-size: 1.1em;}
+        
+        /* Form Specifics */
         .form-group { margin-top: 12px; text-align: left; }
         .form-group label { display: block; font-weight: bold; margin-bottom: 3px; }
         .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 5px; border: 2px solid; border-color: #808080 #fff #fff #808080; font-family: 'MS Sans Serif', sans-serif; box-sizing: border-box; }
-        
-        .totals { margin-top: 15px; padding-top: 10px; border-top: 2px solid #808080; text-align: right; font-weight: bold; font-size: 1.1em;}
         .qr-section { text-align: center; background: #fff; padding: 10px; border: 2px inset #808080; margin-top: 10px; }
     </style>
 </head>
 <body>
 
-    <h1><span class="header-emoji">💛❤️💙</span><br>Turning Turtle Store</h1>
+    <div class="top-header">
+        <h1 style="text-align: center; flex-grow: 1;"><span class="header-emoji">💛❤️💙</span><br>Turning Turtle Store</h1>
+        <button class="lang-toggle" onclick="toggleLanguage()">
+            <span id="lang-icon">🇹🇭</span> <span id="lang-text">TH</span>
+        </button>
+    </div>
     
     <div style="text-align: center;">
-        <div id="loading" class="retro-box">⌛ Downloading products... please wait.</div>
+        <div id="loading" class="retro-box translate" data-th="⌛ กำลังโหลดสินค้า... กรุณารอสักครู่" data-en="⌛ Downloading products... please wait.">⌛ กำลังโหลดสินค้า... กรุณารอสักครู่</div>
     </div>
     
+    <!-- พื้นที่แสดงการ์ดสินค้า -->
     <div class="product-grid" id="product-container"></div>
 
+    <!-- แถบตะกร้าสินค้าลอยตัว -->
     <div class="floating-cart">
         <div style="font-weight: bold; font-size: 1.2em;">
-            🛍️ Cart: <span id="cart-count">0</span> items (<span style="color:#d10000">฿<span id="cart-total">0</span></span>)
+            🛍️ <span class="translate" data-th="ตะกร้า:" data-en="Cart:">ตะกร้า:</span> 
+            <span id="cart-count">0</span> <span class="translate" data-th="ชิ้น" data-en="items">ชิ้น</span> 
+            (<span style="color:#d10000" class="price-display" data-thb="0">฿0</span>)
         </div>
-        <button class="btn-retro" onclick="openCart()">View Cart</button>
+        <button class="btn-retro translate" data-th="ดูตะกร้าสินค้า" data-en="View Cart" onclick="openModal('cart-modal')">ดูตะกร้าสินค้า</button>
     </div>
 
-    <div id="cart-modal">
+    <!-- ==================== MODAL: PRODUCT DETAILS ==================== -->
+    <div id="product-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="window-header">
+                <span>Product.exe</span>
+                <div class="window-btn-group"><div class="window-btn" onclick="closeModal('product-modal')">X</div></div>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <img id="pop-main-img" src="" class="product-image" style="height: auto; max-height: 250px;">
+                
+                <!-- โซนรูปย่อย Gallery (เตรียมไว้สำหรับอัปเดตรูปเพิ่ม) -->
+                <div class="gallery-container" id="pop-gallery">
+                    <!-- รูปย่อยจะถูกแทรกผ่าน JS -->
+                </div>
+
+                <h3 class="product-title" id="pop-title" style="margin: 0;">Product Name</h3>
+                <p class="price price-display" id="pop-price" data-thb="0">฿0</p>
+                
+                <!-- ตัวเลือกสีและไซส์ ย้ายมาอยู่ใน Pop-up -->
+                <div class="options-group">
+                    <label class="translate" data-th="สี (Color):" data-en="Color:">สี (Color):</label>
+                    <select id="pop-color" onchange="updatePopVariant()"></select>
+                </div>
+                <div class="options-group">
+                    <label class="translate" data-th="ไซส์ (Size):" data-en="Size:">ไซส์ (Size):</label>
+                    <select id="pop-size" onchange="updatePopVariant()"></select>
+                </div>
+
+                <p style="margin: 10px 0;"><small id="pop-stock">In Stock: 0</small></p>
+                
+                <button class="btn-retro btn-cart translate" id="pop-btn-add" data-th="เพิ่มลงตะกร้า" data-en="ADD TO CART" onclick="addPopToCart()">เพิ่มลงตะกร้า</button>
+
+                <!-- โซนรูป Description -->
+                <hr style="border: 1px solid #808080; margin: 20px 0 10px 0;">
+                <p style="text-align: left; font-weight: bold; margin:0;" class="translate" data-th="รายละเอียดสินค้า" data-en="Product Description">รายละเอียดสินค้า</p>
+                <img id="pop-desc-img" class="desc-image" src="https://via.placeholder.com/600x200?text=Description+Image+Area" alt="Description">
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: CART & CHECKOUT ==================== -->
+    <div id="cart-modal" class="modal-overlay">
         <div class="modal-content">
             <div class="window-header">
                 <span>Checkout.exe</span>
-                <div class="window-btn-group">
-                    <div class="window-btn" onclick="closeCart()">X</div>
-                </div>
+                <div class="window-btn-group"><div class="window-btn" onclick="closeModal('cart-modal')">X</div></div>
             </div>
             <div class="modal-body">
-                <h3 style="margin-top: 0;">🛒 Your Order</h3>
+                <h3 style="margin-top: 0;" class="translate" data-th="🛒 คำสั่งซื้อของคุณ" data-en="🛒 Your Order">🛒 คำสั่งซื้อของคุณ</h3>
                 <div id="cart-items-container"></div>
                 
                 <div class="totals" id="summary-section">
-                    Subtotal: ฿<span id="sub-total">0</span><br>
-                    Shipping: ฿<span id="shipping-fee">50</span><br>
-                    <span style="color: #d10000;">Total: ฿<span id="checkout-total">0</span></span>
+                    <span class="translate" data-th="ยอดรวม:" data-en="Subtotal:">ยอดรวม:</span> <span class="price-display" id="sub-total" data-thb="0">฿0</span><br>
+                    <span class="translate" data-th="ค่าจัดส่ง:" data-en="Shipping:">ค่าจัดส่ง:</span> <span class="price-display" id="shipping-fee" data-thb="50">฿50</span><br>
+                    <span style="color: #d10000;" class="translate" data-th="ยอดสุทธิ:" data-en="Total:">ยอดสุทธิ:</span> <span style="color: #d10000;" class="price-display" id="checkout-total" data-thb="0">฿0</span>
                 </div>
 
                 <hr style="border: 1px solid #808080; margin: 15px 0;">
                 
-                <h3>📝 Shipping & Payment Details</h3>
+                <h3 class="translate" data-th="📝 ข้อมูลจัดส่ง & ชำระเงิน" data-en="📝 Shipping & Payment Details">📝 ข้อมูลจัดส่ง & ชำระเงิน</h3>
                 <form id="checkout-form" onsubmit="submitOrder(event)">
                     <div class="form-group">
-                        <label>Name (ชื่อ-นามสกุล)*</label>
+                        <label class="translate" data-th="ชื่อ-นามสกุล*" data-en="Full Name*">ชื่อ-นามสกุล*</label>
                         <input type="text" id="custName" required>
                     </div>
                     <div class="form-group">
-                        <label>Phone (เบอร์โทร)*</label>
+                        <label class="translate" data-th="เบอร์โทรศัพท์*" data-en="Phone Number*">เบอร์โทรศัพท์*</label>
                         <input type="tel" id="custPhone" required>
                     </div>
                     <div class="form-group">
-                        <label>Email (อีเมลสำหรับรับการแจ้งเตือน)*</label>
+                        <label class="translate" data-th="อีเมล*" data-en="Email*">อีเมล*</label>
                         <input type="email" id="custEmail" required placeholder="example@email.com">
                     </div>
                     <div class="form-group">
-                        <label>Address (ที่อยู่จัดส่ง)*</label>
+                        <label class="translate" data-th="ที่อยู่จัดส่ง*" data-en="Full Address*">ที่อยู่จัดส่ง*</label>
                         <textarea id="custAddress" rows="2" required></textarea>
                     </div>
                     
                     <div class="qr-section">
-                        <p style="margin: 0 0 5px 0; font-weight: bold; font-size: 0.9em;">💳 Scan QR Code to Pay (โอนชำระเงิน)</p>
-                        <!-- เปลี่ยนลิงก์ภาพ QR Code พร้อมเพย์ของคุณตรงนี้ -->
+                        <p style="margin: 0 0 5px 0; font-weight: bold; font-size: 0.9em;" class="translate" data-th="💳 สแกน QR Code เพื่อชำระเงิน" data-en="💳 Scan QR Code to Pay">💳 สแกน QR Code เพื่อชำระเงิน</p>
                         <img src="https://promptpay.io/0812345678/0.png" alt="QR Code" style="width: 130px; height: 130px;">
                         <p style="margin: 5px 0 0 0; font-size: 0.8em; color: #555;">PromptPay: Turning Turtle</p>
                     </div>
 
                     <div class="form-group">
-                        <label>Upload Slip (แนบสลิปโอนเงิน)*</label>
+                        <label class="translate" data-th="แนบสลิปโอนเงิน*" data-en="Upload Payment Slip*">แนบสลิปโอนเงิน*</label>
                         <input type="file" id="slipFile" accept="image/*" required style="background: #fff;">
                     </div>
 
-                    <button type="submit" id="btn-submit" class="btn-retro" style="width: 100%; margin-top: 15px; font-size: 1.1em; color: #d10000;">
-                        Submit Order (ยืนยันคำสั่งซื้อ)
+                    <button type="submit" id="btn-submit" class="btn-retro translate" data-th="ยืนยันคำสั่งซื้อ" data-en="Submit Order" style="width: 100%; margin-top: 15px; font-size: 1.1em; color: #d10000;">
+                        ยืนยันคำสั่งซื้อ
                     </button>
                 </form>
             </div>
@@ -131,11 +191,51 @@
     </div>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxWJdQVK5lYiQsm5V_MDuXF3aF2s5RlPjeXxZpOXYO_XW_xnI17e818WCv4-rnziU0-0g/exec'; // ลิงก์เวอร์ชัน 27 ล่าสุด
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxWJdQVK5lYiQsm5V_MDuXF3aF2s5RlPjeXxZpOXYO_XW_xnI17e818WCv4-rnziU0-0g/exec'; 
         
         let groupedProducts = {}; 
         let cart = []; 
+        let currentModalProduct = ''; // เก็บชื่อสินค้าที่กำลังเปิด Pop-up
 
+        // ==================== LANGUAGE & CURRENCY SYSTEM ====================
+        let currentLang = 'TH';
+        const exchangeRate = 35; // อัตราแลกเปลี่ยน 35 บาท = 1 USD
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'TH' ? 'EN' : 'TH';
+            
+            // เปลี่ยนปุ่มสลับภาษา
+            document.getElementById('lang-text').innerText = currentLang;
+            document.getElementById('lang-icon').innerText = currentLang === 'TH' ? '🇹🇭' : '🇺🇸';
+
+            updateTranslations();
+            updatePrices();
+            updateCartUI(); // รีเฟรชหน้าตะกร้าให้แปลภาษาด้วย
+        }
+
+        function updateTranslations() {
+            document.querySelectorAll('.translate').forEach(el => {
+                if(currentLang === 'EN' && el.getAttribute('data-en')) {
+                    el.innerText = el.getAttribute('data-en');
+                } else if (currentLang === 'TH' && el.getAttribute('data-th')) {
+                    el.innerText = el.getAttribute('data-th');
+                }
+            });
+        }
+
+        function updatePrices() {
+            document.querySelectorAll('.price-display').forEach(el => {
+                let thb = parseFloat(el.getAttribute('data-thb'));
+                if (currentLang === 'EN') {
+                    let usd = (thb / exchangeRate).toFixed(2);
+                    el.innerText = '$' + usd;
+                } else {
+                    el.innerText = '฿' + thb.toLocaleString();
+                }
+            });
+        }
+
+        // ==================== PRODUCT LOADING & RENDERING ====================
         async function loadProducts() {
             try {
                 const response = await fetch(API_URL + '?action=getProducts');
@@ -174,9 +274,7 @@
                 const prodGroup = groupedProducts[name];
                 const firstItem = prodGroup.items[0];
 
-                const colorOptions = prodGroup.colors.map(c => `<option value="${c}">${c}</option>`).join('');
-                const sizeOptions = prodGroup.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
-
+                // การ์ดสินค้าฉบับย่อ (ไม่มี Dropdown ย้ายไป Pop-up)
                 const card = `
                     <div class="product-card" id="card-${name.replace(/\s+/g, '')}">
                         <div class="window-header">
@@ -184,76 +282,101 @@
                             <div class="window-btn-group"><div class="window-btn">_</div><div class="window-btn">□</div><div class="window-btn">X</div></div>
                         </div>
                         <div class="card-content">
-                            <img src="${firstItem.image}" alt="${name}" class="product-image" id="img-${name.replace(/\s+/g, '')}">
+                            <img src="${firstItem.image}" alt="${name}" class="product-image">
                             <h3 class="product-title">${name}</h3>
-                            <p class="price" id="price-${name.replace(/\s+/g, '')}">฿${firstItem.price.toLocaleString()}</p>
+                            <p class="price price-display" data-thb="${firstItem.price}">฿${firstItem.price.toLocaleString()}</p>
                             
-                            <div class="options-group">
-                                <label>Color:</label>
-                                <select id="color-${name.replace(/\s+/g, '')}" onchange="updateProductVariant('${name}')">${colorOptions}</select>
-                            </div>
-                            <div class="options-group">
-                                <label>Size:</label>
-                                <select id="size-${name.replace(/\s+/g, '')}" onchange="updateProductVariant('${name}')">${sizeOptions}</select>
-                            </div>
-
-                            <p style="margin: 10px 0;"><small id="stock-${name.replace(/\s+/g, '')}">In Stock: ${firstItem.stock}</small></p>
-                            
-                            <button class="btn-retro btn-cart" id="btn-${name.replace(/\s+/g, '')}" onclick="addVaultToCart('${name}')">
-                                ADD TO CART
+                            <button class="btn-retro btn-cart translate" data-th="ดูรายละเอียด" data-en="VIEW DETAILS" onclick="openProductModal('${name}')">
+                                ${currentLang === 'TH' ? 'ดูรายละเอียด' : 'VIEW DETAILS'}
                             </button>
                         </div>
                     </div>
                 `;
                 container.innerHTML += card;
             });
+            updateTranslations();
+            updatePrices();
         }
 
-        function findVariant(name) {
-            const safeName = name.replace(/\s+/g, '');
-            const selectedColor = document.getElementById('color-' + safeName).value;
-            const selectedSize = document.getElementById('size-' + safeName).value;
+        // ==================== PRODUCT POP-UP (MODAL) ====================
+        function openProductModal(name) {
+            currentModalProduct = name;
             const prodGroup = groupedProducts[name];
-            return prodGroup.items.find(i => i.color === selectedColor && i.size === selectedSize);
+            const firstItem = prodGroup.items[0];
+
+            // เซ็ตข้อมูลลง Pop-up
+            document.getElementById('pop-title').innerText = name;
+            document.getElementById('pop-main-img').src = firstItem.image;
+            document.getElementById('pop-price').setAttribute('data-thb', firstItem.price);
+            
+            // สร้างตัวเลือกสีและไซส์
+            document.getElementById('pop-color').innerHTML = prodGroup.colors.map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('pop-size').innerHTML = prodGroup.sizes.map(s => `<option value="${s}">${s}</option>`).join('');
+
+            // จำลอง Gallery รูปย่อย (ดึงจากรูปภาพแรกที่มี)
+            // หมายเหตุ: ในอนาคตถ้ามีรูปหลายมุม สามารถลูปสร้าง <img class="gallery-thumb"> ตรงนี้ได้
+            let galleryHtml = `<img src="${firstItem.image}" class="gallery-thumb" onclick="document.getElementById('pop-main-img').src=this.src">`;
+            document.getElementById('pop-gallery').innerHTML = galleryHtml;
+
+            // อัปเดตสต๊อกและปุ่มตาม Variant แรกสุด
+            updatePopVariant();
+
+            openModal('product-modal');
         }
 
-        function updateProductVariant(name) {
-            const variant = findVariant(name);
-            const safeName = name.replace(/\s+/g, '');
+        function updatePopVariant() {
+            if(!currentModalProduct) return;
+            const prodGroup = groupedProducts[currentModalProduct];
+            const selectedColor = document.getElementById('pop-color').value;
+            const selectedSize = document.getElementById('pop-size').value;
+            
+            const variant = prodGroup.items.find(i => i.color === selectedColor && i.size === selectedSize);
             
             if (variant) {
-                if(variant.image) document.getElementById('img-' + safeName).src = variant.image;
-                document.getElementById('price-' + safeName).innerText = '฿' + variant.price.toLocaleString();
+                if(variant.image) document.getElementById('pop-main-img').src = variant.image;
+                document.getElementById('pop-price').setAttribute('data-thb', variant.price);
                 
-                const stockEl = document.getElementById('stock-' + safeName);
-                const btnEl = document.getElementById('btn-' + safeName);
+                const stockEl = document.getElementById('pop-stock');
+                const btnEl = document.getElementById('pop-btn-add');
                 
                 if (variant.stock <= 0) {
                     stockEl.innerHTML = '<span style="color:#d10000; font-weight:bold;">SOLD OUT</span>';
                     btnEl.disabled = true;
-                    btnEl.innerText = 'OUT OF STOCK';
+                    btnEl.innerText = currentLang === 'TH' ? 'สินค้าหมด' : 'OUT OF STOCK';
                 } else {
-                    stockEl.innerText = 'In Stock: ' + variant.stock;
+                    let stockText = currentLang === 'TH' ? 'คงเหลือ: ' : 'In Stock: ';
+                    stockEl.innerText = stockText + variant.stock;
                     btnEl.disabled = false;
-                    btnEl.innerText = 'ADD TO CART';
+                    btnEl.innerText = currentLang === 'TH' ? 'เพิ่มลงตะกร้า' : 'ADD TO CART';
                 }
+                updatePrices();
             }
         }
 
-        function addVaultToCart(name) {
-            const variant = findVariant(name);
+        function addPopToCart() {
+            const prodGroup = groupedProducts[currentModalProduct];
+            const selectedColor = document.getElementById('pop-color').value;
+            const selectedSize = document.getElementById('pop-size').value;
+            const variant = prodGroup.items.find(i => i.color === selectedColor && i.size === selectedSize);
+            
             if (!variant || variant.stock <= 0) return;
 
             const existingItem = cart.find(item => item.sku === variant.sku);
             if (existingItem) {
                 if (existingItem.qty < variant.stock) existingItem.qty += 1;
-                else alert('สินค้าในสต๊อกหมดแล้วครับ');
+                else alert(currentLang === 'TH' ? 'สินค้าในสต๊อกหมดแล้วครับ' : 'Not enough stock!');
             } else {
                 cart.push({ ...variant, qty: 1 });
             }
             updateCartUI();
+            closeModal('product-modal');
         }
 
+        // ==================== MODAL CONTROLS ====================
+        function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+
+        // ==================== CART & CHECKOUT ====================
         function changeQty(sku, delta) {
             const item = cart.find(i => i.sku === sku);
             if (!item) return;
@@ -266,7 +389,7 @@
                 cart = cart.filter(i => i.sku !== sku);
             } else if (item.qty > variant.stock) {
                 item.qty = variant.stock;
-                alert('เกินจำนวนสต๊อกที่มี');
+                alert(currentLang === 'TH' ? 'เกินจำนวนสต๊อกที่มี' : 'Exceeds available stock');
             }
             updateCartUI();
         }
@@ -279,7 +402,8 @@
             cartContainer.innerHTML = '';
 
             if (cart.length === 0) {
-                cartContainer.innerHTML = '<p>ตะกร้าว่างเปล่า</p>';
+                let emptyText = currentLang === 'TH' ? 'ตะกร้าว่างเปล่า' : 'Cart is empty';
+                cartContainer.innerHTML = `<p>${emptyText}</p>`;
             } else {
                 cart.forEach(item => {
                     count += item.qty;
@@ -289,7 +413,7 @@
                         <div class="cart-item">
                             <div class="cart-item-details">
                                 <p class="cart-item-title">${item.name}</p>
-                                <small>${item.color} / ${item.size} (฿${item.price})</small>
+                                <small>${item.color} / ${item.size} (<span class="price-display" data-thb="${item.price}">฿${item.price}</span>)</small>
                             </div>
                             <div class="cart-item-qty">
                                 <button class="btn-retro qty-btn" onclick="changeQty('${item.sku}', -1)">-</button>
@@ -301,21 +425,21 @@
                 });
             }
 
-            // เงื่อนไขค่าส่ง Flash: >3000 ส่งฟรี ไม่งั้น 50 บาท
             const shippingFee = (subtotal > 3000 || subtotal === 0) ? 0 : 50;
             const netTotal = subtotal + shippingFee;
 
+            // อัปเดตตัวเลข (ใส่ data-thb ไว้ให้ระบบแปลสกุลเงินทำงาน)
             document.getElementById('cart-count').innerText = count;
-            document.getElementById('cart-total').innerText = subtotal.toLocaleString();
-            document.getElementById('sub-total').innerText = subtotal.toLocaleString();
-            document.getElementById('shipping-fee').innerText = shippingFee.toLocaleString() + (shippingFee === 0 && subtotal > 3000 ? ' (ส่งฟรี 🎉)' : '');
-            document.getElementById('checkout-total').innerText = netTotal.toLocaleString();
+            document.getElementById('cart-total').setAttribute('data-thb', subtotal);
+            document.getElementById('sub-total').setAttribute('data-thb', subtotal);
+            document.getElementById('shipping-fee').setAttribute('data-thb', shippingFee);
+            document.getElementById('checkout-total').setAttribute('data-thb', netTotal);
+
+            // สั่งแปลภาษาและอัปเดตสกุลเงินหลังวาดตะกร้าเสร็จ
+            updateTranslations();
+            updatePrices();
         }
 
-        function openCart() { document.getElementById('cart-modal').style.display = 'flex'; }
-        function closeCart() { document.getElementById('cart-modal').style.display = 'none'; }
-
-        // แปลงไฟล์รูปสลิปเป็น Base64
         function getBase64(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -327,18 +451,23 @@
 
         async function submitOrder(event) {
             event.preventDefault();
-            if (cart.length === 0) { alert('ตะกร้าว่างเปล่าครับ'); return; }
+            if (cart.length === 0) { 
+                alert(currentLang === 'TH' ? 'ตะกร้าว่างเปล่าครับ' : 'Your cart is empty'); 
+                return; 
+            }
 
             const fileInput = document.getElementById('slipFile');
-            if (fileInput.files.length === 0) { alert('กรุณาแนบสลิปโอนเงินก่อนยืนยันคำสั่งซื้อ'); return; }
+            if (fileInput.files.length === 0) { 
+                alert(currentLang === 'TH' ? 'กรุณาแนบสลิปโอนเงิน' : 'Please upload payment slip'); 
+                return; 
+            }
 
             const btnSubmit = document.getElementById('btn-submit');
-            btnSubmit.innerText = '⏳ กำลังอัปโหลดสลิปและส่งออเดอร์...';
+            btnSubmit.innerText = currentLang === 'TH' ? '⏳ กำลังอัปโหลดสลิปและส่งออเดอร์...' : '⏳ Processing order...';
             btnSubmit.disabled = true;
 
             try {
                 const base64Slip = await getBase64(fileInput.files[0]);
-
                 const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const shippingFee = subtotal > 3000 ? 0 : 50;
                 const netTotal = subtotal + shippingFee;
@@ -367,26 +496,23 @@
                     }))
                 };
 
-                const response = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(orderData)
-                });
+                const response = await fetch(API_URL, { method: 'POST', body: JSON.stringify(orderData) });
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    alert('🎉 ขอบคุณครับ! ' + result.message);
+                    alert('🎉 ' + (currentLang === 'TH' ? 'ขอบคุณครับ! ' : 'Thank you! ') + result.message);
                     cart = [];
                     updateCartUI();
-                    closeCart();
+                    closeModal('cart-modal');
                     loadProducts();
                 } else {
-                    alert('❌ เกิดข้อผิดพลาด: ' + result.message);
+                    alert('❌ Error: ' + result.message);
                 }
             } catch (error) {
-                alert('เกิดข้อผิดพลาดในการเชื่อมต่อ กรุณาลองใหม่อีกครั้ง');
+                alert(currentLang === 'TH' ? 'เกิดข้อผิดพลาดในการเชื่อมต่อ' : 'Connection Error');
                 console.error(error);
             } finally {
-                btnSubmit.innerText = 'Submit Order (ยืนยันคำสั่งซื้อ)';
+                btnSubmit.innerText = currentLang === 'TH' ? 'ยืนยันคำสั่งซื้อ' : 'Submit Order';
                 btnSubmit.disabled = false;
                 document.getElementById('checkout-form').reset();
             }
