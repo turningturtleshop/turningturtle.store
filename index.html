@@ -4,70 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turning Turtle</title>
-    <!-- โหลด Tailwind CSS เพื่อความสวยงามและรวดเร็ว -->
     <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50 text-gray-900">
-
-    <!-- แถบเมนูนำทาง (ตรึงไว้ด้านบน) -->
-    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+    <!-- โหลดฟอนต์สไตล์ Retro และฟอนต์ไทย -->
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Chakra+Petch:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS สร้างขอบหน้าต่างยุค 90s */
+        body {
+            /* สีพื้นหลังสีฟ้าอมเขียว (Teal) คลาสสิกยุค 90s */
+            background-color: #008080; 
+            font-family: 'Chakra Petch', sans-serif;
+        }
+        .font-pixel {
+            font-family: 'VT323', monospace;
+        }
         
-        <!-- ซ้าย: ปุ่มขีดสามขีด + ชื่อแบรนด์ + เต่า -->
-        <div class="flex items-center space-x-3">
-            <button id="menu-btn" class="focus:outline-none hover:bg-gray-100 p-1 rounded">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+        /* สไตล์กรอบหน้าต่างหลัก (สีเทา ขอบนูน) */
+        .retro-window {
+            background-color: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px #808080;
+        }
+        
+        /* สไตล์ปุ่มกดแบบ Retro */
+        .retro-btn {
+            background-color: #c0c0c0;
+            border-top: 2px solid #ffffff;
+            border-left: 2px solid #ffffff;
+            border-right: 2px solid #000000;
+            border-bottom: 2px solid #000000;
+            cursor: pointer;
+        }
+        .retro-btn:active {
+            border-top: 2px solid #000000;
+            border-left: 2px solid #000000;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+            padding-top: 2px;
+            padding-left: 2px;
+        }
+
+        /* แถบหัวเรื่องหน้าต่าง (สีน้ำเงิน) */
+        .retro-titlebar {
+            background-color: #0000aa; /* สีน้ำเงินเข้ม */
+            color: white;
+            padding: 4px 8px;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* ช่องเนื้อหาที่ยุบลงไป */
+        .retro-content {
+            background-color: white;
+            border-top: 2px solid #808080;
+            border-left: 2px solid #808080;
+            border-right: 2px solid #ffffff;
+            border-bottom: 2px solid #ffffff;
+        }
+    </style>
+</head>
+<body class="text-gray-900 overflow-x-hidden">
+
+    <!-- 1. แถบเมนูนำทาง (ทำเป็นทรง Taskbar ด้านบน) -->
+    <header class="sticky top-0 z-50 retro-window px-2 py-2 flex items-center justify-between">
+        
+        <!-- ซ้าย: ปุ่ม Start + ชื่อแบรนด์ -->
+        <div class="flex items-center space-x-2">
+            <button id="menu-btn" class="retro-btn px-3 py-1 flex items-center space-x-1 font-bold text-sm">
+                <img src="https://img.icons8.com/color/24/000000/windows-logo.png" alt="logo" class="w-4 h-4">
+                <span>START</span>
             </button>
-            <a href="index.html" class="font-bold tracking-wider text-lg flex items-center space-x-2">
+            <a href="index.html" class="font-bold tracking-wider text-xl flex items-center space-x-2 font-pixel text-blue-800 ml-2">
                 <span>Turning turtle</span>
-                <span class="text-sm">🐢🐢🐢</span>
+                <span class="text-sm">🐢</span>
             </a>
         </div>
 
-        <!-- ขวา: ค้นหา + ตะกร้า + เปลี่ยนภาษา -->
-        <div class="flex items-center space-x-4">
-            <button class="hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
-            <button class="hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></button>
-            <span class="text-sm font-medium cursor-pointer hover:text-gray-600">EN / TH</span>
+        <!-- ขวา: ไอคอน ค้นหา(เหลือง) ตะกร้า(แดง) ภาษา -->
+        <div class="flex items-center space-x-3">
+            <button class="retro-btn px-2 py-1 font-bold text-xs bg-yellow-400">SEARCH</button>
+            <button class="retro-btn px-2 py-1 font-bold text-xs bg-red-500 text-white">CART</button>
+            <span class="retro-content px-2 py-1 text-xs font-bold">EN / TH</span>
         </div>
     </header>
 
-    <!-- เมนู Pop-up ด้านซ้าย (Sidebar) -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 z-50 p-6">
-        <button id="close-btn" class="absolute top-4 right-4 text-gray-400 hover:text-black">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-        </button>
-        
-        <nav class="mt-8 space-y-6">
-            <a href="index.html" class="block text-lg font-medium hover:text-gray-600">Home</a>
-            <a href="new-in.html" class="block text-lg font-medium hover:text-gray-600">New in</a>
-            
-            <!-- เมนูย่อย Shop all -->
-            <div>
-                <button id="shop-dropdown-btn" class="w-full flex justify-between items-center text-lg font-medium hover:text-gray-600">
-                    <span>Shop all</span>
-                    <svg id="dropdown-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
-                </button>
-                <div id="shop-submenu" class="pl-4 mt-3 space-y-3 hidden">
-                    <a href="shop.html?type=Tops" class="block text-gray-600 hover:text-black">Tops</a>
-                    <a href="shop.html?type=Bottoms" class="block text-gray-600 hover:text-black">Bottoms</a>
-                    <a href="shop.html?type=Underwears" class="block text-gray-600 hover:text-black">Underwears</a>
-                </div>
+    <!-- 2. เมนูด้านซ้าย (ทำเป็นหน้าต่าง Pop-up) -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 w-72 transform -translate-x-full transition-transform duration-300 z-50 flex flex-col p-2">
+        <div class="retro-window flex-1 flex flex-col shadow-2xl">
+            <!-- หัวหน้าต่างเมนู -->
+            <div class="retro-titlebar">
+                <span class="font-pixel text-xl tracking-widest">Menu.exe</span>
+                <button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 hover:bg-red-500 hover:text-white font-bold">X</button>
             </div>
+            
+            <!-- รายการเมนู -->
+            <nav class="p-3 space-y-3 retro-content m-2 flex-1">
+                <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">Home</a>
+                <a href="new-in.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">New in</a>
+                
+                <!-- Dropdown Shop all -->
+                <div>
+                    <button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center">
+                        <span>Shop all</span>
+                        <span id="dropdown-icon" class="text-xs">▼</span>
+                    </button>
+                    <!-- ซับเมนูสีเหลืองแดงให้ดู Pop -->
+                    <div id="shop-submenu" class="pl-4 mt-1 space-y-1 hidden bg-yellow-100 border-2 border-black p-2">
+                        <a href="shop.html?type=Tops" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Tops</a>
+                        <a href="shop.html?type=Bottoms" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Bottoms</a>
+                        <a href="shop.html?type=Underwears" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Underwears</a>
+                    </div>
+                </div>
 
-            <a href="contact.html" class="block text-lg font-medium hover:text-gray-600">Contact</a>
-        </nav>
+                <a href="contact.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">Contact</a>
+            </nav>
+        </div>
     </div>
 
-    <!-- ฉากหลังสีดำตอนเปิดเมนู (Overlay) -->
-    <div id="overlay" class="fixed inset-0 bg-black opacity-50 hidden z-40"></div>
+    <!-- ฉากหลัง -->
+    <div id="overlay" class="fixed inset-0 bg-black opacity-40 hidden z-40"></div>
 
-    <!-- พื้นที่แสดงเนื้อหาหน้า Home (เดี๋ยวเรามาเติมสินค้าแนะนำกันทีหลัง) -->
-    <main class="p-8 text-center mt-10">
-        <h1 class="text-3xl font-bold mb-4">Welcome to Turning Turtle</h1>
-        <p class="text-gray-600">เนื้อหาสินค้าแนะนำ 3 ชิ้น จะถูกนำมาใส่ตรงนี้ครับ</p>
+    <!-- 3. พื้นที่แสดงสินค้าแนะนำ (ทำเป็นหน้าต่างโปรแกรม) -->
+    <main class="p-4 mt-6 max-w-4xl mx-auto">
+        <div class="retro-window">
+            <!-- แถบสีน้ำเงินด้านบนหน้าต่างเนื้อหา -->
+            <div class="retro-titlebar">
+                <span class="font-pixel text-xl tracking-widest">Welcome_to_Turning_Turtle.exe</span>
+                <div class="flex space-x-1">
+                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200">_</button>
+                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200">□</button>
+                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200 hover:bg-red-500 hover:text-white">X</button>
+                </div>
+            </div>
+            
+            <!-- พื้นที่เนื้อหาหลัก -->
+            <div class="retro-content p-6 m-2 text-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+                <h1 class="text-4xl font-bold mb-6 font-pixel text-blue-800 drop-shadow-md">
+                    <span class="text-red-500">TURNING</span> <span class="text-yellow-500">TURTLE</span>
+                </h1>
+                
+                <div class="border-2 border-dashed border-gray-400 p-8 bg-white bg-opacity-80">
+                    <img src="https://img.icons8.com/color/96/000000/error--v1.png" alt="Loading" class="mx-auto mb-4 animate-bounce">
+                    <p class="text-lg font-bold text-gray-700">กำลังเชื่อมต่อข้อมูลสินค้าแนะนำ 3 ชิ้น...</p>
+                    <p class="text-sm text-gray-500 mt-2">Please wait while we load the coolest items from our inventory.</p>
+                </div>
+            </div>
+        </div>
     </main>
 
-    <!-- Script ควบคุมการเปิด/ปิดเมนู -->
+    <!-- Script ควบคุมเมนู -->
     <script>
         const menuBtn = document.getElementById('menu-btn');
         const closeBtn = document.getElementById('close-btn');
@@ -75,15 +165,12 @@
         const overlay = document.getElementById('overlay');
         const shopDropdownBtn = document.getElementById('shop-dropdown-btn');
         const shopSubmenu = document.getElementById('shop-submenu');
-        const dropdownIcon = document.getElementById('dropdown-icon');
 
-        // เปิดเมนู
         menuBtn.addEventListener('click', () => {
             sidebar.classList.remove('-translate-x-full');
             overlay.classList.remove('hidden');
         });
 
-        // ปิดเมนู
         const closeMenu = () => {
             sidebar.classList.add('-translate-x-full');
             overlay.classList.add('hidden');
@@ -91,10 +178,8 @@
         closeBtn.addEventListener('click', closeMenu);
         overlay.addEventListener('click', closeMenu);
 
-        // เปิด/ปิด Dropdown เมนู Shop all
         shopDropdownBtn.addEventListener('click', () => {
             shopSubmenu.classList.toggle('hidden');
-            dropdownIcon.classList.toggle('rotate-180');
         });
     </script>
 </body>
