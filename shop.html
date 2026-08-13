@@ -6,7 +6,6 @@
     <title>Turning Turtle - Shop</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Chakra+Petch:wght@400;600&display=swap" rel="stylesheet">
-    
     <style>
         body { background-color: #008080; font-family: 'Chakra Petch', sans-serif; }
         .font-pixel { font-family: 'VT323', monospace; }
@@ -15,180 +14,388 @@
         .retro-btn:active { border-top: 2px solid #000000; border-left: 2px solid #000000; border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff; padding-top: 2px; padding-left: 2px; }
         .retro-titlebar { background-color: #0000aa; color: white; padding: 4px 8px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
         .retro-content { background-color: white; border-top: 2px solid #808080; border-left: 2px solid #808080; border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff; }
+        @keyframes roll { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
+        .turtle-roll { display: inline-block; transition: all 0.3s; }
+        .turtle-roll:hover { animation: roll 1s linear infinite; cursor: pointer; }
     </style>
 </head>
-<body class="text-gray-900 overflow-x-hidden">
+<body class="text-gray-900 overflow-x-hidden relative">
 
-    <!-- 1. แถบเมนูนำทาง (เหมือนหน้าแรก) -->
-    <header class="sticky top-0 z-50 retro-window px-2 py-2 flex items-center justify-between">
+    <header class="sticky top-0 z-40 retro-window px-2 py-2 flex items-center justify-between">
         <div class="flex items-center space-x-2">
-            <button id="menu-btn" class="retro-btn px-3 py-1 flex items-center space-x-1 font-bold text-sm">
-                <img src="https://img.icons8.com/color/24/000000/windows-logo.png" alt="logo" class="w-4 h-4">
-                <span>START</span>
-            </button>
-            <a href="index.html" class="font-bold tracking-wider text-xl flex items-center space-x-2 font-pixel text-blue-800 ml-2">
-                <span>Turning turtle</span>
-                <span class="text-sm">🐢</span>
-            </a>
+            <button id="menu-btn" class="retro-btn px-2 py-1 flex items-center justify-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+            <a href="index.html" class="font-bold tracking-wider text-xl flex items-center space-x-2 font-pixel text-blue-800 ml-2"><span>Turning turtle</span><span class="text-3xl turtle-roll">🐢</span></a>
         </div>
         <div class="flex items-center space-x-3">
-            <button class="retro-btn px-2 py-1 font-bold text-xs bg-yellow-400">SEARCH</button>
-            <button class="retro-btn px-2 py-1 font-bold text-xs bg-red-500 text-white">CART</button>
-            <span class="retro-content px-2 py-1 text-xs font-bold">EN / TH</span>
+            <button class="retro-btn p-1 bg-yellow-400 hover:bg-yellow-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+            <button onclick="openCart()" class="retro-btn p-1 bg-red-500 text-white hover:bg-red-400 relative">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-1 border border-black rounded-full">0</span>
+            </button>
+            <button id="lang-btn" onclick="toggleLanguage()" class="retro-btn px-2 py-1 text-xs font-bold bg-white">EN / $</button>
         </div>
     </header>
 
-    <!-- 2. เมนูด้านซ้าย (เหมือนหน้าแรก) -->
     <div id="sidebar" class="fixed inset-y-0 left-0 w-72 transform -translate-x-full transition-transform duration-300 z-50 flex flex-col p-2">
         <div class="retro-window flex-1 flex flex-col shadow-2xl">
-            <div class="retro-titlebar">
-                <span class="font-pixel text-xl tracking-widest">Menu.exe</span>
-                <button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 hover:bg-red-500 hover:text-white font-bold">X</button>
-            </div>
+            <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Menu.exe</span><button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 hover:bg-red-500 hover:text-white font-bold">X</button></div>
             <nav class="p-3 space-y-3 retro-content m-2 flex-1">
-                <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">Home</a>
-                <a href="new-in.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">New in</a>
-                <div>
-                    <button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center">
-                        <span>Shop all</span>
-                        <span id="dropdown-icon" class="text-xs">▼</span>
-                    </button>
+                <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 lang-home">Home</a>
+                <!-- 🚫 ซ่อน New in ชั่วคราว -->
+                <div><button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center"><span class="lang-shop">Shop all</span><span class="text-xs">▼</span></button>
                     <div id="shop-submenu" class="pl-4 mt-1 space-y-1 hidden bg-yellow-100 border-2 border-black p-2">
                         <a href="shop.html?type=Tops" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Tops</a>
                         <a href="shop.html?type=Bottoms" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Bottoms</a>
                         <a href="shop.html?type=Underwears" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Underwears</a>
                     </div>
                 </div>
-                <a href="contact.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">Contact</a>
+                <a href="contact.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 lang-contact">Contact</a>
             </nav>
         </div>
     </div>
     <div id="overlay" class="fixed inset-0 bg-black opacity-40 hidden z-40"></div>
 
-    <!-- 3. พื้นที่แสดงสินค้าแยกตามหมวดหมู่ -->
     <main class="p-4 mt-4 max-w-6xl mx-auto">
         <div class="retro-window">
-            <div class="retro-titlebar">
-                <span id="window-title" class="font-pixel text-xl tracking-widest">Shop_All.exe</span>
-                <div class="flex space-x-1">
-                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200">_</button>
-                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200">□</button>
-                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200 hover:bg-red-500 hover:text-white">X</button>
-                </div>
-            </div>
-            
+            <div class="retro-titlebar"><span id="window-title" class="font-pixel text-xl tracking-widest">Shop_All.exe</span></div>
             <div class="retro-content p-6 m-2 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
-                
                 <div class="flex justify-between items-end border-b-4 border-black pb-2 mb-6">
                     <h1 id="page-title" class="text-4xl font-bold font-pixel text-blue-800 drop-shadow-md">SHOP ALL</h1>
-                    <span id="item-count" class="font-bold bg-yellow-400 px-2 border-2 border-black">Loading items...</span>
+                    <span id="item-count" class="font-bold bg-yellow-400 px-2 border-2 border-black">Loading...</span>
                 </div>
-
-                <!-- กล่องใส่สินค้า -->
                 <div id="product-container" class="grid grid-cols-1 md:grid-cols-4 gap-6">
                     <div class="col-span-1 md:col-span-4 text-center py-10 bg-white border-2 border-dashed border-gray-400">
-                        <img src="https://img.icons8.com/color/96/000000/error--v1.png" alt="Loading" class="mx-auto mb-4 animate-bounce">
-                        <p class="text-lg font-bold text-gray-700">กำลังโหลดรายการสินค้า...</p>
+                        <p class="text-lg font-bold text-gray-700 animate-pulse">กำลังโหลดรายการสินค้า...</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
 
+    <!-- Modal สินค้า -->
+    <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black opacity-60" onclick="closeModal('product-modal')"></div>
+        <div class="retro-window w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto relative z-10 flex flex-col">
+            <div class="retro-titlebar"><span id="modal-title" class="font-pixel text-xl tracking-widest">Product.exe</span><button onclick="closeModal('product-modal')" class="retro-btn bg-red-500 text-white px-2 py-0 font-bold hover:bg-red-400">X</button></div>
+            <div class="retro-content p-4 m-2 flex-1 bg-white">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <div class="bg-gray-100 border-2 border-gray-300 h-64 flex justify-center overflow-hidden"><img id="modal-img" src="" class="object-cover h-full"></div>
+                        <div id="modal-desc-box" class="bg-gray-100 border-2 border-dashed border-gray-300 p-1 hidden">
+                            <p class="text-xs font-bold text-center bg-yellow-200 mb-1">Details</p>
+                            <img id="modal-desc-img" src="" class="w-full object-contain">
+                        </div>
+                    </div>
+                    <div class="flex flex-col space-y-4">
+                        <h2 id="modal-name" class="text-3xl font-pixel font-bold text-blue-800 uppercase"></h2>
+                        <p id="modal-price" class="text-2xl font-pixel text-red-600 font-bold" data-thb="0"></p>
+                        <div class="h-px w-full bg-black"></div>
+                        <div><label class="font-bold text-sm block mb-1">SELECT COLOR:</label><select id="modal-color" class="retro-content w-full p-2 font-bold cursor-pointer"></select></div>
+                        <div><label class="font-bold text-sm block mb-1">SELECT SIZE:</label><select id="modal-size" class="retro-content w-full p-2 font-bold cursor-pointer"></select></div>
+                        <div class="mt-auto pt-4">
+                            <button id="add-cart-btn" onclick="addToCart()" class="retro-btn w-full bg-yellow-400 hover:bg-yellow-300 font-bold text-lg py-3 flex justify-center items-center space-x-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                <span>ADD TO CART</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal ตะกร้า & ชำระเงิน -->
+    <div id="cart-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black opacity-60" onclick="closeModal('cart-modal')"></div>
+        <div class="retro-window w-11/12 md:w-3/4 max-h-[90vh] overflow-y-auto relative z-10 flex flex-col">
+            <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Cart_Checkout.exe</span><button onclick="closeModal('cart-modal')" class="retro-btn bg-red-500 text-white px-2 py-0 font-bold hover:bg-red-400">X</button></div>
+            <div class="retro-content p-4 m-2 bg-white flex flex-col md:flex-row gap-6">
+                <div class="flex-1 border-2 border-gray-300 p-2">
+                    <h3 class="font-bold bg-blue-800 text-white p-1 mb-2">Shopping Cart</h3>
+                    <div id="cart-items" class="space-y-2 max-h-60 overflow-y-auto"></div>
+                    <div class="mt-4 border-t-2 border-black pt-2 font-bold flex justify-between">
+                        <span>Subtotal:</span>
+                        <span id="cart-subtotal" class="text-red-600">฿0</span>
+                    </div>
+                </div>
+                <div class="flex-1 border-2 border-gray-300 p-2 bg-gray-50 max-h-96 overflow-y-auto">
+                    <h3 class="font-bold bg-yellow-400 border-b-2 border-black p-1 mb-2">Checkout Info</h3>
+                    <div class="space-y-2 text-sm font-bold">
+                        <input type="text" id="cust-name" placeholder="Full Name" class="retro-content w-full p-1">
+                        <input type="tel" id="cust-phone" placeholder="Phone Number" class="retro-content w-full p-1">
+                        <textarea id="cust-addr" placeholder="Full Address & Postal Code" class="retro-content w-full p-1 h-16"></textarea>
+                        <label class="block mt-2">Country:</label>
+                        <select id="cust-country" class="retro-content w-full p-1 cursor-pointer" onchange="calculateShipping()"></select>
+                        <div class="bg-white border border-gray-300 p-2 mt-2">
+                            <div class="flex justify-between text-xs text-gray-500"><span id="ship-platform">Shipping</span><span id="ship-cond"></span></div>
+                            <div class="flex justify-between mt-1"><span>Shipping Fee:</span><span id="ship-fee" class="text-red-600">฿0</span></div>
+                            <div class="flex justify-between mt-2 text-lg"><span>TOTAL:</span><span id="grand-total" class="text-blue-800">฿0</span></div>
+                        </div>
+                        <div id="payment-info-box" class="bg-blue-50 border border-blue-300 p-2 mt-2 hidden text-center"></div>
+                        <div id="slip-upload-box" class="mt-2 hidden bg-gray-100 p-2 border border-dashed border-black">
+                            <label class="block text-xs font-bold mb-1">Attach Payment Receipt:</label>
+                            <input type="file" id="slip-file" accept="image/*" class="w-full text-xs cursor-pointer" onchange="previewSlip(event)">
+                            <img id="slip-preview" src="" class="mt-2 mx-auto max-h-32 hidden border-2 border-black">
+                        </div>
+                        <button id="place-order-btn" onclick="placeOrder()" class="retro-btn w-full bg-red-500 text-white hover:bg-red-400 font-bold py-2 mt-4 text-lg tracking-wider">
+                            PLACE ORDER_
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
-        // --- ส่วนควบคุมเมนู ---
-        const menuBtn = document.getElementById('menu-btn');
-        const closeBtn = document.getElementById('close-btn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const shopDropdownBtn = document.getElementById('shop-dropdown-btn');
-        const shopSubmenu = document.getElementById('shop-submenu');
+        let currentLang = 'EN';
+        const exchangeRate = 35; 
+        function toggleLanguage() {
+            currentLang = currentLang === 'EN' ? 'TH' : 'EN';
+            document.getElementById('lang-btn').innerText = currentLang === 'EN' ? 'EN / $' : 'TH / ฿';
+            document.querySelector('.lang-home').innerText = currentLang === 'EN' ? 'Home' : 'หน้าแรก';
+            document.querySelector('.lang-shop').innerText = currentLang === 'EN' ? 'Shop all' : 'สินค้าทั้งหมด';
+            document.querySelector('.lang-contact').innerText = currentLang === 'EN' ? 'Contact' : 'ติดต่อเรา';
+            renderShopProducts(); updateCartCount();
+            if(!document.getElementById('cart-modal').classList.contains('hidden')) renderCart();
+        }
 
-        menuBtn.addEventListener('click', () => { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); });
-        const closeMenu = () => { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); };
-        closeBtn.addEventListener('click', closeMenu);
-        overlay.addEventListener('click', closeMenu);
-        shopDropdownBtn.addEventListener('click', () => { shopSubmenu.classList.toggle('hidden'); });
+        function formatPrice(thbPrice) {
+            if (currentLang === 'EN') return '$' + (thbPrice / exchangeRate).toFixed(2);
+            return '฿' + thbPrice;
+        }
 
-        // --- ส่วนดึงข้อมูลและคัดกรองสินค้า ---
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxa0e7e9B6JFIfIufg0hVI_ZAM0muwvt6IF8EQuo2U9ylE6OxNyrhXYOKeAIZVN3nOnyQ/exec?action=getProducts';
+        let cart = JSON.parse(localStorage.getItem('turtle_cart')) || [];
+        function updateCartCount() {
+            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+            localStorage.setItem('turtle_cart', JSON.stringify(cart));
+        }
 
-        // อ่านค่า Parameter จาก URL (เช่น ?type=Tops)
-        const urlParams = new URLSearchParams(window.location.search);
-        const productType = urlParams.get('type'); 
+        function addToCart() {
+            const name = document.getElementById('modal-name').innerText;
+            const price = parseInt(document.getElementById('modal-price').getAttribute('data-thb'));
+            const color = document.getElementById('modal-color').value;
+            const size = document.getElementById('modal-size').value;
+            const image = document.getElementById('modal-img').src;
+            const existing = cart.find(i => i.name === name && i.color === color && i.size === size);
+            if (existing) existing.qty += 1; else cart.push({ name, price, color, size, image, qty: 1 });
+            updateCartCount(); closeModal('product-modal'); alert(`Added to Cart!`);
+        }
 
-        // เปลี่ยนหัวข้อหน้าต่างตามหมวดหมู่ที่เลือก
+        function openCart() { renderCart(); document.getElementById('cart-modal').classList.remove('hidden'); }
+
+        const API_URL_BASE = 'https://script.google.com/macros/s/AKfycbxwPFmT3rOBJU2zcR0Zg3mOKe-JBzUBKIleDDjNd8yuaKDk_JUbYbS5SZOsQYn31Scn5Q/exec';
+        
+        let globalGroupedProducts = {}; 
+        let shipmentRates = [];
+        let productType = new URLSearchParams(window.location.search).get('type');
+
         if(productType) {
             document.getElementById('window-title').innerText = `Category_${productType}.exe`;
             document.getElementById('page-title').innerText = productType.toUpperCase();
         }
 
-        async function loadShopProducts() {
-            const container = document.getElementById('product-container');
-            const countLabel = document.getElementById('item-count');
-            
+        async function initApp() {
             try {
-                const response = await fetch(API_URL);
-                const result = await response.json();
+                const resProd = await fetch(API_URL_BASE + '?action=getProducts');
+                const jsonProd = await resProd.json();
+                const resShip = await fetch(API_URL_BASE + '?action=getShipment');
+                const jsonShip = await resShip.json();
                 
-                if (result.status === 'success') {
-                    container.innerHTML = ''; 
-                    
-                    // ระบบคัดกรอง: ถ้ามี type ระบุมาใน URL ให้กรองเอาแค่สินค้านั้น ถ้าไม่มีให้โชว์ทั้งหมด
-                    let filteredProducts = result.data;
+                shipmentRates = jsonShip.data || [];
+                const countrySelect = document.getElementById('cust-country');
+                shipmentRates.forEach(rate => { countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`; });
+
+                if (jsonProd.status === 'success') {
+                    let filteredProducts = jsonProd.data;
                     if (productType) {
-                        filteredProducts = result.data.filter(item => 
-                            item.type && item.type.toLowerCase() === productType.toLowerCase()
-                        );
+                        filteredProducts = jsonProd.data.filter(item => item.type && item.type.toLowerCase() === productType.toLowerCase());
                     }
 
-                    countLabel.innerText = `Items found: ${filteredProducts.length}`;
-
-                    if (filteredProducts.length === 0) {
-                        container.innerHTML = `<div class="col-span-4 text-center p-10 font-bold bg-white border-2 border-black">ไม่พบสินค้าในหมวดหมู่นี้</div>`;
-                        return;
-                    }
-
-                    // สร้างการ์ดสินค้า (แสดงแบบ 4 คอลัมน์)
-                    filteredProducts.forEach(item => {
-                        const imgUrl = (item.images && item.images.length > 0 && item.images[0] !== "") 
-                                        ? item.images[0] : item.image;
-
-                        // ถ้าสินค้าไหนสต๊อกหมด ให้ปุ่มเป็นสีเทาและกดไม่ได้
-                        const isOutOfStock = item.stock <= 0;
-                        const btnClass = isOutOfStock 
-                            ? "bg-gray-400 text-gray-700 cursor-not-allowed" 
-                            : "bg-yellow-400 hover:bg-yellow-300";
-                        const btnText = isOutOfStock ? "OUT OF STOCK" : "ADD TO CART_";
-
-                        const cardHTML = `
-                            <div class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform">
-                                <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-48 overflow-hidden relative">
-                                    <img src="${imgUrl || 'https://via.placeholder.com/200?text=No+Image'}" alt="${item.name}" class="object-cover h-full">
-                                    ${isOutOfStock ? '<div class="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center font-bold text-red-600 border-4 border-red-600 transform -rotate-12 text-xl">SOLD OUT</div>' : ''}
-                                </div>
-                                <h3 class="font-bold text-lg text-blue-800 font-pixel tracking-wide text-center uppercase">${item.name}</h3>
-                                <p class="text-xs font-bold text-gray-600 mt-1">COLOR: ${item.color} | SIZE: ${item.size}</p>
-                                <div class="w-full bg-black h-px my-2"></div>
-                                <p class="font-pixel text-xl text-red-600 font-bold mb-2">฿${item.price}</p>
-                                <button class="retro-btn font-bold px-2 py-2 w-full text-xs ${btnClass}" ${isOutOfStock ? 'disabled' : ''}>
-                                    ${btnText}
-                                </button>
-                            </div>
-                        `;
-                        container.innerHTML += cardHTML;
+                    const groups = {};
+                    filteredProducts.forEach(p => {
+                        let nameKey = p.name.trim().toUpperCase();
+                        if(nameKey === 'WOOL - EYES') nameKey = 'WOOL-EYES';
+                        if(!groups[nameKey]) {
+                            groups[nameKey] = {
+                                name: p.name, image: p.image, hoverImage: (p.images && p.images[1]) ? p.images[1] : p.image,
+                                descImage: (p.images && p.images[2]) ? p.images[2] : '', price: p.price,
+                                stock: 0, colors: new Set(), sizes: new Set()
+                            };
+                        }
+                        groups[nameKey].stock += (p.stock || 0);
+                        groups[nameKey].colors.add(p.color);
+                        groups[nameKey].sizes.add(p.size);
                     });
-                } else {
-                    container.innerHTML = `<div class="col-span-4 text-center text-red-600 font-bold p-10 border-2 border-black bg-white">เกิดข้อผิดพลาด: ${result.message}</div>`;
+                    globalGroupedProducts = groups;
+                    renderShopProducts();
                 }
-            } catch (error) {
-                console.error("Error fetching data: ", error);
-                container.innerHTML = `<div class="col-span-4 text-center text-red-600 font-bold p-10 border-2 border-black bg-white">ไม่สามารถเชื่อมต่อฐานข้อมูลได้ โปรดลองรีเฟรชหน้าเว็บ</div>`;
-            }
+            } catch (err) {}
+            updateCartCount();
         }
 
-        loadShopProducts();
+        function renderShopProducts() {
+            const container = document.getElementById('product-container');
+            container.innerHTML = ''; 
+            const keys = Object.keys(globalGroupedProducts);
+            document.getElementById('item-count').innerText = `Items found: ${keys.length}`;
+            
+            if(keys.length === 0) {
+                container.innerHTML = `<div class="col-span-4 text-center p-10 font-bold bg-white border-2 border-black">ไม่พบสินค้าในหมวดหมู่นี้</div>`;
+                return;
+            }
+
+            keys.forEach(key => {
+                const group = globalGroupedProducts[key];
+                const isOutOfStock = group.stock <= 0;
+                const btnClass = isOutOfStock ? "bg-gray-400 text-gray-700 cursor-not-allowed" : "bg-yellow-400 hover:bg-yellow-300";
+                const btnText = isOutOfStock ? "OUT OF STOCK" : "VIEW DETAILS";
+
+                container.innerHTML += `
+                    <div onclick="${isOutOfStock ? '' : `openProductModal('${key}')`}" class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform ${isOutOfStock ? '' : 'cursor-pointer'}">
+                        <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-48 overflow-hidden relative">
+                            <img src="${group.image}" onmouseover="this.src='${group.hoverImage}'" onmouseout="this.src='${group.image}'" class="object-cover h-full transition-opacity duration-300">
+                            ${isOutOfStock ? '<div class="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center font-bold text-red-600 border-4 border-red-600 transform -rotate-12 text-xl">SOLD OUT</div>' : ''}
+                        </div>
+                        <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${group.name}</h3>
+                        <div class="w-full bg-black h-px my-2"></div>
+                        <p class="font-pixel text-xl text-red-600 font-bold mb-2">${formatPrice(group.price)}</p>
+                        <button class="retro-btn font-bold px-2 py-1 w-full text-sm ${btnClass}" ${isOutOfStock ? 'disabled' : ''}>${btnText}</button>
+                    </div>`;
+            });
+        }
+
+        function renderCart() {
+            const cartItemsDiv = document.getElementById('cart-items');
+            cartItemsDiv.innerHTML = '';
+            let subtotalTHB = 0;
+            if(cart.length === 0) cartItemsDiv.innerHTML = '<p class="text-gray-500 text-sm">Cart is empty.</p>';
+            else {
+                cart.forEach((item, index) => {
+                    subtotalTHB += (item.price * item.qty);
+                    cartItemsDiv.innerHTML += `
+                        <div class="flex items-center space-x-2 text-xs border-b border-gray-300 pb-1">
+                            <img src="${item.image}" class="w-10 h-10 object-cover border border-black">
+                            <div class="flex-1">
+                                <p class="font-bold">${item.name} <span class="text-red-500 cursor-pointer text-xs" onclick="removeItem(${index})">[x]</span></p>
+                                <p class="text-gray-600">${item.color} | ${item.size} x${item.qty}</p>
+                            </div>
+                            <div class="font-bold">${formatPrice(item.price * item.qty)}</div>
+                        </div>`;
+                });
+            }
+            document.getElementById('cart-subtotal').innerText = formatPrice(subtotalTHB);
+            document.getElementById('cart-subtotal').setAttribute('data-thb', subtotalTHB);
+            calculateShipping();
+        }
+        function removeItem(index) { cart.splice(index, 1); updateCartCount(); renderCart(); }
+
+        function calculateShipping() {
+            const selectedCountry = document.getElementById('cust-country').value;
+            const subtotalTHB = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb')) || 0;
+            const rateInfo = shipmentRates.find(r => r.countryEN === selectedCountry);
+            let finalFeeTHB = 0;
+            if (rateInfo) {
+                finalFeeTHB = rateInfo.fee; 
+                document.getElementById('ship-platform').innerText = rateInfo.platform;
+                document.getElementById('ship-cond').innerText = `(${rateInfo.condition})`;
+                const numberMatch = rateInfo.condition.match(/\d+/); 
+                if (numberMatch) {
+                    const conditionAmount = parseInt(numberMatch[0]);
+                    if (rateInfo.condition.includes('<')) { if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; } 
+                    else if (subtotalTHB >= conditionAmount) { finalFeeTHB = 0; }
+                }
+            }
+            document.getElementById('ship-fee').innerText = formatPrice(finalFeeTHB);
+            document.getElementById('grand-total').innerText = formatPrice(subtotalTHB + finalFeeTHB);
+
+            const payBox = document.getElementById('payment-info-box');
+            const slipBox = document.getElementById('slip-upload-box');
+            if(selectedCountry.toLowerCase() === 'thailand') {
+                payBox.innerHTML = ` <p class="text-sm font-bold text-blue-800">PromptPay QR Code</p> <img src="https://i.postimg.cc/15w5LypF/7763E006-D927-4A3E-BC60-D7904417EB1E.jpg" class="w-32 h-32 mx-auto my-2 border-2 border-black"> <p class="text-xs">Scan to pay <b>฿${subtotalTHB + finalFeeTHB}</b></p> `;
+            } else {
+                payBox.innerHTML = ` <p class="text-sm font-bold text-blue-800 mb-1 border-b border-blue-300 pb-1">International Bank Transfer</p> <div class="text-left text-xs space-y-1 mt-2"> <p><b>Bank:</b> Kasikornbank (KBank)</p> <p><b>Name:</b> Kairin Satjawiso</p> <p><b>Account No:</b> 236-188167-5</p> <p><b>SWIFT:</b> KASITHBK</p> <p class="text-red-600 mt-2">*Import taxes in your country are the buyer's responsibility.</p> </div> `;
+            }
+            if(cart.length > 0) { payBox.classList.remove('hidden'); slipBox.classList.remove('hidden'); } 
+            else { payBox.classList.add('hidden'); slipBox.classList.add('hidden'); }
+        }
+
+        let currentSlipBase64 = '';
+        function previewSlip(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('slip-preview').src = e.target.result;
+                document.getElementById('slip-preview').classList.remove('hidden');
+                currentSlipBase64 = e.target.result; 
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function placeOrder() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const addr = document.getElementById('cust-addr').value;
+            const country = document.getElementById('cust-country').value;
+            if(!name || !addr || !phone) { alert("Please enter Name, Phone, and Address."); return; }
+            if(cart.length === 0) { alert("Cart is empty."); return; }
+            if(!currentSlipBase64) { alert("Please attach your payment receipt / slip."); return; }
+
+            const subtotal = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb'));
+            const rateInfo = shipmentRates.find(r => r.countryEN === country);
+            let shipFee = rateInfo ? rateInfo.fee : 0;
+            if(rateInfo) {
+                const numMatch = rateInfo.condition.match(/\d+/);
+                if (numMatch) {
+                    const condAmt = parseInt(numMatch[0]);
+                    if (rateInfo.condition.includes('<')) { if (subtotal >= condAmt) shipFee = 0; } 
+                    else if (subtotal >= condAmt) { shipFee = 0; }
+                }
+            }
+
+            const payload = {
+                action: 'checkout', customerName: name, address: addr, country: country, phone: phone,
+                shippingPlatform: document.getElementById('ship-platform').innerText, subtotal: subtotal,
+                shippingFee: shipFee, grandTotal: subtotal + shipFee, slipBase64: currentSlipBase64, items: cart
+            };
+
+            const btn = document.getElementById('place-order-btn');
+            btn.innerText = "PROCESSING..."; btn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL_BASE, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+                if(result.status === 'success') {
+                    alert(`Order Placed Successfully!\nYour Order ID: ${result.message}`);
+                    cart = []; updateCartCount();
+                    document.getElementById('cust-name').value = ''; document.getElementById('cust-phone').value = '';
+                    document.getElementById('cust-addr').value = ''; document.getElementById('slip-file').value = '';
+                    document.getElementById('slip-preview').classList.add('hidden'); currentSlipBase64 = '';
+                    closeModal('cart-modal');
+                } else alert("Error: " + result.message);
+            } catch(e) { alert("Connection Error."); }
+            btn.innerText = "PLACE ORDER_"; btn.disabled = false;
+        }
+
+        function openProductModal(nameKey) {
+            const group = globalGroupedProducts[nameKey];
+            if(!group) return;
+            document.getElementById('modal-name').innerText = group.name; document.getElementById('modal-price').innerText = formatPrice(group.price);
+            document.getElementById('modal-price').setAttribute('data-thb', group.price); document.getElementById('modal-img').src = group.image || 'https://via.placeholder.com/400';
+            const descBox = document.getElementById('modal-desc-box');
+            if(group.descImage) { document.getElementById('modal-desc-img').src = group.descImage; descBox.classList.remove('hidden'); } else descBox.classList.add('hidden');
+            document.getElementById('modal-color').innerHTML = Array.from(group.colors).map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('modal-size').innerHTML = Array.from(group.sizes).map(s => `<option value="${s}">${s}</option>`).join('');
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+        
+        document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
+        const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
+        document.getElementById('close-btn').addEventListener('click', closeSidebar); document.getElementById('overlay').addEventListener('click', closeSidebar);
+        document.getElementById('shop-dropdown-btn').addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
+
+        initApp();
     </script>
 </body>
 </html>
