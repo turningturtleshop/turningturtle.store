@@ -8,93 +8,63 @@
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Chakra+Petch:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        body {
-            background-color: #008080; 
-            font-family: 'Chakra Petch', sans-serif;
-        }
+        body { background-color: #008080; font-family: 'Chakra Petch', sans-serif; }
         .font-pixel { font-family: 'VT323', monospace; }
         
-        .retro-window {
-            background-color: #c0c0c0;
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #000000;
-            border-bottom: 2px solid #000000;
-            box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px #808080;
-        }
+        .retro-window { background-color: #c0c0c0; border-top: 2px solid #ffffff; border-left: 2px solid #ffffff; border-right: 2px solid #000000; border-bottom: 2px solid #000000; box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px #808080; }
+        .retro-btn { background-color: #c0c0c0; border-top: 2px solid #ffffff; border-left: 2px solid #ffffff; border-right: 2px solid #000000; border-bottom: 2px solid #000000; cursor: pointer; }
+        .retro-btn:active { border-top: 2px solid #000000; border-left: 2px solid #000000; border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff; padding-top: 2px; padding-left: 2px; }
+        .retro-titlebar { background-color: #0000aa; color: white; padding: 4px 8px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
+        .retro-content { background-color: white; border-top: 2px solid #808080; border-left: 2px solid #808080; border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff; }
         
-        .retro-btn {
-            background-color: #c0c0c0;
-            border-top: 2px solid #ffffff;
-            border-left: 2px solid #ffffff;
-            border-right: 2px solid #000000;
-            border-bottom: 2px solid #000000;
-            cursor: pointer;
+        /* 1.2 กิมมิคเต่าม้วนตัว */
+        @keyframes roll {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
         }
-        .retro-btn:active {
-            border-top: 2px solid #000000;
-            border-left: 2px solid #000000;
-            border-right: 2px solid #ffffff;
-            border-bottom: 2px solid #ffffff;
-            padding-top: 2px;
-            padding-left: 2px;
-        }
-
-        .retro-titlebar {
-            background-color: #0000aa; 
-            color: white;
-            padding: 4px 8px;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .retro-content {
-            background-color: white;
-            border-top: 2px solid #808080;
-            border-left: 2px solid #808080;
-            border-right: 2px solid #ffffff;
-            border-bottom: 2px solid #ffffff;
-        }
+        .turtle-roll { display: inline-block; transition: all 0.3s; }
+        .turtle-roll:hover { animation: roll 1s linear infinite; cursor: pointer; }
     </style>
 </head>
-<body class="text-gray-900 overflow-x-hidden">
+<body class="text-gray-900 overflow-x-hidden relative">
 
     <!-- 1. แถบเมนูนำทาง -->
-    <header class="sticky top-0 z-50 retro-window px-2 py-2 flex items-center justify-between">
+    <header class="sticky top-0 z-40 retro-window px-2 py-2 flex items-center justify-between">
         <div class="flex items-center space-x-2">
-            <button id="menu-btn" class="retro-btn px-3 py-1 flex items-center space-x-1 font-bold text-sm">
-                <img src="https://img.icons8.com/color/24/000000/windows-logo.png" alt="logo" class="w-4 h-4">
-                <span>START</span>
+            <!-- 1.1 เปลี่ยนเป็นไอคอนขีด 3 ขีด -->
+            <button id="menu-btn" class="retro-btn px-2 py-1 flex items-center justify-center">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
             </button>
             <a href="index.html" class="font-bold tracking-wider text-xl flex items-center space-x-2 font-pixel text-blue-800 ml-2">
                 <span>Turning turtle</span>
-                <span class="text-sm">🐢</span>
+                <!-- 1.2 ขยายเต่า 1 เท่า และทำให้ม้วนตัวได้ตอนเอาเมาส์ชี้ -->
+                <span class="text-3xl turtle-roll">🐢</span>
             </a>
         </div>
+        
         <div class="flex items-center space-x-3">
-            <button class="retro-btn px-2 py-1 font-bold text-xs bg-yellow-400">SEARCH</button>
-            <button class="retro-btn px-2 py-1 font-bold text-xs bg-red-500 text-white">CART</button>
-            <span class="retro-content px-2 py-1 text-xs font-bold">EN / TH</span>
+            <!-- 1.3 ไอคอนแว่นขยายสีเหลือง -->
+            <button class="retro-btn p-1 bg-yellow-400 hover:bg-yellow-300" onclick="alert('ระบบค้นหากำลังจะมาในเฟสถัดไป!')">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            </button>
+            <!-- 1.4 ไอคอนตะกร้าสินค้าสีแดง -->
+            <button class="retro-btn p-1 bg-red-500 text-white hover:bg-red-400" onclick="alert('หน้าชำระเงินกำลังจะมาในเฟสถัดไป!')">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            </button>
+            <!-- 1.5 ปุ่มเปลี่ยนภาษา/สกุลเงิน (เตรียม UI ไว้ก่อน) -->
+            <button class="retro-btn px-2 py-1 text-xs font-bold bg-white">EN/TH</button>
         </div>
     </header>
 
-    <!-- 2. เมนูด้านซ้าย -->
+    <!-- เมนูด้านซ้าย (ย่อไว้เพื่อประหยัดบรรทัด) -->
     <div id="sidebar" class="fixed inset-y-0 left-0 w-72 transform -translate-x-full transition-transform duration-300 z-50 flex flex-col p-2">
         <div class="retro-window flex-1 flex flex-col shadow-2xl">
-            <div class="retro-titlebar">
-                <span class="font-pixel text-xl tracking-widest">Menu.exe</span>
-                <button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 hover:bg-red-500 hover:text-white font-bold">X</button>
-            </div>
+            <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Menu.exe</span><button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 hover:bg-red-500 hover:text-white font-bold">X</button></div>
             <nav class="p-3 space-y-3 retro-content m-2 flex-1">
                 <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">Home</a>
                 <a href="new-in.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">New in</a>
-                <div>
-                    <button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center">
-                        <span>Shop all</span>
-                        <span id="dropdown-icon" class="text-xs">▼</span>
-                    </button>
+                <div><button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center"><span>Shop all</span><span class="text-xs">▼</span></button>
                     <div id="shop-submenu" class="pl-4 mt-1 space-y-1 hidden bg-yellow-100 border-2 border-black p-2">
                         <a href="shop.html?type=Tops" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Tops</a>
                         <a href="shop.html?type=Bottoms" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Bottoms</a>
@@ -107,121 +77,206 @@
     </div>
     <div id="overlay" class="fixed inset-0 bg-black opacity-40 hidden z-40"></div>
 
-    <!-- 3. พื้นที่แสดงสินค้าแนะนำ -->
+    <!-- พื้นที่แสดงสินค้าแนะนำ -->
     <main class="p-4 mt-4 max-w-5xl mx-auto">
         <div class="retro-window">
             <div class="retro-titlebar">
-                <span class="font-pixel text-xl tracking-widest">Recommended_Items.exe</span>
-                <div class="flex space-x-1">
-                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200">_</button>
-                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200">□</button>
-                    <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200 hover:bg-red-500 hover:text-white">X</button>
-                </div>
+                <span class="font-pixel text-xl tracking-widest">Hot_Items.exe</span>
             </div>
-            
             <div class="retro-content p-6 m-2 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
-                
                 <div class="text-center mb-6">
-                    <h1 class="text-4xl font-bold font-pixel text-blue-800 drop-shadow-md">
-                        <span class="text-red-500">TURNING</span> <span class="text-yellow-500">TURTLE</span>
-                    </h1>
-                    <p class="font-bold text-gray-700 mt-2">> Top Picks For You_</p>
+                    <h1 class="text-4xl font-bold font-pixel text-blue-800 drop-shadow-md"><span class="text-red-500">TURNING</span> <span class="text-yellow-500">TURTLE</span></h1>
+                    <p class="font-bold text-gray-700 mt-2">> New Arrivals_</p>
                 </div>
 
-                <!-- กล่องใส่สินค้า จะถูกโหลดมาใส่ตรงนี้ด้วย JavaScript -->
-                <div id="product-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="col-span-1 md:col-span-3 text-center py-10 bg-white border-2 border-dashed border-gray-400">
-                        <img src="https://img.icons8.com/color/96/000000/error--v1.png" alt="Loading" class="mx-auto mb-4 animate-bounce">
-                        <p class="text-lg font-bold text-gray-700">กำลังเชื่อมต่อฐานข้อมูล...</p>
+                <div id="product-container" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                    <div class="col-span-1 md:col-span-4 text-center py-10 bg-white border-2 border-dashed border-gray-400">
+                        <p class="text-lg font-bold text-gray-700 animate-pulse">กำลังโหลดข้อมูลสินค้า...</p>
                     </div>
                 </div>
-
             </div>
         </div>
     </main>
 
-    <!-- Script ควบคุมเมนู และ ดึงข้อมูลสินค้า -->
+    <!-- 2.1 Pop-up Modal สำหรับเลือกสี/ไซส์ เมื่อกดดูสินค้า -->
+    <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="absolute inset-0 bg-black opacity-60" onclick="closeModal()"></div>
+        <div class="retro-window w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto relative z-10 flex flex-col">
+            <div class="retro-titlebar">
+                <span id="modal-title" class="font-pixel text-xl tracking-widest">Product.exe</span>
+                <button onclick="closeModal()" class="retro-btn bg-red-500 text-white px-2 py-0 font-bold hover:bg-red-400">X</button>
+            </div>
+            <div class="retro-content p-4 m-2 flex-1 bg-white">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- รูปภาพหลักและรูป Description -->
+                    <div class="space-y-2">
+                        <div class="bg-gray-100 border-2 border-gray-300 h-64 flex justify-center overflow-hidden">
+                            <img id="modal-img" src="" class="object-cover h-full">
+                        </div>
+                        <!-- 2.2 โชว์รูป Description จากคอลัมน์ M -->
+                        <div id="modal-desc-box" class="bg-gray-100 border-2 border-dashed border-gray-300 p-1 hidden">
+                            <p class="text-xs font-bold text-center bg-yellow-200 mb-1">Details / Description</p>
+                            <img id="modal-desc-img" src="" class="w-full object-contain">
+                        </div>
+                    </div>
+                    
+                    <!-- ข้อมูลและการเลือกตัวเลือก -->
+                    <div class="flex flex-col space-y-4">
+                        <h2 id="modal-name" class="text-3xl font-pixel font-bold text-blue-800 uppercase"></h2>
+                        <p id="modal-price" class="text-2xl font-pixel text-red-600 font-bold"></p>
+                        <div class="h-px w-full bg-black"></div>
+                        
+                        <div>
+                            <label class="font-bold text-sm block mb-1">SELECT COLOR:</label>
+                            <select id="modal-color" class="retro-content w-full p-2 font-bold cursor-pointer">
+                                <!-- Colors will be populated here -->
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="font-bold text-sm block mb-1">SELECT SIZE:</label>
+                            <select id="modal-size" class="retro-content w-full p-2 font-bold cursor-pointer">
+                                <!-- Sizes will be populated here -->
+                            </select>
+                        </div>
+                        
+                        <div class="mt-auto pt-4">
+                            <button onclick="alert('เตรียมพบกับระบบตะกร้าสินค้าในเฟสต่อไป!')" class="retro-btn w-full bg-yellow-400 hover:bg-yellow-300 font-bold text-lg py-3 flex justify-center items-center space-x-2">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                <span>ADD TO CART</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script ควบคุม -->
     <script>
-        // --- ส่วนควบคุมเมนู ---
-        const menuBtn = document.getElementById('menu-btn');
-        const closeBtn = document.getElementById('close-btn');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('overlay');
-        const shopDropdownBtn = document.getElementById('shop-dropdown-btn');
-        const shopSubmenu = document.getElementById('shop-submenu');
+        // Sidebar Controls
+        document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
+        const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
+        document.getElementById('close-btn').addEventListener('click', closeSidebar);
+        document.getElementById('overlay').addEventListener('click', closeSidebar);
+        document.getElementById('shop-dropdown-btn').addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
 
-        menuBtn.addEventListener('click', () => {
-            sidebar.classList.remove('-translate-x-full');
-            overlay.classList.remove('hidden');
-        });
-
-        const closeMenu = () => {
-            sidebar.classList.add('-translate-x-full');
-            overlay.classList.add('hidden');
-        };
-        closeBtn.addEventListener('click', closeMenu);
-        overlay.addEventListener('click', closeMenu);
-
-        shopDropdownBtn.addEventListener('click', () => {
-            shopSubmenu.classList.toggle('hidden');
-        });
-
-        // --- ส่วนดึงข้อมูลสินค้า (API Fetch) ---
-        // ใส่ลิงก์ API ของคุณ และเติม ?action=getProducts เข้าไป
+        // API URL
         const API_URL = 'https://script.google.com/macros/s/AKfycbxa0e7e9B6JFIfIufg0hVI_ZAM0muwvt6IF8EQuo2U9ylE6OxNyrhXYOKeAIZVN3nOnyQ/exec?action=getProducts';
+        
+        let globalGroupedProducts = {}; // เก็บข้อมูลสินค้าที่จัดกลุ่มแล้ว
 
-        async function loadRecommendedProducts() {
+        async function loadHomeProducts() {
             const container = document.getElementById('product-container');
-            
             try {
-                // วิ่งไปดึงข้อมูลจาก Google Sheets
                 const response = await fetch(API_URL);
                 const result = await response.json();
                 
                 if (result.status === 'success') {
-                    // ล้างกล่อง Loading ออก
+                    // 2.1 จัดกรุ๊ปสินค้าตามชื่อ (Name)
+                    const groups = {};
+                    result.data.forEach(p => {
+                        // ปรับชื่อให้ตรงกัน (ลบเว้นวรรค แปลงพิมพ์ใหญ่)
+                        let nameKey = p.name.trim().toUpperCase();
+                        if(nameKey === 'WOOL - EYES') nameKey = 'WOOL-EYES'; // แก้เผื่อพิมพ์เว้นวรรค
+                        
+                        if(!groups[nameKey]) {
+                            groups[nameKey] = {
+                                name: p.name,
+                                image: p.image, // รูปหลัก คอลัมน์ A
+                                hoverImage: (p.images && p.images[1]) ? p.images[1] : p.image, // 2.3 รูป Hover คอลัมน์ L
+                                descImage: (p.images && p.images[2]) ? p.images[2] : '',       // 2.2 รูปลง Description คอลัมน์ M
+                                price: p.price,
+                                colors: new Set(),
+                                sizes: new Set(),
+                                variants: [] // เก็บย่อยๆ เผื่อใช้เช็คสต๊อกรายชิ้น
+                            };
+                        }
+                        groups[nameKey].colors.add(p.color);
+                        groups[nameKey].sizes.add(p.size);
+                        groups[nameKey].variants.push(p);
+                    });
+                    
+                    globalGroupedProducts = groups;
                     container.innerHTML = ''; 
-                    
-                    // ดึงสินค้ามา 3 ชิ้นแรก (สามารถเปลี่ยนเลข 3 เป็นเลขอื่นได้)
-                    const productsToShow = result.data.slice(0, 3);
-                    
-                    // วนลูปสร้างการ์ดสินค้าทีละชิ้น
-                    productsToShow.forEach(item => {
-                        // เลือกรูปภาพ: ถ้าระบบส่ง images (หลายรูป) มา ให้ใช้รูปแรก, ถ้าไม่มีให้ใช้รูป image ตัวเดิม
-                        const imgUrl = (item.images && item.images.length > 0 && item.images[0] !== "") 
-                                        ? item.images[0] 
-                                        : item.image;
 
-                        // โครงสร้างการ์ดสินค้า 1 ชิ้น
+                    // 3.1 กำหนดสินค้าแนะนำหน้า Home
+                    const targetNames = ['ZORA', 'WOOL-EYES', 'GEORGE', 'LAMBS'];
+                    const productsToShow = targetNames.map(n => groups[n]).filter(Boolean);
+
+                    productsToShow.forEach(group => {
+                        const fallbackImg = 'https://via.placeholder.com/200?text=No+Image';
+                        const mainImg = group.image || fallbackImg;
+                        const hoverImg = group.hoverImage || fallbackImg;
+
+                        // 2.3 ระบบเปลี่ยนรูปตอน Hover
                         const cardHTML = `
-                            <div class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform">
-                                <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-56 overflow-hidden">
-                                    <!-- หากไม่มีรูประบบจะแสดงภาพเปล่าๆ แทน -->
-                                    <img src="${imgUrl || 'https://via.placeholder.com/200?text=No+Image'}" alt="${item.name}" class="object-cover h-full">
+                            <div onclick="openModal('${group.name.trim().toUpperCase()}')" class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
+                                <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-48 overflow-hidden">
+                                    <img src="${mainImg}" 
+                                         onmouseover="this.src='${hoverImg}'" 
+                                         onmouseout="this.src='${mainImg}'" 
+                                         alt="${group.name}" class="object-cover h-full transition-opacity duration-300">
                                 </div>
-                                <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${item.name}</h3>
-                                <p class="text-sm font-bold text-gray-600 mt-1">COLOR: ${item.color} | SIZE: ${item.size}</p>
+                                <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${group.name}</h3>
+                                <p class="text-xs font-bold text-gray-500 mt-1">${group.colors.size} Colors | ${group.sizes.size} Sizes</p>
                                 <div class="w-full bg-black h-px my-2"></div>
-                                <p class="font-pixel text-2xl text-red-600 font-bold mb-2">฿${item.price}</p>
-                                <button class="retro-btn bg-yellow-400 font-bold px-4 py-2 w-full text-sm hover:bg-yellow-300">
-                                    ADD TO CART_
+                                <p class="font-pixel text-xl text-red-600 font-bold mb-2">฿${group.price}</p>
+                                <button class="retro-btn bg-yellow-400 font-bold px-2 py-1 w-full text-sm">
+                                    VIEW DETAILS
                                 </button>
                             </div>
                         `;
-                        // นำการ์ดไปแปะในหน้าเว็บ
                         container.innerHTML += cardHTML;
                     });
-                } else {
-                    container.innerHTML = `<div class="col-span-3 text-center text-red-600 font-bold p-10">เกิดข้อผิดพลาด: ${result.message}</div>`;
                 }
             } catch (error) {
-                console.error("Error fetching data: ", error);
-                container.innerHTML = `<div class="col-span-3 text-center text-red-600 font-bold p-10">ไม่สามารถเชื่อมต่อฐานข้อมูลได้ โปรดลองรีเฟรชหน้าเว็บ</div>`;
+                container.innerHTML = `<div class="col-span-4 text-center text-red-600 font-bold p-10">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>`;
             }
         }
 
-        // สั่งให้ฟังก์ชันเริ่มทำงานทันทีที่โหลดหน้าเว็บ
-        loadRecommendedProducts();
+        // 2.1 เปิด Pop-up แสดงรายละเอียดและตัวเลือก
+        function openModal(nameKey) {
+            if(nameKey === 'WOOL - EYES') nameKey = 'WOOL-EYES';
+            const group = globalGroupedProducts[nameKey];
+            if(!group) return;
+
+            document.getElementById('modal-title').innerText = `${group.name}.exe`;
+            document.getElementById('modal-name').innerText = group.name;
+            document.getElementById('modal-price').innerText = `฿${group.price}`;
+            document.getElementById('modal-img').src = group.image || 'https://via.placeholder.com/400';
+            
+            // จัดการรูป Description (ถ้ามีรูปในคอลัมน์ M จะโชว์ ถ้าไม่มีจะซ่อน)
+            const descBox = document.getElementById('modal-desc-box');
+            if(group.descImage) {
+                document.getElementById('modal-desc-img').src = group.descImage;
+                descBox.classList.remove('hidden');
+            } else {
+                descBox.classList.add('hidden');
+            }
+
+            // ใส่ตัวเลือก Color
+            const colorSelect = document.getElementById('modal-color');
+            colorSelect.innerHTML = '';
+            group.colors.forEach(c => {
+                colorSelect.innerHTML += `<option value="${c}">${c}</option>`;
+            });
+
+            // ใส่ตัวเลือก Size
+            const sizeSelect = document.getElementById('modal-size');
+            sizeSelect.innerHTML = '';
+            group.sizes.forEach(s => {
+                sizeSelect.innerHTML += `<option value="${s}">${s}</option>`;
+            });
+
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('product-modal').classList.add('hidden');
+        }
+
+        loadHomeProducts();
     </script>
 </body>
 </html>
