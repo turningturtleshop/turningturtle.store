@@ -21,33 +21,21 @@
 </head>
 <body class="text-gray-900 overflow-x-hidden relative">
 
-    <!-- 1. แถบเมนูนำทาง -->
     <header class="sticky top-0 z-40 retro-window px-2 py-2 flex items-center justify-between">
         <div class="flex items-center space-x-2">
-            <button id="menu-btn" class="retro-btn px-2 py-1 flex items-center justify-center">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-            </button>
-            <a href="index.html" class="font-bold tracking-wider text-xl flex items-center space-x-2 font-pixel text-blue-800 ml-2">
-                <span>Turning turtle</span>
-                <span class="text-3xl turtle-roll">🐢</span>
-            </a>
+            <button id="menu-btn" class="retro-btn px-2 py-1 flex items-center justify-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
+            <a href="index.html" class="font-bold tracking-wider text-xl flex items-center space-x-2 font-pixel text-blue-800 ml-2"><span>Turning turtle</span><span class="text-3xl turtle-roll">🐢</span></a>
         </div>
-        
         <div class="flex items-center space-x-3">
-            <button class="retro-btn p-1 bg-yellow-400 hover:bg-yellow-300">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            </button>
-            <!-- ตะกร้าสินค้า -->
+            <button class="retro-btn p-1 bg-yellow-400 hover:bg-yellow-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
             <button onclick="openCart()" class="retro-btn p-1 bg-red-500 text-white hover:bg-red-400 relative">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-1 border border-black rounded-full">0</span>
             </button>
-            <!-- ปุ่มเปลี่ยนภาษา -->
             <button id="lang-btn" onclick="toggleLanguage()" class="retro-btn px-2 py-1 text-xs font-bold bg-white">EN / $</button>
         </div>
     </header>
 
-    <!-- Sidebar Menu (ย่อไว้) -->
     <div id="sidebar" class="fixed inset-y-0 left-0 w-72 transform -translate-x-full transition-transform duration-300 z-50 flex flex-col p-2">
         <div class="retro-window flex-1 flex flex-col shadow-2xl">
             <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Menu.exe</span><button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 hover:bg-red-500 hover:text-white font-bold">X</button></div>
@@ -67,7 +55,6 @@
     </div>
     <div id="overlay" class="fixed inset-0 bg-black opacity-40 hidden z-40"></div>
 
-    <!-- พื้นที่แสดงสินค้าแนะนำ -->
     <main class="p-4 mt-4 max-w-5xl mx-auto">
         <div class="retro-window">
             <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Hot_Items.exe</span></div>
@@ -85,7 +72,7 @@
         </div>
     </main>
 
-    <!-- Modal เลือกสินค้า -->
+    <!-- Modal สินค้า -->
     <div id="product-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="absolute inset-0 bg-black opacity-60" onclick="closeModal('product-modal')"></div>
         <div class="retro-window w-11/12 md:w-3/4 lg:w-1/2 max-h-[90vh] overflow-y-auto relative z-10 flex flex-col">
@@ -117,13 +104,13 @@
         </div>
     </div>
 
-    <!-- Modal ตะกร้าสินค้าและ Checkout -->
+    <!-- Modal ตะกร้า & ชำระเงิน (อัปเดตใหม่) -->
     <div id="cart-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="absolute inset-0 bg-black opacity-60" onclick="closeModal('cart-modal')"></div>
         <div class="retro-window w-11/12 md:w-3/4 max-h-[90vh] overflow-y-auto relative z-10 flex flex-col">
             <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Cart_Checkout.exe</span><button onclick="closeModal('cart-modal')" class="retro-btn bg-red-500 text-white px-2 py-0 font-bold hover:bg-red-400">X</button></div>
             <div class="retro-content p-4 m-2 bg-white flex flex-col md:flex-row gap-6">
-                <!-- รายการในตะกร้า -->
+                <!-- ตะกร้า -->
                 <div class="flex-1 border-2 border-gray-300 p-2">
                     <h3 class="font-bold bg-blue-800 text-white p-1 mb-2">Shopping Cart</h3>
                     <div id="cart-items" class="space-y-2 max-h-60 overflow-y-auto"></div>
@@ -132,14 +119,15 @@
                         <span id="cart-subtotal" class="text-red-600">฿0</span>
                     </div>
                 </div>
-                <!-- ฟอร์ม Checkout -->
-                <div class="flex-1 border-2 border-gray-300 p-2 bg-gray-50">
+                <!-- Checkout Info -->
+                <div class="flex-1 border-2 border-gray-300 p-2 bg-gray-50 max-h-96 overflow-y-auto">
                     <h3 class="font-bold bg-yellow-400 border-b-2 border-black p-1 mb-2">Checkout Info</h3>
                     <div class="space-y-2 text-sm font-bold">
-                        <input type="text" id="cust-name" placeholder="Name" class="retro-content w-full p-1">
-                        <textarea id="cust-addr" placeholder="Address" class="retro-content w-full p-1 h-16"></textarea>
+                        <input type="text" id="cust-name" placeholder="Full Name" class="retro-content w-full p-1">
+                        <input type="tel" id="cust-phone" placeholder="Phone Number" class="retro-content w-full p-1">
+                        <textarea id="cust-addr" placeholder="Full Address & Postal Code" class="retro-content w-full p-1 h-16"></textarea>
                         
-                        <label>Country:</label>
+                        <label class="block mt-2">Country:</label>
                         <select id="cust-country" class="retro-content w-full p-1 cursor-pointer" onchange="calculateShipping()"></select>
                         
                         <div class="bg-white border border-gray-300 p-2 mt-2">
@@ -147,8 +135,18 @@
                             <div class="flex justify-between mt-1"><span>Shipping Fee:</span><span id="ship-fee" class="text-red-600">฿0</span></div>
                             <div class="flex justify-between mt-2 text-lg"><span>TOTAL:</span><span id="grand-total" class="text-blue-800">฿0</span></div>
                         </div>
+
+                        <!-- 🟢 กล่องแสดงวิธีชำระเงิน (เปลี่ยนตามประเทศ) -->
+                        <div id="payment-info-box" class="bg-blue-50 border border-blue-300 p-2 mt-2 hidden text-center"></div>
+
+                        <!-- 🟢 กล่องอัปโหลดสลิป -->
+                        <div id="slip-upload-box" class="mt-2 hidden bg-gray-100 p-2 border border-dashed border-black">
+                            <label class="block text-xs font-bold mb-1">Attach Payment Receipt:</label>
+                            <input type="file" id="slip-file" accept="image/*" class="w-full text-xs cursor-pointer" onchange="previewSlip(event)">
+                            <img id="slip-preview" src="" class="mt-2 mx-auto max-h-32 hidden border-2 border-black">
+                        </div>
                         
-                        <button onclick="alert('ระบบบันทึกออเดอร์ลงชีตกำลังจะมาในเฟส 3!')" class="retro-btn w-full bg-red-500 text-white hover:bg-red-400 font-bold py-2 mt-4">
+                        <button id="place-order-btn" onclick="placeOrder()" class="retro-btn w-full bg-red-500 text-white hover:bg-red-400 font-bold py-2 mt-4 text-lg tracking-wider">
                             PLACE ORDER_
                         </button>
                     </div>
@@ -158,38 +156,29 @@
     </div>
 
     <script>
-        // --- 1. การตั้งค่าภาษาและสกุลเงิน ---
+        // --- ส่วนควบคุมหลักเหมือนเดิม ---
         let currentLang = 'EN';
-        const exchangeRate = 35; // 1 USD = 35 THB
+        const exchangeRate = 35; 
 
         function toggleLanguage() {
             currentLang = currentLang === 'EN' ? 'TH' : 'EN';
             document.getElementById('lang-btn').innerText = currentLang === 'EN' ? 'EN / $' : 'TH / ฿';
-            
-            // แปลภาษาเมนู
             document.querySelector('.lang-home').innerText = currentLang === 'EN' ? 'Home' : 'หน้าแรก';
             document.querySelector('.lang-new').innerText = currentLang === 'EN' ? 'New in' : 'สินค้าใหม่';
             document.querySelector('.lang-shop').innerText = currentLang === 'EN' ? 'Shop all' : 'สินค้าทั้งหมด';
             document.querySelector('.lang-contact').innerText = currentLang === 'EN' ? 'Contact' : 'ติดต่อเรา';
-            
-            // อัปเดตราคาใหม่ทั้งหน้า
-            renderHomeProducts();
-            updateCartCount();
+            renderHomeProducts(); updateCartCount();
             if(!document.getElementById('cart-modal').classList.contains('hidden')) renderCart();
         }
 
-        // แปลงราคาตามสกุลเงินที่เลือก
         function formatPrice(thbPrice) {
             if (currentLang === 'EN') return '$' + (thbPrice / exchangeRate).toFixed(2);
             return '฿' + thbPrice;
         }
 
-        // --- 2. การควบคุมระบบตะกร้า (Cart) ผ่าน LocalStorage ---
         let cart = JSON.parse(localStorage.getItem('turtle_cart')) || [];
-        
         function updateCartCount() {
-            const totalQty = cart.reduce((sum, item) => sum + item.qty, 0);
-            document.getElementById('cart-count').innerText = totalQty;
+            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
             localStorage.setItem('turtle_cart', JSON.stringify(cart));
         }
 
@@ -199,43 +188,28 @@
             const color = document.getElementById('modal-color').value;
             const size = document.getElementById('modal-size').value;
             const image = document.getElementById('modal-img').src;
-
-            // เช็คว่ามีสินค้านี้ในตะกร้าหรือยัง
             const existing = cart.find(i => i.name === name && i.color === color && i.size === size);
-            if (existing) existing.qty += 1;
-            else cart.push({ name, price, color, size, image, qty: 1 });
-
-            updateCartCount();
-            closeModal('product-modal');
-            
-            // แจ้งเตือนสไตล์ 90s
-            alert(`Added ${name} (${color}, ${size}) to Cart!`);
+            if (existing) existing.qty += 1; else cart.push({ name, price, color, size, image, qty: 1 });
+            updateCartCount(); closeModal('product-modal');
+            alert(`Added to Cart!`);
         }
 
-        function openCart() {
-            renderCart();
-            document.getElementById('cart-modal').classList.remove('hidden');
-        }
+        function openCart() { renderCart(); document.getElementById('cart-modal').classList.remove('hidden'); }
 
-        // --- 3. ดึงข้อมูลสินค้าและค่าจัดส่ง (API) ---
-        // 🚨 เอา URL ใหม่ของคุณมาใส่ตรงบรรทัดนี้แทนที่อันเดิมนะครับ (ระวังอย่าลบ ?action=...) 
-        const API_URL_BASE = 'https://script.google.com/macros/s/AKfycbzKlfhEfV6MK6apxmyZY-ALMP6uWT9J4NKYgUixMBSHHTraH-YQ9AAT7qG5tbOs1SqE2g/exec';
+        // 🚨 เอา URL ใหม่มาใส่ที่นี่!
+        const API_URL_BASE = 'https://script.google.com/macros/s/AKfycbxwPFmT3rOBJU2zcR0Zg3mOKe-JBzUBKIleDDjNd8yuaKDk_JUbYbS5SZOsQYn31Scn5Q/exec';
         
         let globalGroupedProducts = {}; 
         let shipmentRates = [];
 
         async function initApp() {
             try {
-                // โหลดข้อมูลสินค้า
                 const resProd = await fetch(API_URL_BASE + '?action=getProducts');
                 const jsonProd = await resProd.json();
-                
-                // โหลดข้อมูลค่าส่ง
                 const resShip = await fetch(API_URL_BASE + '?action=getShipment');
                 const jsonShip = await resShip.json();
-                shipmentRates = jsonShip.data || [];
                 
-                // ใส่ตัวเลือกประเทศใน Checkout
+                shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
                 shipmentRates.forEach(rate => {
                     countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`;
@@ -259,22 +233,15 @@
                     globalGroupedProducts = groups;
                     renderHomeProducts();
                 }
-            } catch (err) {
-                console.error(err);
-                document.getElementById('product-container').innerHTML = `<p class="text-red-600 font-bold p-10">Connection Error</p>`;
-            }
+            } catch (err) {}
             updateCartCount();
         }
 
-        // แสดงสินค้า 4 ตัวหลักหน้า Home
         function renderHomeProducts() {
             const container = document.getElementById('product-container');
             container.innerHTML = ''; 
             const targetNames = ['ZORA', 'WOOL-EYES', 'GEORGE', 'LAMBS'];
-            const productsToShow = targetNames.map(n => globalGroupedProducts[n]).filter(Boolean);
-
-            productsToShow.forEach(group => {
-                const priceStr = formatPrice(group.price);
+            targetNames.map(n => globalGroupedProducts[n]).filter(Boolean).forEach(group => {
                 container.innerHTML += `
                     <div onclick="openProductModal('${group.name.trim().toUpperCase()}')" class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
                         <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-48 overflow-hidden">
@@ -282,22 +249,18 @@
                         </div>
                         <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${group.name}</h3>
                         <div class="w-full bg-black h-px my-2"></div>
-                        <p class="font-pixel text-xl text-red-600 font-bold mb-2">${priceStr}</p>
+                        <p class="font-pixel text-xl text-red-600 font-bold mb-2">${formatPrice(group.price)}</p>
                         <button class="retro-btn bg-yellow-400 font-bold px-2 py-1 w-full text-sm">VIEW</button>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
-        // --- 4. ระบบคำนวณเงินใน Checkout ---
         function renderCart() {
             const cartItemsDiv = document.getElementById('cart-items');
             cartItemsDiv.innerHTML = '';
             let subtotalTHB = 0;
-
-            if(cart.length === 0) {
-                cartItemsDiv.innerHTML = '<p class="text-gray-500 text-sm">Cart is empty.</p>';
-            } else {
+            if(cart.length === 0) cartItemsDiv.innerHTML = '<p class="text-gray-500 text-sm">Cart is empty.</p>';
+            else {
                 cart.forEach((item, index) => {
                     subtotalTHB += (item.price * item.qty);
                     cartItemsDiv.innerHTML += `
@@ -308,86 +271,149 @@
                                 <p class="text-gray-600">${item.color} | ${item.size} x${item.qty}</p>
                             </div>
                             <div class="font-bold">${formatPrice(item.price * item.qty)}</div>
-                        </div>
-                    `;
+                        </div>`;
                 });
             }
-            
             document.getElementById('cart-subtotal').innerText = formatPrice(subtotalTHB);
             document.getElementById('cart-subtotal').setAttribute('data-thb', subtotalTHB);
             calculateShipping();
         }
+        function removeItem(index) { cart.splice(index, 1); updateCartCount(); renderCart(); }
 
-        function removeItem(index) {
-            cart.splice(index, 1);
-            updateCartCount();
-            renderCart();
-        }
-
-        // 🚀 ระบบคำนวณค่าส่งอัจฉริยะ ดึงจากคอลัมน์ F!
+        // --- 🟢 ระบบคำนวณเงิน + โชว์วิธีชำระเงินตามประเทศ ---
         function calculateShipping() {
             const selectedCountry = document.getElementById('cust-country').value;
             const subtotalTHB = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb')) || 0;
-            
             const rateInfo = shipmentRates.find(r => r.countryEN === selectedCountry);
             let finalFeeTHB = 0;
 
             if (rateInfo) {
-                finalFeeTHB = rateInfo.fee; // เริ่มด้วยค่าส่งพื้นฐาน (จากคอลัมน์ D)
+                finalFeeTHB = rateInfo.fee; 
                 document.getElementById('ship-platform').innerText = rateInfo.platform;
                 document.getElementById('ship-cond').innerText = `(${rateInfo.condition})`;
-                
-                // ใช้ Regex ดึงตัวเลขยอดสั่งซื้อขั้นต่ำจากข้อความคอลัมน์ F 
-                // (เช่น "Minimum order 5000 THB" ดึงได้ 5000 / ">2000" ดึงได้ 2000)
                 const numberMatch = rateInfo.condition.match(/\d+/); 
                 if (numberMatch) {
                     const conditionAmount = parseInt(numberMatch[0]);
-                    
-                    // ถ้าเงื่อนไขมีคำว่า '<' (เช่น <2000 แปลว่ายอดน้อยกว่าถึงจะเสียค่าส่ง)
-                    if (rateInfo.condition.includes('<')) {
-                        if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; // ถ้ายอดเกินก็ส่งฟรี
-                    } 
-                    // กรณีปกติ ยอดรวมเกินยอดขั้นต่ำ = ส่งฟรี
-                    else if (subtotalTHB >= conditionAmount) {
-                        finalFeeTHB = 0; 
-                    }
+                    if (rateInfo.condition.includes('<')) { if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; } 
+                    else if (subtotalTHB >= conditionAmount) { finalFeeTHB = 0; }
+                }
+            }
+            document.getElementById('ship-fee').innerText = formatPrice(finalFeeTHB);
+            document.getElementById('grand-total').innerText = formatPrice(subtotalTHB + finalFeeTHB);
+
+            // 🟢 แสดงวิธีชำระเงิน
+            const payBox = document.getElementById('payment-info-box');
+            const slipBox = document.getElementById('slip-upload-box');
+            
+            if(selectedCountry.toLowerCase() === 'thailand') {
+                payBox.innerHTML = `
+                    <p class="text-sm font-bold text-blue-800">PromptPay QR Code</p>
+                    <img src="https://i.postimg.cc/15w5LypF/7763E006-D927-4A3E-BC60-D7904417EB1E.jpg" class="w-32 h-32 mx-auto my-2 border-2 border-black">
+                    <p class="text-xs">Scan to pay <b>฿${subtotalTHB + finalFeeTHB}</b></p>
+                `;
+            } else {
+                payBox.innerHTML = `
+                    <p class="text-sm font-bold text-blue-800 mb-1 border-b border-blue-300 pb-1">International Bank Transfer</p>
+                    <div class="text-left text-xs space-y-1 mt-2">
+                        <p><b>Bank:</b> Kasikornbank (KBank)</p>
+                        <p><b>Name:</b> Kairin Satjawiso</p>
+                        <p><b>Account No:</b> 236-188167-5</p>
+                        <p><b>SWIFT:</b> KASITHBK</p>
+                        <p class="text-red-600 mt-2">*Import taxes in your country are the buyer's responsibility.</p>
+                    </div>
+                `;
+            }
+            if(cart.length > 0) {
+                payBox.classList.remove('hidden');
+                slipBox.classList.remove('hidden');
+            } else {
+                payBox.classList.add('hidden');
+                slipBox.classList.add('hidden');
+            }
+        }
+
+        // --- 🟢 ระบบแปลงไฟล์รูปสลิปเป็น Base64 ---
+        let currentSlipBase64 = '';
+        function previewSlip(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('slip-preview').src = e.target.result;
+                document.getElementById('slip-preview').classList.remove('hidden');
+                currentSlipBase64 = e.target.result; 
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // --- 🟢 ระบบส่งคำสั่งซื้อ ---
+        async function placeOrder() {
+            const name = document.getElementById('cust-name').value;
+            const phone = document.getElementById('cust-phone').value;
+            const addr = document.getElementById('cust-addr').value;
+            const country = document.getElementById('cust-country').value;
+            
+            if(!name || !addr || !phone) { alert("Please enter Name, Phone, and Address."); return; }
+            if(cart.length === 0) { alert("Cart is empty."); return; }
+            if(!currentSlipBase64) { alert("Please attach your payment receipt / slip."); return; }
+
+            const subtotal = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb'));
+            const rateInfo = shipmentRates.find(r => r.countryEN === country);
+            let shipFee = rateInfo ? rateInfo.fee : 0;
+            if(rateInfo) {
+                const numMatch = rateInfo.condition.match(/\d+/);
+                if (numMatch) {
+                    const condAmt = parseInt(numMatch[0]);
+                    if (rateInfo.condition.includes('<')) { if (subtotal >= condAmt) shipFee = 0; } 
+                    else if (subtotal >= condAmt) { shipFee = 0; }
                 }
             }
 
-            document.getElementById('ship-fee').innerText = formatPrice(finalFeeTHB);
-            document.getElementById('grand-total').innerText = formatPrice(subtotalTHB + finalFeeTHB);
+            const payload = {
+                action: 'checkout', customerName: name, address: addr, country: country, phone: phone,
+                shippingPlatform: document.getElementById('ship-platform').innerText, subtotal: subtotal,
+                shippingFee: shipFee, grandTotal: subtotal + shipFee, slipBase64: currentSlipBase64, items: cart
+            };
+
+            const btn = document.getElementById('place-order-btn');
+            btn.innerText = "PROCESSING..."; btn.disabled = true;
+
+            try {
+                const response = await fetch(API_URL_BASE, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+                const result = await response.json();
+                if(result.status === 'success') {
+                    alert(`Order Placed Successfully!\nYour Order ID: ${result.message}`);
+                    cart = []; updateCartCount();
+                    
+                    // Reset Form
+                    document.getElementById('cust-name').value = ''; document.getElementById('cust-phone').value = '';
+                    document.getElementById('cust-addr').value = ''; document.getElementById('slip-file').value = '';
+                    document.getElementById('slip-preview').classList.add('hidden'); currentSlipBase64 = '';
+                    closeModal('cart-modal');
+                } else alert("Error: " + result.message);
+            } catch(e) { alert("Connection Error."); }
+            btn.innerText = "PLACE ORDER_"; btn.disabled = false;
         }
 
-        // --- ส่วนควบคุม Modal พื้นฐาน ---
         function openProductModal(nameKey) {
             const group = globalGroupedProducts[nameKey];
             if(!group) return;
-            document.getElementById('modal-name').innerText = group.name;
-            document.getElementById('modal-price').innerText = formatPrice(group.price);
-            document.getElementById('modal-price').setAttribute('data-thb', group.price);
-            document.getElementById('modal-img').src = group.image || 'https://via.placeholder.com/400';
-            
+            document.getElementById('modal-name').innerText = group.name; document.getElementById('modal-price').innerText = formatPrice(group.price);
+            document.getElementById('modal-price').setAttribute('data-thb', group.price); document.getElementById('modal-img').src = group.image || 'https://via.placeholder.com/400';
             const descBox = document.getElementById('modal-desc-box');
-            if(group.descImage) {
-                document.getElementById('modal-desc-img').src = group.descImage;
-                descBox.classList.remove('hidden');
-            } else descBox.classList.add('hidden');
-
+            if(group.descImage) { document.getElementById('modal-desc-img').src = group.descImage; descBox.classList.remove('hidden'); } else descBox.classList.add('hidden');
             document.getElementById('modal-color').innerHTML = Array.from(group.colors).map(c => `<option value="${c}">${c}</option>`).join('');
             document.getElementById('modal-size').innerHTML = Array.from(group.sizes).map(s => `<option value="${s}">${s}</option>`).join('');
             document.getElementById('product-modal').classList.remove('hidden');
         }
-
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         
         // Sidebar Controls
         document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
         const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
-        document.getElementById('close-btn').addEventListener('click', closeSidebar);
-        document.getElementById('overlay').addEventListener('click', closeSidebar);
+        document.getElementById('close-btn').addEventListener('click', closeSidebar); document.getElementById('overlay').addEventListener('click', closeSidebar);
         document.getElementById('shop-dropdown-btn').addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
 
-        // เริ่มทำงาน
         initApp();
     </script>
 </body>
