@@ -5,21 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Turning Turtle</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- โหลดฟอนต์สไตล์ Retro และฟอนต์ไทย -->
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Chakra+Petch:wght@400;600&display=swap" rel="stylesheet">
     
     <style>
-        /* CSS สร้างขอบหน้าต่างยุค 90s */
         body {
-            /* สีพื้นหลังสีฟ้าอมเขียว (Teal) คลาสสิกยุค 90s */
             background-color: #008080; 
             font-family: 'Chakra Petch', sans-serif;
         }
-        .font-pixel {
-            font-family: 'VT323', monospace;
-        }
+        .font-pixel { font-family: 'VT323', monospace; }
         
-        /* สไตล์กรอบหน้าต่างหลัก (สีเทา ขอบนูน) */
         .retro-window {
             background-color: #c0c0c0;
             border-top: 2px solid #ffffff;
@@ -29,7 +23,6 @@
             box-shadow: inset 1px 1px #dfdfdf, inset -1px -1px #808080;
         }
         
-        /* สไตล์ปุ่มกดแบบ Retro */
         .retro-btn {
             background-color: #c0c0c0;
             border-top: 2px solid #ffffff;
@@ -47,9 +40,8 @@
             padding-left: 2px;
         }
 
-        /* แถบหัวเรื่องหน้าต่าง (สีน้ำเงิน) */
         .retro-titlebar {
-            background-color: #0000aa; /* สีน้ำเงินเข้ม */
+            background-color: #0000aa; 
             color: white;
             padding: 4px 8px;
             font-weight: bold;
@@ -58,7 +50,6 @@
             align-items: center;
         }
         
-        /* ช่องเนื้อหาที่ยุบลงไป */
         .retro-content {
             background-color: white;
             border-top: 2px solid #808080;
@@ -70,10 +61,8 @@
 </head>
 <body class="text-gray-900 overflow-x-hidden">
 
-    <!-- 1. แถบเมนูนำทาง (ทำเป็นทรง Taskbar ด้านบน) -->
+    <!-- 1. แถบเมนูนำทาง -->
     <header class="sticky top-0 z-50 retro-window px-2 py-2 flex items-center justify-between">
-        
-        <!-- ซ้าย: ปุ่ม Start + ชื่อแบรนด์ -->
         <div class="flex items-center space-x-2">
             <button id="menu-btn" class="retro-btn px-3 py-1 flex items-center space-x-1 font-bold text-sm">
                 <img src="https://img.icons8.com/color/24/000000/windows-logo.png" alt="logo" class="w-4 h-4">
@@ -84,8 +73,6 @@
                 <span class="text-sm">🐢</span>
             </a>
         </div>
-
-        <!-- ขวา: ไอคอน ค้นหา(เหลือง) ตะกร้า(แดง) ภาษา -->
         <div class="flex items-center space-x-3">
             <button class="retro-btn px-2 py-1 font-bold text-xs bg-yellow-400">SEARCH</button>
             <button class="retro-btn px-2 py-1 font-bold text-xs bg-red-500 text-white">CART</button>
@@ -93,48 +80,38 @@
         </div>
     </header>
 
-    <!-- 2. เมนูด้านซ้าย (ทำเป็นหน้าต่าง Pop-up) -->
+    <!-- 2. เมนูด้านซ้าย -->
     <div id="sidebar" class="fixed inset-y-0 left-0 w-72 transform -translate-x-full transition-transform duration-300 z-50 flex flex-col p-2">
         <div class="retro-window flex-1 flex flex-col shadow-2xl">
-            <!-- หัวหน้าต่างเมนู -->
             <div class="retro-titlebar">
                 <span class="font-pixel text-xl tracking-widest">Menu.exe</span>
                 <button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 hover:bg-red-500 hover:text-white font-bold">X</button>
             </div>
-            
-            <!-- รายการเมนู -->
             <nav class="p-3 space-y-3 retro-content m-2 flex-1">
                 <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">Home</a>
                 <a href="new-in.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">New in</a>
-                
-                <!-- Dropdown Shop all -->
                 <div>
                     <button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center">
                         <span>Shop all</span>
                         <span id="dropdown-icon" class="text-xs">▼</span>
                     </button>
-                    <!-- ซับเมนูสีเหลืองแดงให้ดู Pop -->
                     <div id="shop-submenu" class="pl-4 mt-1 space-y-1 hidden bg-yellow-100 border-2 border-black p-2">
                         <a href="shop.html?type=Tops" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Tops</a>
                         <a href="shop.html?type=Bottoms" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Bottoms</a>
                         <a href="shop.html?type=Underwears" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Underwears</a>
                     </div>
                 </div>
-
                 <a href="contact.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">Contact</a>
             </nav>
         </div>
     </div>
-
-    <!-- ฉากหลัง -->
     <div id="overlay" class="fixed inset-0 bg-black opacity-40 hidden z-40"></div>
 
-    <!-- 3. พื้นที่แสดงสินค้าแนะนำ (ทำเป็นหน้าต่างโปรแกรม) -->
-    <main class="p-4 mt-6 max-w-4xl mx-auto">
+    <!-- 3. พื้นที่แสดงสินค้าแนะนำ -->
+    <main class="p-4 mt-4 max-w-5xl mx-auto">
         <div class="retro-window">
-            <!-- แถบสีน้ำเงินด้านบนหน้าต่างเนื้อหา -->
             <div class="retro-titlebar">
-                <span class="font-pixel text-xl tracking-widest">Welcome_to_Turning_Turtle.exe</span>
+                <span class="font-pixel text-xl tracking-widest">Recommended_Items.exe</span>
                 <div class="flex space-x-1">
                     <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200">_</button>
                     <button class="retro-btn px-2 py-0 text-black font-bold bg-gray-200">□</button>
@@ -142,23 +119,30 @@
                 </div>
             </div>
             
-            <!-- พื้นที่เนื้อหาหลัก -->
-            <div class="retro-content p-6 m-2 text-center bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
-                <h1 class="text-4xl font-bold mb-6 font-pixel text-blue-800 drop-shadow-md">
-                    <span class="text-red-500">TURNING</span> <span class="text-yellow-500">TURTLE</span>
-                </h1>
+            <div class="retro-content p-6 m-2 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
                 
-                <div class="border-2 border-dashed border-gray-400 p-8 bg-white bg-opacity-80">
-                    <img src="https://img.icons8.com/color/96/000000/error--v1.png" alt="Loading" class="mx-auto mb-4 animate-bounce">
-                    <p class="text-lg font-bold text-gray-700">กำลังเชื่อมต่อข้อมูลสินค้าแนะนำ 3 ชิ้น...</p>
-                    <p class="text-sm text-gray-500 mt-2">Please wait while we load the coolest items from our inventory.</p>
+                <div class="text-center mb-6">
+                    <h1 class="text-4xl font-bold font-pixel text-blue-800 drop-shadow-md">
+                        <span class="text-red-500">TURNING</span> <span class="text-yellow-500">TURTLE</span>
+                    </h1>
+                    <p class="font-bold text-gray-700 mt-2">> Top Picks For You_</p>
                 </div>
+
+                <!-- กล่องใส่สินค้า จะถูกโหลดมาใส่ตรงนี้ด้วย JavaScript -->
+                <div id="product-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="col-span-1 md:col-span-3 text-center py-10 bg-white border-2 border-dashed border-gray-400">
+                        <img src="https://img.icons8.com/color/96/000000/error--v1.png" alt="Loading" class="mx-auto mb-4 animate-bounce">
+                        <p class="text-lg font-bold text-gray-700">กำลังเชื่อมต่อฐานข้อมูล...</p>
+                    </div>
+                </div>
+
             </div>
         </div>
     </main>
 
-    <!-- Script ควบคุมเมนู -->
+    <!-- Script ควบคุมเมนู และ ดึงข้อมูลสินค้า -->
     <script>
+        // --- ส่วนควบคุมเมนู ---
         const menuBtn = document.getElementById('menu-btn');
         const closeBtn = document.getElementById('close-btn');
         const sidebar = document.getElementById('sidebar');
@@ -181,6 +165,63 @@
         shopDropdownBtn.addEventListener('click', () => {
             shopSubmenu.classList.toggle('hidden');
         });
+
+        // --- ส่วนดึงข้อมูลสินค้า (API Fetch) ---
+        // ใส่ลิงก์ API ของคุณ และเติม ?action=getProducts เข้าไป
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxa0e7e9B6JFIfIufg0hVI_ZAM0muwvt6IF8EQuo2U9ylE6OxNyrhXYOKeAIZVN3nOnyQ/exec?action=getProducts';
+
+        async function loadRecommendedProducts() {
+            const container = document.getElementById('product-container');
+            
+            try {
+                // วิ่งไปดึงข้อมูลจาก Google Sheets
+                const response = await fetch(API_URL);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    // ล้างกล่อง Loading ออก
+                    container.innerHTML = ''; 
+                    
+                    // ดึงสินค้ามา 3 ชิ้นแรก (สามารถเปลี่ยนเลข 3 เป็นเลขอื่นได้)
+                    const productsToShow = result.data.slice(0, 3);
+                    
+                    // วนลูปสร้างการ์ดสินค้าทีละชิ้น
+                    productsToShow.forEach(item => {
+                        // เลือกรูปภาพ: ถ้าระบบส่ง images (หลายรูป) มา ให้ใช้รูปแรก, ถ้าไม่มีให้ใช้รูป image ตัวเดิม
+                        const imgUrl = (item.images && item.images.length > 0 && item.images[0] !== "") 
+                                        ? item.images[0] 
+                                        : item.image;
+
+                        // โครงสร้างการ์ดสินค้า 1 ชิ้น
+                        const cardHTML = `
+                            <div class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform">
+                                <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-56 overflow-hidden">
+                                    <!-- หากไม่มีรูประบบจะแสดงภาพเปล่าๆ แทน -->
+                                    <img src="${imgUrl || 'https://via.placeholder.com/200?text=No+Image'}" alt="${item.name}" class="object-cover h-full">
+                                </div>
+                                <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${item.name}</h3>
+                                <p class="text-sm font-bold text-gray-600 mt-1">COLOR: ${item.color} | SIZE: ${item.size}</p>
+                                <div class="w-full bg-black h-px my-2"></div>
+                                <p class="font-pixel text-2xl text-red-600 font-bold mb-2">฿${item.price}</p>
+                                <button class="retro-btn bg-yellow-400 font-bold px-4 py-2 w-full text-sm hover:bg-yellow-300">
+                                    ADD TO CART_
+                                </button>
+                            </div>
+                        `;
+                        // นำการ์ดไปแปะในหน้าเว็บ
+                        container.innerHTML += cardHTML;
+                    });
+                } else {
+                    container.innerHTML = `<div class="col-span-3 text-center text-red-600 font-bold p-10">เกิดข้อผิดพลาด: ${result.message}</div>`;
+                }
+            } catch (error) {
+                console.error("Error fetching data: ", error);
+                container.innerHTML = `<div class="col-span-3 text-center text-red-600 font-bold p-10">ไม่สามารถเชื่อมต่อฐานข้อมูลได้ โปรดลองรีเฟรชหน้าเว็บ</div>`;
+            }
+        }
+
+        // สั่งให้ฟังก์ชันเริ่มทำงานทันทีที่โหลดหน้าเว็บ
+        loadRecommendedProducts();
     </script>
 </body>
 </html>
