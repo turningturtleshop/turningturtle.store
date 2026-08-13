@@ -2,110 +2,100 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>Turning Turtle Store</title>
-    <style>
-        body { font-family: 'MS Sans Serif', sans-serif; background: #008080; margin: 0; padding-top: 70px; }
-        
-        /* 1. Header (Sticky) */
-        .header { position: fixed; top: 0; width: 100%; height: 70px; background: #c0c0c0; border-bottom: 3px solid #000; display: flex; align-items: center; justify-content: space-between; z-index: 1000; padding: 0 20px; box-sizing: border-box; }
-        .brand { cursor: pointer; display: flex; flex-direction: column; align-items: center; font-weight: bold; }
-        .turtle-w { display: flex; gap: 2px; animation: wiggle 1s infinite alternate; }
-        @keyframes wiggle { 0% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
-        
-        /* 2. Sidebar */
-        .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #c0c0c0; border-right: 3px solid #000; transition: 0.3s; z-index: 2000; padding-top: 80px; }
-        .sidebar.open { left: 0; }
-        .menu-item { padding: 15px; font-weight: bold; cursor: pointer; border-bottom: 1px dashed #000; }
-        .submenu { display: none; padding-left: 20px; background: #dcdcdc; }
-
-        /* 3. Products */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; max-width: 1000px; margin: auto; }
-        .product-card { background: #c0c0c0; border: 2px solid #000; padding: 10px; text-align: center; position: relative; }
-        .badge-new { position: absolute; top: 5px; right: 5px; background: #d10000; color: #fff; font-size: 0.8em; padding: 2px 5px; }
-        
-        /* Contact Form */
-        #contact-section { background: #c0c0c0; padding: 20px; border: 2px solid #000; max-width: 400px; margin: 20px auto; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turning Turtle</title>
+    <!-- โหลด Tailwind CSS เพื่อความสวยงามและรวดเร็ว -->
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="bg-gray-50 text-gray-900">
 
-    <header class="header">
-        <div style="display:flex; align-items:center; gap:15px;">
-            <button onclick="toggleSidebar()">☰</button>
-            <div class="brand" onclick="goHome()">
-                <div class="turtle-w">🙃🐢 🙃🐢 🙃🐢</div>
-                <div style="font-size:1.1em;">Turning Turtle</div>
-            </div>
+    <!-- แถบเมนูนำทาง (ตรึงไว้ด้านบน) -->
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between">
+        
+        <!-- ซ้าย: ปุ่มขีดสามขีด + ชื่อแบรนด์ + เต่า -->
+        <div class="flex items-center space-x-3">
+            <button id="menu-btn" class="focus:outline-none hover:bg-gray-100 p-1 rounded">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+            <a href="index.html" class="font-bold tracking-wider text-lg flex items-center space-x-2">
+                <span>Turning turtle</span>
+                <span class="text-sm">🐢🐢🐢</span>
+            </a>
         </div>
-        <div style="display:flex; gap:10px;">
-            <button onclick="alert('Search feature')">🔍</button>
-            <button onclick="alert('Cart feature')">🛒</button>
-            <button>TH</button>
+
+        <!-- ขวา: ค้นหา + ตะกร้า + เปลี่ยนภาษา -->
+        <div class="flex items-center space-x-4">
+            <button class="hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
+            <button class="hover:text-gray-600"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></button>
+            <span class="text-sm font-medium cursor-pointer hover:text-gray-600">EN / TH</span>
         </div>
     </header>
 
-    <nav id="sidebar" class="sidebar">
-        <div class="menu-item" onclick="goHome()">🏠 Home</div>
-        <div class="menu-item" onclick="filterNewIn()">✨ New In</div>
-        <div class="menu-item" onclick="document.getElementById('submenu').style.display='block'">🛍️ Shop All ▾</div>
-        <div id="submenu" class="submenu">
-            <div class="menu-item" onclick="filterCategory('Tops')">Tops</div>
-            <div class="menu-item" onclick="filterCategory('Bottoms')">Bottoms</div>
-            <div class="menu-item" onclick="filterCategory('Underwears')">Underwears</div>
-        </div>
-        <div class="menu-item" onclick="showContact()">📞 Contact</div>
-    </nav>
-
-    <main id="main-content" class="product-grid"></main>
-
-    <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxWJdQVK5lYiQsm5V_MDuXF3aF2s5RlPjeXxZpOXYO_XW_xnI17e818WCv4-rnziU0-0g/exec';
-        let allProducts = [];
-
-        async function init() {
-            const res = await fetch(API_URL + '?action=getProducts');
-            const data = await res.json();
-            allProducts = data.data;
-            goHome();
-        }
-
-        function renderGrid(products) {
-            document.getElementById('main-content').innerHTML = products.map(p => `
-                <div class="product-card">
-                    ${isNewItem(p.dateAdded) ? '<div class="badge-new">NEW IN</div>' : ''}
-                    <img src="${p.Picture}" style="width:100%; height:200px; object-fit:cover;">
-                    <h3>${p["Product Name"]}</h3>
-                    <p>฿${p.Price}</p>
-                </div>
-            `).join('');
-        }
-
-        function isNewItem(dateStr) {
-            if(!dateStr) return false;
-            return (new Date() - new Date(dateStr)) / (1000*60*60*24) <= 90;
-        }
-
-        function goHome() { 
-            renderGrid(allProducts.slice(0, 3)); 
-            document.getElementById('sidebar').classList.remove('open');
-        }
-
-        function filterNewIn() { renderGrid(allProducts.filter(p => isNewItem(p.dateAdded))); toggleSidebar(); }
-        function filterCategory(cat) { renderGrid(allProducts.filter(p => p["Product type"] === cat)); toggleSidebar(); }
-        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+    <!-- เมนู Pop-up ด้านซ้าย (Sidebar) -->
+    <div id="sidebar" class="fixed inset-y-0 left-0 w-72 bg-white shadow-2xl transform -translate-x-full transition-transform duration-300 z-50 p-6">
+        <button id="close-btn" class="absolute top-4 right-4 text-gray-400 hover:text-black">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
         
-        function showContact() {
-            document.getElementById('main-content').innerHTML = `
-                <div id="contact-section">
-                    <h2>Turning Turtle Shop</h2>
-                    <p>Tel. 096-7695656</p>
-                    <p><a href="https://www.instagram.com/turningtur.tle/">Instagram</a> | <a href="https://www.facebook.com/profile.php?id=61591955442495">Facebook</a></p>
-                    <a href="mailto:turningturtle.shop@gmail.com">📧 Email us</a>
-                </div>`;
-            toggleSidebar();
-        }
+        <nav class="mt-8 space-y-6">
+            <a href="index.html" class="block text-lg font-medium hover:text-gray-600">Home</a>
+            <a href="new-in.html" class="block text-lg font-medium hover:text-gray-600">New in</a>
+            
+            <!-- เมนูย่อย Shop all -->
+            <div>
+                <button id="shop-dropdown-btn" class="w-full flex justify-between items-center text-lg font-medium hover:text-gray-600">
+                    <span>Shop all</span>
+                    <svg id="dropdown-icon" class="w-4 h-4 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                </button>
+                <div id="shop-submenu" class="pl-4 mt-3 space-y-3 hidden">
+                    <a href="shop.html?type=Tops" class="block text-gray-600 hover:text-black">Tops</a>
+                    <a href="shop.html?type=Bottoms" class="block text-gray-600 hover:text-black">Bottoms</a>
+                    <a href="shop.html?type=Underwears" class="block text-gray-600 hover:text-black">Underwears</a>
+                </div>
+            </div>
 
-        init();
+            <a href="contact.html" class="block text-lg font-medium hover:text-gray-600">Contact</a>
+        </nav>
+    </div>
+
+    <!-- ฉากหลังสีดำตอนเปิดเมนู (Overlay) -->
+    <div id="overlay" class="fixed inset-0 bg-black opacity-50 hidden z-40"></div>
+
+    <!-- พื้นที่แสดงเนื้อหาหน้า Home (เดี๋ยวเรามาเติมสินค้าแนะนำกันทีหลัง) -->
+    <main class="p-8 text-center mt-10">
+        <h1 class="text-3xl font-bold mb-4">Welcome to Turning Turtle</h1>
+        <p class="text-gray-600">เนื้อหาสินค้าแนะนำ 3 ชิ้น จะถูกนำมาใส่ตรงนี้ครับ</p>
+    </main>
+
+    <!-- Script ควบคุมการเปิด/ปิดเมนู -->
+    <script>
+        const menuBtn = document.getElementById('menu-btn');
+        const closeBtn = document.getElementById('close-btn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+        const shopDropdownBtn = document.getElementById('shop-dropdown-btn');
+        const shopSubmenu = document.getElementById('shop-submenu');
+        const dropdownIcon = document.getElementById('dropdown-icon');
+
+        // เปิดเมนู
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.remove('-translate-x-full');
+            overlay.classList.remove('hidden');
+        });
+
+        // ปิดเมนู
+        const closeMenu = () => {
+            sidebar.classList.add('-translate-x-full');
+            overlay.classList.add('hidden');
+        };
+        closeBtn.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', closeMenu);
+
+        // เปิด/ปิด Dropdown เมนู Shop all
+        shopDropdownBtn.addEventListener('click', () => {
+            shopSubmenu.classList.toggle('hidden');
+            dropdownIcon.classList.toggle('rotate-180');
+        });
     </script>
 </body>
 </html>
