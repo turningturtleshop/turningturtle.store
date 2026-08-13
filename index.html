@@ -2,114 +2,110 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Turning Turtle Store - Retro Edition</title>
+    <title>Turning Turtle Store</title>
     <style>
-        body { font-family: 'MS Sans Serif', Tahoma, Geneva, sans-serif; padding: 20px; background: #008080; color: #000; margin: 0; padding-top: 80px; }
+        body { font-family: 'MS Sans Serif', sans-serif; background: #008080; margin: 0; padding-top: 70px; }
         
-        /* Sticky Header */
-        .top-header { position: fixed; top: 0; left: 0; width: 100%; background: #c0c0c0; border-bottom: 3px solid; border-color: #fff #000 #000 #fff; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; z-index: 999; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .header-left { display: flex; align-items: center; gap: 15px; }
-        .brand-container { display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; text-decoration: none; color: inherit; }
-        .turtle-container { display: flex; gap: 3px; animation: wiggle 1s infinite alternate; }
+        /* 1. Header (Sticky) */
+        .header { position: fixed; top: 0; width: 100%; height: 70px; background: #c0c0c0; border-bottom: 3px solid #000; display: flex; align-items: center; justify-content: space-between; z-index: 1000; padding: 0 20px; box-sizing: border-box; }
+        .brand { cursor: pointer; display: flex; flex-direction: column; align-items: center; font-weight: bold; }
+        .turtle-w { display: flex; gap: 2px; animation: wiggle 1s infinite alternate; }
         @keyframes wiggle { 0% { transform: rotate(-10deg); } 100% { transform: rotate(10deg); } }
         
-        /* Menu & Icons */
-        .sidebar { position: fixed; top: 0; left: -250px; width: 250px; height: 100%; background: #c0c0c0; border-right: 3px solid #000; z-index: 1000; transition: left 0.3s; padding-top: 70px; }
+        /* 2. Sidebar */
+        .sidebar { position: fixed; left: -250px; top: 0; width: 250px; height: 100%; background: #c0c0c0; border-right: 3px solid #000; transition: 0.3s; z-index: 2000; padding-top: 80px; }
         .sidebar.open { left: 0; }
-        .icon-btn { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 5px 10px; cursor: pointer; }
+        .menu-item { padding: 15px; font-weight: bold; cursor: pointer; border-bottom: 1px dashed #000; }
+        .submenu { display: none; padding-left: 20px; background: #dcdcdc; }
+
+        /* 3. Products */
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px; padding: 20px; max-width: 1000px; margin: auto; }
+        .product-card { background: #c0c0c0; border: 2px solid #000; padding: 10px; text-align: center; position: relative; }
+        .badge-new { position: absolute; top: 5px; right: 5px; background: #d10000; color: #fff; font-size: 0.8em; padding: 2px 5px; }
         
-        /* Product Grid */
-        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; max-width: 1200px; margin: 20px auto; }
-        .product-card { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 5px; position: relative; }
-        .badge-new { position: absolute; top: 10px; right: 10px; background: #d10000; color: #fff; padding: 2px 5px; font-weight: bold; }
-        .product-image { width: 100%; height: 200px; object-fit: cover; border: 2px inset #808080; }
-        .btn-retro { background: #c0c0c0; border: 2px solid; border-color: #fff #000 #000 #fff; padding: 5px 10px; cursor: pointer; width: 100%; font-weight: bold; }
+        /* Contact Form */
+        #contact-section { background: #c0c0c0; padding: 20px; border: 2px solid #000; max-width: 400px; margin: 20px auto; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <div class="top-header">
-        <div class="header-left">
-            <button class="icon-btn" onclick="toggleSidebar()">☰</button>
-            <div class="brand-container" onclick="location.reload()">
-                <div class="turtle-container">🙃🐢 🙃🐢 🙃🐢</div>
-                <h1 style="margin:0; font-size: 1.2em;">Turning Turtle</h1>
+    <header class="header">
+        <div style="display:flex; align-items:center; gap:15px;">
+            <button onclick="toggleSidebar()">☰</button>
+            <div class="brand" onclick="goHome()">
+                <div class="turtle-w">🙃🐢 🙃🐢 🙃🐢</div>
+                <div style="font-size:1.1em;">Turning Turtle</div>
             </div>
         </div>
-        <div class="header-right">
-            <button class="icon-btn" onclick="document.getElementById('search-bar').style.display='block'">🔍</button>
-            <button class="icon-btn" onclick="openModal('cart-modal')">🛒</button>
+        <div style="display:flex; gap:10px;">
+            <button onclick="alert('Search feature')">🔍</button>
+            <button onclick="alert('Cart feature')">🛒</button>
+            <button>TH</button>
         </div>
-    </div>
+    </header>
 
-    <!-- Sidebar -->
-    <div id="sidebar" class="sidebar">
-        <div style="padding: 10px; font-weight: bold; cursor: pointer;" onclick="toggleSidebar()">Close X</div>
-        <ul style="list-style: none; padding: 0;">
-            <li style="padding: 15px;" onclick="renderGrid(allProducts); toggleSidebar()">Shop All</li>
-            <li style="padding: 15px;" onclick="filterNewIn(); toggleSidebar()">New In</li>
-            <li style="padding: 15px;" onclick="filterCategory('Tops'); toggleSidebar()">Tops</li>
-            <li style="padding: 15px;" onclick="filterCategory('Bottoms'); toggleSidebar()">Bottoms</li>
-        </ul>
-    </div>
+    <nav id="sidebar" class="sidebar">
+        <div class="menu-item" onclick="goHome()">🏠 Home</div>
+        <div class="menu-item" onclick="filterNewIn()">✨ New In</div>
+        <div class="menu-item" onclick="document.getElementById('submenu').style.display='block'">🛍️ Shop All ▾</div>
+        <div id="submenu" class="submenu">
+            <div class="menu-item" onclick="filterCategory('Tops')">Tops</div>
+            <div class="menu-item" onclick="filterCategory('Bottoms')">Bottoms</div>
+            <div class="menu-item" onclick="filterCategory('Underwears')">Underwears</div>
+        </div>
+        <div class="menu-item" onclick="showContact()">📞 Contact</div>
+    </nav>
 
-    <!-- Search -->
-    <div id="search-bar" style="display:none; text-align:center; margin-top:90px;">
-        <input type="text" id="searchInput" placeholder="Search..." oninput="handleSearch()">
-    </div>
-
-    <!-- Main Display -->
-    <div id="main-content-area" class="product-grid"></div>
+    <main id="main-content" class="product-grid"></main>
 
     <script>
-        const API_URL = 'https://script.google.com/macros/s/AKfycbxWJdQVK5lYiQsm5V_MDuXF3aF2s5RlPjeXxZpOXYO_XW_xnI17e818WCv4-rnziU0-0g/exec'; 
+        const API_URL = 'https://script.google.com/macros/s/AKfycbxWJdQVK5lYiQsm5V_MDuXF3aF2s5RlPjeXxZpOXYO_XW_xnI17e818WCv4-rnziU0-0g/exec';
         let allProducts = [];
 
-        async function loadProducts() {
+        async function init() {
             const res = await fetch(API_URL + '?action=getProducts');
-            const result = await res.json();
-            if (result.status === 'success') {
-                allProducts = result.data;
-                renderGrid(allProducts);
-            }
+            const data = await res.json();
+            allProducts = data.data;
+            goHome();
         }
 
         function renderGrid(products) {
-            const container = document.getElementById('main-content-area');
-            container.innerHTML = products.map(p => `
+            document.getElementById('main-content').innerHTML = products.map(p => `
                 <div class="product-card">
                     ${isNewItem(p.dateAdded) ? '<div class="badge-new">NEW IN</div>' : ''}
-                    <img src="${p.image}" class="product-image">
-                    <h3>${p.name}</h3>
-                    <p>฿${p.price}</p>
-                    <button class="btn-retro" onclick="alert('Details for ${p.name}')">DETAILS</button>
+                    <img src="${p.Picture}" style="width:100%; height:200px; object-fit:cover;">
+                    <h3>${p["Product Name"]}</h3>
+                    <p>฿${p.Price}</p>
                 </div>
             `).join('');
         }
 
-        function isNewItem(dateString) {
-            if(!dateString) return false;
-            return (new Date() - new Date(dateString)) / (1000 * 60 * 60 * 24) <= 90;
+        function isNewItem(dateStr) {
+            if(!dateStr) return false;
+            return (new Date() - new Date(dateStr)) / (1000*60*60*24) <= 90;
         }
 
-        function filterNewIn() {
-            renderGrid(allProducts.filter(p => isNewItem(p.dateAdded)));
+        function goHome() { 
+            renderGrid(allProducts.slice(0, 3)); 
+            document.getElementById('sidebar').classList.remove('open');
         }
 
-        function filterCategory(cat) {
-            renderGrid(allProducts.filter(p => p.type === cat));
-        }
-
-        function handleSearch() {
-            const kw = document.getElementById('searchInput').value.toLowerCase();
-            renderGrid(allProducts.filter(p => p.name.toLowerCase().includes(kw)));
-        }
-
+        function filterNewIn() { renderGrid(allProducts.filter(p => isNewItem(p.dateAdded))); toggleSidebar(); }
+        function filterCategory(cat) { renderGrid(allProducts.filter(p => p["Product type"] === cat)); toggleSidebar(); }
         function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); }
+        
+        function showContact() {
+            document.getElementById('main-content').innerHTML = `
+                <div id="contact-section">
+                    <h2>Turning Turtle Shop</h2>
+                    <p>Tel. 096-7695656</p>
+                    <p><a href="https://www.instagram.com/turningtur.tle/">Instagram</a> | <a href="https://www.facebook.com/profile.php?id=61591955442495">Facebook</a></p>
+                    <a href="mailto:turningturtle.shop@gmail.com">📧 Email us</a>
+                </div>`;
+            toggleSidebar();
+        }
 
-        loadProducts();
+        init();
     </script>
 </body>
 </html>
