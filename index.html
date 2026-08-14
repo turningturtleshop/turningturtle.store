@@ -203,11 +203,32 @@
 
         async function initApp() {
             try {
-                const resProd = await fetch(API_URL_BASE + '?action=getProducts');
-                const jsonProd = await resProd.json();
-                const resShip = await fetch(API_URL_BASE + '?action=getShipment');
-                const jsonShip = await resShip.json();
-                
+                let jsonProd, jsonShip;
+
+                // 📍 1. เช็คว่ามีความจำเก่า (Cache) เก็บไว้ในเครื่องหรือเปล่า? (ใช้ชื่อเดียวกับหน้า Shop เลย)
+                const cachedProducts = sessionStorage.getItem('turtle_products');
+                const cachedShipment = sessionStorage.getItem('turtle_shipment');
+
+                if (cachedProducts && cachedShipment) {
+                    // ถ้ามีของใน Cache ให้หยิบมาใช้เลย ไวปรื๊ด! 🐢💨
+                    console.log("🐢 โหลดข้อมูลจาก Cache แบบไม่กวน Apps Script!");
+                    jsonProd = JSON.parse(cachedProducts);
+                    jsonShip = JSON.parse(cachedShipment);
+                } else {
+                    // ถ้าไม่มี ค่อยวิ่งไปดึงข้อมูลจาก Google Sheets
+                    console.log("⏳ ดึงข้อมูลใหม่จาก Google Sheets...");
+                    const resProd = await fetch(API_URL_BASE + '?action=getProducts');
+                    jsonProd = await resProd.json();
+                    
+                    const resShip = await fetch(API_URL_BASE + '?action=getShipment');
+                    jsonShip = await resShip.json();
+
+                    // 📍 2. ดึงเสร็จแล้ว แอบจดใส่ Cache ไว้ใช้รอบหน้า
+                    sessionStorage.setItem('turtle_products', JSON.stringify(jsonProd));
+                    sessionStorage.setItem('turtle_shipment', JSON.stringify(jsonShip));
+                }
+
+                // --- 📍 3. ด้านล่างนี้คือโค้ดเดิมของหน้า Home ทั้งหมด ---
                 shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
                 shipmentRates.forEach(rate => {
@@ -232,10 +253,11 @@
                     globalGroupedProducts = groups;
                     renderHomeProducts();
                 }
-            } catch (err) {}
+            } catch (err) {
+                console.error("Error loading app:", err);
+            }
             updateCartCount();
         }
-
         function renderHomeProducts() {
             const container = document.getElementById('product-container');
             container.innerHTML = ''; 
