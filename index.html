@@ -103,7 +103,7 @@
         </div>
     </div>
 
-    <!-- Modal ตะกร้า & ชำระเงิน (อัปเดตใหม่) -->
+    <!-- Modal ตะกร้า & ชำระเงิน -->
     <div id="cart-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="absolute inset-0 bg-black opacity-60" onclick="closeModal('cart-modal')"></div>
         <div class="retro-window w-11/12 md:w-3/4 max-h-[90vh] overflow-y-auto relative z-10 flex flex-col">
@@ -135,10 +135,10 @@
                             <div class="flex justify-between mt-2 text-lg"><span>TOTAL:</span><span id="grand-total" class="text-blue-800">฿0</span></div>
                         </div>
 
-                        <!-- 🟢 กล่องแสดงวิธีชำระเงิน (เปลี่ยนตามประเทศ) -->
+                        <!-- กล่องแสดงวิธีชำระเงิน -->
                         <div id="payment-info-box" class="bg-blue-50 border border-blue-300 p-2 mt-2 hidden text-center"></div>
 
-                        <!-- 🟢 กล่องอัปโหลดสลิป -->
+                        <!-- กล่องอัปโหลดสลิป -->
                         <div id="slip-upload-box" class="mt-2 hidden bg-gray-100 p-2 border border-dashed border-black">
                             <label class="block text-xs font-bold mb-1">Attach Payment Receipt:</label>
                             <input type="file" id="slip-file" accept="image/*" class="w-full text-xs cursor-pointer" onchange="previewSlip(event)">
@@ -155,19 +155,30 @@
     </div>
 
     <script>
-        // --- ส่วนควบคุมหลักเหมือนเดิม ---
         let currentLang = 'EN';
         const exchangeRate = 35; 
 
+        // 🟢 อัปเดต: ระบบเปลี่ยนภาษาให้ทำงานทันที
         function toggleLanguage() {
             currentLang = currentLang === 'EN' ? 'TH' : 'EN';
             document.getElementById('lang-btn').innerText = currentLang === 'EN' ? 'EN / $' : 'TH / ฿';
-            document.querySelector('.lang-home').innerText = currentLang === 'EN' ? 'Home' : 'หน้าแรก';
-            document.querySelector('.lang-new').innerText = currentLang === 'EN' ? 'New in' : 'สินค้าใหม่';
-            document.querySelector('.lang-shop').innerText = currentLang === 'EN' ? 'Shop all' : 'สินค้าทั้งหมด';
-            document.querySelector('.lang-contact').innerText = currentLang === 'EN' ? 'Contact' : 'ติดต่อเรา';
-            renderHomeProducts(); updateCartCount();
-            if(!document.getElementById('cart-modal').classList.contains('hidden')) renderCart();
+            
+            const langHome = document.querySelector('.lang-home');
+            if(langHome) langHome.innerText = currentLang === 'EN' ? 'Home' : 'หน้าแรก';
+            
+            const langShop = document.querySelector('.lang-shop');
+            if(langShop) langShop.innerText = currentLang === 'EN' ? 'Shop all' : 'สินค้าทั้งหมด';
+            
+            const langContact = document.querySelector('.lang-contact');
+            if(langContact) langContact.innerText = currentLang === 'EN' ? 'Contact' : 'ติดต่อเรา';
+            
+            if(typeof renderHomeProducts === 'function') renderHomeProducts();
+            
+            updateCartCount();
+            
+            if(!document.getElementById('cart-modal').classList.contains('hidden')) {
+                renderCart();
+            }
         }
 
         function formatPrice(thbPrice) {
@@ -195,7 +206,6 @@
 
         function openCart() { renderCart(); document.getElementById('cart-modal').classList.remove('hidden'); }
 
-        // 🚨 เอา URL ใหม่มาใส่ที่นี่!
         const API_URL_BASE = 'https://script.google.com/macros/s/AKfycby5GZoc9gO8ADjl1rjDhSbwicE0zk4oRRrgo-SHsnUMpnS-__rQAHlhyukYxcUuuSmNyA/exec';
         
         let globalGroupedProducts = {}; 
@@ -205,17 +215,14 @@
             try {
                 let jsonProd, jsonShip;
 
-                // 📍 1. เช็คว่ามีความจำเก่า (Cache) เก็บไว้ในเครื่องหรือเปล่า? (ใช้ชื่อเดียวกับหน้า Shop เลย)
                 const cachedProducts = sessionStorage.getItem('turtle_products');
                 const cachedShipment = sessionStorage.getItem('turtle_shipment');
 
                 if (cachedProducts && cachedShipment) {
-                    // ถ้ามีของใน Cache ให้หยิบมาใช้เลย ไวปรื๊ด! 🐢💨
                     console.log("🐢 โหลดข้อมูลจาก Cache แบบไม่กวน Apps Script!");
                     jsonProd = JSON.parse(cachedProducts);
                     jsonShip = JSON.parse(cachedShipment);
                 } else {
-                    // ถ้าไม่มี ค่อยวิ่งไปดึงข้อมูลจาก Google Sheets
                     console.log("⏳ ดึงข้อมูลใหม่จาก Google Sheets...");
                     const resProd = await fetch(API_URL_BASE + '?action=getProducts');
                     jsonProd = await resProd.json();
@@ -223,12 +230,10 @@
                     const resShip = await fetch(API_URL_BASE + '?action=getShipment');
                     jsonShip = await resShip.json();
 
-                    // 📍 2. ดึงเสร็จแล้ว แอบจดใส่ Cache ไว้ใช้รอบหน้า
                     sessionStorage.setItem('turtle_products', JSON.stringify(jsonProd));
                     sessionStorage.setItem('turtle_shipment', JSON.stringify(jsonShip));
                 }
 
-                // --- 📍 3. ด้านล่างนี้คือโค้ดเดิมของหน้า Home ทั้งหมด ---
                 shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
                 shipmentRates.forEach(rate => {
@@ -258,6 +263,7 @@
             }
             updateCartCount();
         }
+
         function renderHomeProducts() {
             const container = document.getElementById('product-container');
             container.innerHTML = ''; 
@@ -301,36 +307,53 @@
         }
         function removeItem(index) { cart.splice(index, 1); updateCartCount(); renderCart(); }
 
-        // --- 🟢 ระบบคำนวณเงิน + โชว์วิธีชำระเงินตามประเทศ ---
+        // 🟢 อัปเดต: ระบบคำนวณเงิน โชว์รูป QR ใหม่ และแปลง USD อัตโนมัติ
         function calculateShipping() {
             const selectedCountry = document.getElementById('cust-country').value;
             const subtotalTHB = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb')) || 0;
             const rateInfo = shipmentRates.find(r => r.countryEN === selectedCountry);
             let finalFeeTHB = 0;
+            let conditionText = "";
 
             if (rateInfo) {
                 finalFeeTHB = rateInfo.fee; 
                 document.getElementById('ship-platform').innerText = rateInfo.platform;
-                document.getElementById('ship-cond').innerText = `(${rateInfo.condition})`;
+                
+                conditionText = rateInfo.condition;
                 const numberMatch = rateInfo.condition.match(/\d+/); 
+                
                 if (numberMatch) {
                     const conditionAmount = parseInt(numberMatch[0]);
-                    if (rateInfo.condition.includes('<')) { if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; } 
-                    else if (subtotalTHB >= conditionAmount) { finalFeeTHB = 0; }
+                    
+                    // แปลง Minimum Order เป็น USD อัตโนมัติเมื่อเลือกภาษา EN
+                    if (currentLang === 'EN') {
+                        const usdAmt = (conditionAmount / exchangeRate).toFixed(2);
+                        conditionText = conditionText.replace(numberMatch[0], '$' + usdAmt);
+                    } else {
+                        conditionText = conditionText.replace(numberMatch[0], '฿' + conditionAmount);
+                    }
+
+                    if (rateInfo.condition.includes('<')) { 
+                        if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; 
+                    } else if (subtotalTHB >= conditionAmount) { 
+                        finalFeeTHB = 0; 
+                    }
                 }
+                
+                document.getElementById('ship-cond').innerText = `(${conditionText})`;
             }
+            
             document.getElementById('ship-fee').innerText = formatPrice(finalFeeTHB);
             document.getElementById('grand-total').innerText = formatPrice(subtotalTHB + finalFeeTHB);
 
-            // 🟢 แสดงวิธีชำระเงิน
             const payBox = document.getElementById('payment-info-box');
             const slipBox = document.getElementById('slip-upload-box');
             
             if(selectedCountry.toLowerCase() === 'thailand') {
                 payBox.innerHTML = `
                     <p class="text-sm font-bold text-blue-800">PromptPay QR Code</p>
-                    <img src="https://i.postimg.cc/15w5LypF/7763E006-D927-4A3E-BC60-D7904417EB1E.jpg" class="w-32 h-32 mx-auto my-2 border-2 border-black">
-                    <p class="text-xs">Scan to pay <b>฿${subtotalTHB + finalFeeTHB}</b></p>
+                    <img src="https://i.postimg.cc/YSD8w90Y/7763E006-D927-4A3E-BC60-D7904417EB1E.jpg" class="w-48 h-48 mx-auto my-2 border-2 border-black object-contain p-1 bg-white">
+                    <p class="text-xs">Scan to pay <b class="text-red-600 text-lg">฿${subtotalTHB + finalFeeTHB}</b></p>
                 `;
             } else {
                 payBox.innerHTML = `
@@ -344,6 +367,7 @@
                     </div>
                 `;
             }
+            
             if(cart.length > 0) {
                 payBox.classList.remove('hidden');
                 slipBox.classList.remove('hidden');
@@ -353,7 +377,6 @@
             }
         }
 
-        // --- 🟢 ระบบแปลงไฟล์รูปสลิปเป็น Base64 ---
         let currentSlipBase64 = '';
         function previewSlip(event) {
             const file = event.target.files[0];
@@ -367,7 +390,6 @@
             reader.readAsDataURL(file);
         }
 
-        // --- 🟢 ระบบส่งคำสั่งซื้อ ---
         async function placeOrder() {
             const name = document.getElementById('cust-name').value;
             const phone = document.getElementById('cust-phone').value;
@@ -406,7 +428,6 @@
                     alert(`Order Placed Successfully!\nYour Order ID: ${result.message}`);
                     cart = []; updateCartCount();
                     
-                    // Reset Form
                     document.getElementById('cust-name').value = ''; document.getElementById('cust-phone').value = '';
                     document.getElementById('cust-addr').value = ''; document.getElementById('slip-file').value = '';
                     document.getElementById('slip-preview').classList.add('hidden'); currentSlipBase64 = '';
@@ -429,7 +450,6 @@
         }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
         
-        // Sidebar Controls
         document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
         const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
         document.getElementById('close-btn').addEventListener('click', closeSidebar); document.getElementById('overlay').addEventListener('click', closeSidebar);
@@ -438,4 +458,4 @@
         initApp();
     </script>
 </body>
-</html> 
+</html>
