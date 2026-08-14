@@ -28,7 +28,7 @@
             <button onclick="alert('Please go back to Home or Shop to view your cart!')" class="retro-btn p-1 bg-red-500 text-white hover:bg-red-400 relative">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
             </button>
-            <button class="retro-btn px-2 py-1 text-xs font-bold bg-white">EN / $</button>
+            <button id="lang-btn" onclick="toggleLanguage()" class="retro-btn px-2 py-1 text-xs font-bold bg-white">EN / $</button>
         </div>
     </header>
 
@@ -37,17 +37,16 @@
         <div class="retro-window flex-1 flex flex-col shadow-2xl">
             <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Menu.exe</span><button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 font-bold">X</button></div>
             <nav class="p-3 space-y-3 retro-content m-2 flex-1">
-                <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1">Home</a>
-                <!-- 🚫 ซ่อน New in ชั่วคราว -->
+                <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 lang-home">Home</a>
                 <div>
-                    <button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center"><span>Shop all</span><span class="text-xs">▼</span></button>
+                    <button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center"><span class="lang-shop">Shop all</span><span class="text-xs">▼</span></button>
                     <div id="shop-submenu" class="pl-4 mt-1 space-y-1 hidden bg-yellow-100 border-2 border-black p-2">
                         <a href="shop.html?type=Tops" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Tops</a>
                         <a href="shop.html?type=Bottoms" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Bottoms</a>
                         <a href="shop.html?type=Underwears" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Underwears</a>
                     </div>
                 </div>
-                <a href="contact.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 bg-blue-200">Contact</a>
+                <a href="contact.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 bg-blue-200 lang-contact">Contact</a>
             </nav>
         </div>
     </div>
@@ -61,10 +60,34 @@
             <div class="retro-content p-6 m-2 text-center h-full">
                 <h1 class="text-4xl font-bold font-pixel text-blue-800 drop-shadow-md mb-6">TURNING TURTLE</h1>
                 <div class="bg-gray-50 border-2 border-dashed border-gray-400 p-4 text-left space-y-4">
-                    <div class="flex items-center space-x-4"><span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">TEL</span><a href="tel:0967695656" class="font-bold hover:text-red-500">096-7695656</a></div>
-                    <div class="flex items-center space-x-4"><span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">IG</span><a href="https://www.instagram.com/turningtur.tle" target="_blank" class="font-bold text-blue-600 hover:underline">@turningtur.tle</a></div>
-                    <div class="flex items-center space-x-4"><span class="bg-green-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">LINE</span><a href="#" target="_blank" class="font-bold text-green-700 hover:underline">@turningturtle (ใส่ลิ้งค์จริง)</a></div>
-                    <div class="flex items-center space-x-4"><span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">MAIL</span><a href="mailto:turningturtle.shop@gmail.com" class="font-bold text-blue-600 hover:underline break-all text-sm md:text-base">turningturtle.shop@gmail.com</a></div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">TEL</span>
+                        <a href="tel:0967695656" class="font-bold hover:text-red-500">096-7695656</a>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">IG</span>
+                        <a href="https://www.instagram.com/turningtur.tle" target="_blank" class="font-bold text-blue-600 hover:underline">@turningtur.tle</a>
+                    </div>
+                    
+                    <!-- 📍 LINE -->
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-green-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">LINE</span>
+                        <a href="https://line.me/ti/p/~@turningturtle" target="_blank" class="font-bold text-green-700 hover:underline">@turningturtle</a>
+                    </div>
+                    
+                    <!-- 📍 FB -->
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-blue-600 text-white px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">FB</span>
+                        <a href="https://www.facebook.com/turningturtleshop" target="_blank" class="font-bold text-blue-800 hover:underline">Turning Turtle Shop</a>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4">
+                        <span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">MAIL</span>
+                        <a href="mailto:turningturtle.shop@gmail.com" class="font-bold text-blue-600 hover:underline break-all text-sm md:text-base">turningturtle.shop@gmail.com</a>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -97,12 +120,31 @@
     </main>
 
     <script>
+        // ระบบเปลี่ยนภาษาสำหรับหน้า Contact
+        let currentLang = 'EN';
+        function toggleLanguage() {
+            currentLang = currentLang === 'EN' ? 'TH' : 'EN';
+            const langBtn = document.getElementById('lang-btn');
+            if(langBtn) langBtn.innerText = currentLang === 'EN' ? 'EN / $' : 'TH / ฿';
+            
+            const langHome = document.querySelector('.lang-home');
+            if(langHome) langHome.innerText = currentLang === 'EN' ? 'Home' : 'หน้าแรก';
+            
+            const langShop = document.querySelector('.lang-shop');
+            if(langShop) langShop.innerText = currentLang === 'EN' ? 'Shop all' : 'สินค้าทั้งหมด';
+            
+            const langContact = document.querySelector('.lang-contact');
+            if(langContact) langContact.innerText = currentLang === 'EN' ? 'Contact' : 'ติดต่อเรา';
+        }
+
+        // ระบบเปิดปิดเมนู
         document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
         const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
         document.getElementById('close-btn').addEventListener('click', closeSidebar);
         document.getElementById('overlay').addEventListener('click', closeSidebar);
         document.getElementById('shop-dropdown-btn').addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
 
+        // URL API ของ Google Apps Script
         const API_URL_BASE = 'https://script.google.com/macros/s/AKfycby5GZoc9gO8ADjl1rjDhSbwicE0zk4oRRrgo-SHsnUMpnS-__rQAHlhyukYxcUuuSmNyA/exec';
 
         async function submitReview() {
@@ -136,4 +178,4 @@
         }
     </script>
 </body>
-</html> 
+</html>
