@@ -207,7 +207,7 @@
             document.getElementById('page-title').innerText = productType.toUpperCase();
         }
 
-        // 🟢 อัปเดต: ระบบความจำ Cache 
+        // 🟢 อัปเดต: ระบบความจำ Cache และสลับรูปหลัก (คอลัมน์ L) สำหรับหน้า Home
         async function initApp() {
             try {
                 let jsonProd, jsonShip;
@@ -230,34 +230,34 @@
                     sessionStorage.setItem('turtle_products', JSON.stringify(jsonProd));
                     sessionStorage.setItem('turtle_shipment', JSON.stringify(jsonShip));
                 }
-                
+
                 shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
-                shipmentRates.forEach(rate => { countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`; });
+                shipmentRates.forEach(rate => {
+                    countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`;
+                });
 
                 if (jsonProd.status === 'success') {
-                    let filteredProducts = jsonProd.data;
-                    if (productType) {
-                        filteredProducts = jsonProd.data.filter(item => item.type && item.type.toLowerCase() === productType.toLowerCase());
-                    }
-
                     const groups = {};
-                    filteredProducts.forEach(p => {
+                    jsonProd.data.forEach(p => {
                         let nameKey = p.name.trim().toUpperCase();
                         if(nameKey === 'WOOL - EYES') nameKey = 'WOOL-EYES';
                         if(!groups[nameKey]) {
                             groups[nameKey] = {
-                                name: p.name, image: p.image, hoverImage: (p.images && p.images[1]) ? p.images[1] : p.image,
-                                descImage: (p.images && p.images[2]) ? p.images[2] : '', price: p.price,
-                                stock: 0, colors: new Set(), sizes: new Set()
+                                name: p.name, 
+                                // 📍 สลับรูปตรงนี้: ให้ image หลักดึงรูปที่ 2 (คอลัมน์ L) และ hover ดึงรูปแรก
+                                image: (p.images && p.images[1]) ? p.images[1] : p.image, 
+                                hoverImage: p.image,
+                                descImage: (p.images && p.images[2]) ? p.images[2] : '', 
+                                price: p.price,
+                                colors: new Set(), sizes: new Set()
                             };
                         }
-                        groups[nameKey].stock += (p.stock || 0);
                         groups[nameKey].colors.add(p.color);
                         groups[nameKey].sizes.add(p.size);
                     });
                     globalGroupedProducts = groups;
-                    renderShopProducts();
+                    renderHomeProducts();
                 }
             } catch (err) {
                 console.error("Error loading app:", err);
