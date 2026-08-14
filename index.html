@@ -211,6 +211,7 @@
         let globalGroupedProducts = {}; 
         let shipmentRates = [];
 
+        // 🟢 อัปเดต: ระบบความจำ Cache และสลับรูปหลัก (คอลัมน์ L) สำหรับหน้า Home
         async function initApp() {
             try {
                 let jsonProd, jsonShip;
@@ -247,8 +248,12 @@
                         if(nameKey === 'WOOL - EYES') nameKey = 'WOOL-EYES';
                         if(!groups[nameKey]) {
                             groups[nameKey] = {
-                                name: p.name, image: p.image, hoverImage: (p.images && p.images[1]) ? p.images[1] : p.image,
-                                descImage: (p.images && p.images[2]) ? p.images[2] : '', price: p.price,
+                                name: p.name, 
+                                // 📍 สลับรูปตรงนี้: ให้ image หลักดึงรูปที่ 2 (คอลัมน์ L) และ hover ดึงรูปแรก
+                                image: (p.images && p.images[1]) ? p.images[1] : p.image, 
+                                hoverImage: p.image,
+                                descImage: (p.images && p.images[2]) ? p.images[2] : '', 
+                                price: p.price,
                                 colors: new Set(), sizes: new Set()
                             };
                         }
