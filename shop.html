@@ -78,13 +78,27 @@
             <div class="retro-titlebar"><span id="modal-title" class="font-pixel text-xl tracking-widest">Product.exe</span><button onclick="closeModal('product-modal')" class="retro-btn bg-red-500 text-white px-2 py-0 font-bold hover:bg-red-400">X</button></div>
             <div class="retro-content p-4 m-2 flex-1 bg-white">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- รูปภาพซ้ายมือ -->
                     <div class="space-y-2">
-                        <div class="bg-gray-100 border-2 border-gray-300 h-64 flex justify-center overflow-hidden"><img id="modal-img" src="" class="object-cover h-full"></div>
+                        <!-- รูปหลัก -->
+                        <div class="bg-gray-100 border-2 border-gray-300 h-64 flex justify-center overflow-hidden relative group cursor-pointer" onclick="document.getElementById('modal-img').click()">
+                            <img id="modal-img" src="" class="object-cover h-full">
+                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 flex items-center justify-center transition-all pointer-events-none">
+                                <span class="text-white opacity-0 group-hover:opacity-100 font-bold bg-black bg-opacity-50 px-2 py-1 rounded">🔍 Zoom</span>
+                            </div>
+                        </div>
+                        
+                        <!-- รูปเล็ก (Thumbnails) -->
+                        <div id="modal-thumbnails" class="flex justify-center space-x-2 p-1"></div>
+
+                        <!-- รูป Detail -->
                         <div id="modal-desc-box" class="bg-gray-100 border-2 border-dashed border-gray-300 p-1 hidden">
-                            <p class="text-xs font-bold text-center bg-yellow-200 mb-1">Details</p>
-                            <img id="modal-desc-img" src="" class="w-full object-contain">
+                            <p class="text-xs font-bold text-center bg-yellow-200 mb-1 cursor-pointer" onclick="document.getElementById('modal-desc-img').click()">Details (🔍 Click to Zoom)</p>
+                            <img id="modal-desc-img" src="" class="w-full object-contain cursor-pointer hover:opacity-80 transition-opacity">
                         </div>
                     </div>
+                    
+                    <!-- ข้อมูลขวามือ -->
                     <div class="flex flex-col space-y-4">
                         <h2 id="modal-name" class="text-3xl font-pixel font-bold text-blue-800 uppercase"></h2>
                         <p id="modal-price" class="text-2xl font-pixel text-red-600 font-bold" data-thb="0"></p>
@@ -101,6 +115,12 @@
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- 🔍 Modal สำหรับ Zoom ดูรูปเต็มจอ -->
+    <div id="zoom-modal" class="fixed inset-0 z-[60] flex items-center justify-center hidden bg-black bg-opacity-80 backdrop-blur-sm" onclick="closeModal('zoom-modal')">
+        <button class="absolute top-4 right-4 text-white font-pixel text-4xl hover:text-red-500 cursor-pointer">&times;</button>
+        <img id="zoomed-img" src="" class="max-w-[95vw] max-h-[95vh] object-contain border-4 border-white shadow-2xl">
     </div>
 
     <!-- Modal ตะกร้า & ชำระเงิน -->
@@ -149,7 +169,6 @@
         let currentLang = 'EN';
         const exchangeRate = 35; 
 
-        // 🟢 อัปเดต: ระบบเปลี่ยนภาษาให้ทำงานทันที
         function toggleLanguage() {
             currentLang = currentLang === 'EN' ? 'TH' : 'EN';
             document.getElementById('lang-btn').innerText = currentLang === 'EN' ? 'EN / $' : 'TH / ฿';
@@ -164,12 +183,8 @@
             if(langContact) langContact.innerText = currentLang === 'EN' ? 'Contact' : 'ติดต่อเรา';
             
             if(typeof renderShopProducts === 'function') renderShopProducts();
-            
             updateCartCount();
-            
-            if(!document.getElementById('cart-modal').classList.contains('hidden')) {
-                renderCart();
-            }
+            if(!document.getElementById('cart-modal').classList.contains('hidden')) renderCart();
         }
 
         function formatPrice(thbPrice) {
@@ -207,26 +222,20 @@
             document.getElementById('page-title').innerText = productType.toUpperCase();
         }
 
-        // 🟢 อัปเดต: ระบบความจำ Cache และสลับรูปหลัก (คอลัมน์ L)
         async function initApp() {
             try {
                 let jsonProd, jsonShip;
-
                 const cachedProducts = sessionStorage.getItem('turtle_products');
                 const cachedShipment = sessionStorage.getItem('turtle_shipment');
 
                 if (cachedProducts && cachedShipment) {
-                    console.log("🐢 โหลดข้อมูลจาก Cache แบบไม่กวน Apps Script!");
                     jsonProd = JSON.parse(cachedProducts);
                     jsonShip = JSON.parse(cachedShipment);
                 } else {
-                    console.log("⏳ ดึงข้อมูลใหม่จาก Google Sheets...");
                     const resProd = await fetch(API_URL_BASE + '?action=getProducts');
                     jsonProd = await resProd.json();
-                    
                     const resShip = await fetch(API_URL_BASE + '?action=getShipment');
                     jsonShip = await resShip.json();
-
                     sessionStorage.setItem('turtle_products', JSON.stringify(jsonProd));
                     sessionStorage.setItem('turtle_shipment', JSON.stringify(jsonShip));
                 }
@@ -245,20 +254,31 @@
                     filteredProducts.forEach(p => {
                         let nameKey = p.name.trim().toUpperCase();
                         if(nameKey === 'WOOL - EYES') nameKey = 'WOOL-EYES';
+                        
                         if(!groups[nameKey]) {
                             groups[nameKey] = {
                                 name: p.name, 
-                                // 📍 สลับรูปตรงนี้: ให้ image หลักดึงรูปที่ 2 (คอลัมน์ L) และ hover ดึงรูปแรก
                                 image: (p.images && p.images[1]) ? p.images[1] : p.image, 
                                 hoverImage: p.image,
                                 descImage: (p.images && p.images[2]) ? p.images[2] : '', 
                                 price: p.price,
-                                stock: 0, colors: new Set(), sizes: new Set()
+                                stock: 0, 
+                                colors: new Set(), 
+                                sizes: new Set(),
+                                colorData: {} // 📍 แอบเก็บรูปตามสีไว้ตรงนี้
                             };
                         }
                         groups[nameKey].stock += (p.stock || 0);
                         groups[nameKey].colors.add(p.color);
                         groups[nameKey].sizes.add(p.size);
+                        
+                        // 📍 บันทึกรูปของแต่ละสี (คอลัมน์ L และ A)
+                        if (!groups[nameKey].colorData[p.color]) {
+                            groups[nameKey].colorData[p.color] = {
+                                imgL: (p.images && p.images[1]) ? p.images[1] : p.image,
+                                imgA: p.image
+                            };
+                        }
                     });
                     globalGroupedProducts = groups;
                     renderShopProducts();
@@ -300,6 +320,69 @@
             });
         }
 
+        // 🔍 ฟังก์ชันเปิด Zoom แบบเต็มจอ
+        function openZoomModal(src) {
+            if(!src) return;
+            document.getElementById('zoomed-img').src = src;
+            document.getElementById('zoom-modal').classList.remove('hidden');
+        }
+
+        // 📍 ฟังก์ชันจัดการเวลากดเปลี่ยนสี
+        function updateModalImages(colorName) {
+            const group = window.currentModalGroup;
+            if(!group || !group.colorData[colorName]) return;
+            
+            const cData = group.colorData[colorName];
+            const mainImg = document.getElementById('modal-img');
+            
+            // ตั้งค่าให้รูปหลักเป็นคอลัมน์ L (ถ้าไม่มีให้ใช้คอลัมน์ A)
+            mainImg.src = cData.imgL || cData.imgA;
+            mainImg.setAttribute('onclick', `openZoomModal(this.src)`);
+            
+            // สร้างรูปเล็ก Thumbnail 2 รูป
+            document.getElementById('modal-thumbnails').innerHTML = `
+                <img src="${cData.imgL}" onclick="document.getElementById('modal-img').src=this.src; document.getElementById('modal-img').setAttribute('onclick', 'openZoomModal(this.src)')" class="w-14 h-14 object-cover border-2 border-gray-400 cursor-pointer hover:border-blue-600">
+                <img src="${cData.imgA}" onclick="document.getElementById('modal-img').src=this.src; document.getElementById('modal-img').setAttribute('onclick', 'openZoomModal(this.src)')" class="w-14 h-14 object-cover border-2 border-gray-400 cursor-pointer hover:border-blue-600">
+            `;
+        }
+
+        function openProductModal(nameKey) {
+            const group = globalGroupedProducts[nameKey];
+            if(!group) return;
+            
+            document.getElementById('modal-name').innerText = group.name; 
+            document.getElementById('modal-price').innerText = formatPrice(group.price);
+            document.getElementById('modal-price').setAttribute('data-thb', group.price); 
+            
+            // จัดการรูป Description
+            const descBox = document.getElementById('modal-desc-box');
+            if(group.descImage) { 
+                document.getElementById('modal-desc-img').src = group.descImage; 
+                document.getElementById('modal-desc-img').setAttribute('onclick', `openZoomModal('${group.descImage}')`);
+                descBox.classList.remove('hidden'); 
+            } else {
+                descBox.classList.add('hidden'); 
+            }
+            
+            // ดึงสีและไซส์มาใส่ใน Dropdown
+            const colorSelect = document.getElementById('modal-color');
+            colorSelect.innerHTML = Array.from(group.colors).map(c => `<option value="${c}">${c}</option>`).join('');
+            document.getElementById('modal-size').innerHTML = Array.from(group.sizes).map(s => `<option value="${s}">${s}</option>`).join('');
+            
+            // 📍 จดจำสินค้าปัจจุบันไว้ เพื่อใช้ตอนสลับสี
+            window.currentModalGroup = group;
+            
+            // 📍 สั่งให้โหลดรูปล่าสุดทันทีที่เปิด และผูก Event ให้เปลี่ยนรูปเมื่อเปลี่ยนสี
+            if(group.colors.size > 0) {
+                updateModalImages(colorSelect.value);
+            }
+            colorSelect.onchange = function() { updateModalImages(this.value); };
+
+            document.getElementById('product-modal').classList.remove('hidden');
+        }
+
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
         function renderCart() {
             const cartItemsDiv = document.getElementById('cart-items');
             cartItemsDiv.innerHTML = '';
@@ -325,7 +408,6 @@
         }
         function removeItem(index) { cart.splice(index, 1); updateCartCount(); renderCart(); }
 
-        // 🟢 อัปเดต: ระบบคำนวณเงิน โชว์รูป QR ใหม่ และแปลง USD อัตโนมัติ
         function calculateShipping() {
             const selectedCountry = document.getElementById('cust-country').value;
             const subtotalTHB = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb')) || 0;
@@ -336,28 +418,23 @@
             if (rateInfo) {
                 finalFeeTHB = rateInfo.fee; 
                 document.getElementById('ship-platform').innerText = rateInfo.platform;
-                
                 conditionText = rateInfo.condition;
                 const numberMatch = rateInfo.condition.match(/\d+/); 
                 
                 if (numberMatch) {
                     const conditionAmount = parseInt(numberMatch[0]);
-                    
-                    // แปลง Minimum Order เป็น USD อัตโนมัติเมื่อเลือกภาษา EN
                     if (currentLang === 'EN') {
                         const usdAmt = (conditionAmount / exchangeRate).toFixed(2);
                         conditionText = conditionText.replace(numberMatch[0], '$' + usdAmt);
                     } else {
                         conditionText = conditionText.replace(numberMatch[0], '฿' + conditionAmount);
                     }
-
                     if (rateInfo.condition.includes('<')) { 
                         if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; 
                     } else if (subtotalTHB >= conditionAmount) { 
                         finalFeeTHB = 0; 
                     }
                 }
-                
                 document.getElementById('ship-cond').innerText = `(${conditionText})`;
             }
             
@@ -386,13 +463,8 @@
                 `;
             }
             
-            if(cart.length > 0) {
-                payBox.classList.remove('hidden');
-                slipBox.classList.remove('hidden');
-            } else {
-                payBox.classList.add('hidden');
-                slipBox.classList.add('hidden');
-            }
+            if(cart.length > 0) { payBox.classList.remove('hidden'); slipBox.classList.remove('hidden'); } 
+            else { payBox.classList.add('hidden'); slipBox.classList.add('hidden'); }
         }
 
         let currentSlipBase64 = '';
@@ -413,6 +485,7 @@
             const phone = document.getElementById('cust-phone').value;
             const addr = document.getElementById('cust-addr').value;
             const country = document.getElementById('cust-country').value;
+            
             if(!name || !addr || !phone) { alert("Please enter Name, Phone, and Address."); return; }
             if(cart.length === 0) { alert("Cart is empty."); return; }
             if(!currentSlipBase64) { alert("Please attach your payment receipt / slip."); return; }
@@ -453,19 +526,6 @@
             btn.innerText = "PLACE ORDER_"; btn.disabled = false;
         }
 
-        function openProductModal(nameKey) {
-            const group = globalGroupedProducts[nameKey];
-            if(!group) return;
-            document.getElementById('modal-name').innerText = group.name; document.getElementById('modal-price').innerText = formatPrice(group.price);
-            document.getElementById('modal-price').setAttribute('data-thb', group.price); document.getElementById('modal-img').src = group.image || 'https://via.placeholder.com/400';
-            const descBox = document.getElementById('modal-desc-box');
-            if(group.descImage) { document.getElementById('modal-desc-img').src = group.descImage; descBox.classList.remove('hidden'); } else descBox.classList.add('hidden');
-            document.getElementById('modal-color').innerHTML = Array.from(group.colors).map(c => `<option value="${c}">${c}</option>`).join('');
-            document.getElementById('modal-size').innerHTML = Array.from(group.sizes).map(s => `<option value="${s}">${s}</option>`).join('');
-            document.getElementById('product-modal').classList.remove('hidden');
-        }
-        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
-        
         document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
         const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
         document.getElementById('close-btn').addEventListener('click', closeSidebar); document.getElementById('overlay').addEventListener('click', closeSidebar);
