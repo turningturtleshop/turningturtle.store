@@ -21,7 +21,7 @@
 </head>
 <body class="text-gray-900 overflow-x-hidden relative">
 
-    <!-- 📍 พื้นที่รองรับ Components ที่เราแยกไฟล์ไว้ -->
+    <!-- พื้นที่รองรับ Components ที่เราแยกไฟล์ไว้ -->
     <div id="header-container"></div>
     <div id="sidebar-container"></div>
     <div id="cart-modal-container"></div>
@@ -34,8 +34,10 @@
                     <h1 id="page-title" class="text-4xl font-bold font-pixel text-blue-800 drop-shadow-md">SHOP ALL</h1>
                     <span id="item-count" class="font-bold bg-yellow-400 px-2 border-2 border-black">Loading...</span>
                 </div>
-                <div id="product-container" class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="col-span-1 md:col-span-4 text-center py-10 bg-white border-2 border-dashed border-gray-400">
+                
+                <!-- 📍 ปรับโครงสร้างคอลัมน์ไม่ให้เบียดกัน -->
+                <div id="product-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+                    <div class="col-span-full text-center py-10 bg-white border-2 border-dashed border-gray-400">
                         <p class="text-lg font-bold text-blue-800 font-pixel animate-pulse">Booting System... Fetching Data from Mainframe [||||||||  ]</p>
                     </div>
                 </div>
@@ -50,7 +52,6 @@
             <div class="retro-titlebar"><span id="modal-title" class="font-pixel text-xl tracking-widest">Product.exe</span><button onclick="closeModal('product-modal')" class="retro-btn bg-red-500 text-white px-2 py-0 font-bold hover:bg-red-400">X</button></div>
             <div class="retro-content p-4 m-2 flex-1 bg-white">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- รูปภาพซ้ายมือ -->
                     <div class="space-y-2">
                         <div class="bg-gray-100 border-2 border-gray-300 h-64 flex justify-center overflow-hidden relative group cursor-pointer" onclick="document.getElementById('modal-img').click()">
                             <img id="modal-img" src="" class="object-cover h-full">
@@ -65,7 +66,6 @@
                         </div>
                     </div>
                     
-                    <!-- ข้อมูลขวามือ -->
                     <div class="flex flex-col space-y-4">
                         <h2 id="modal-name" class="text-3xl font-pixel font-bold text-blue-800 uppercase"></h2>
                         <p id="modal-price" class="text-2xl font-pixel text-red-600 font-bold" data-thb="0"></p>
@@ -96,6 +96,7 @@
 
         function toggleLanguage() {
             currentLang = currentLang === 'EN' ? 'TH' : 'EN';
+            
             const langBtn = document.getElementById('lang-btn');
             if(langBtn) langBtn.innerText = currentLang === 'EN' ? 'EN / $' : 'TH / ฿';
             
@@ -159,7 +160,6 @@
                     jsonProd = JSON.parse(cachedProducts);
                     jsonShip = JSON.parse(cachedShipment);
                 } else {
-                    // 📍 จุดที่แก้ไข: สั่งให้ยิง API ไปขอข้อมูลสินค้าและค่าส่ง "พร้อมกัน" (Promise.all)
                     const [resProd, resShip] = await Promise.all([
                         fetch(API_URL_BASE + '?action=getProducts'),
                         fetch(API_URL_BASE + '?action=getShipment')
@@ -175,7 +175,6 @@
                 shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
                 if(countrySelect) {
-                    // ล้างค่าเก่าก่อนเพื่อป้องกันการเบิ้ล
                     countrySelect.innerHTML = ''; 
                     shipmentRates.forEach(rate => {
                         countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`;
@@ -183,12 +182,17 @@
                 }
 
                 if (jsonProd.status === 'success') {
-                    // (โค้ดส่วนแยกหมวดหมู่สำหรับ shop.html หรือจัดกลุ่มสินค้า จะอยู่ตรงนี้ ให้คงของเดิมไว้ได้เลยครับ)
-                    // ... 
-                    
-                    // ตัวอย่างโค้ดสำหรับ index.html (ถ้าเป็นหน้า shop.html ก็ใช้โค้ดจัดกลุ่มแบบเดิมของหน้านั้น)
+                    // 📍 ดึงหมวดหมู่จาก URL เพื่อกรองสินค้า (ส่วนที่หายไปกลับมาแล้ว!)
+                    const urlParams = new URLSearchParams(window.location.search);
+                    productType = urlParams.get('type');
+
+                    let filteredProducts = jsonProd.data;
+                    if (productType) {
+                        filteredProducts = jsonProd.data.filter(item => item.type && item.type.toLowerCase() === productType.toLowerCase());
+                    }
+
                     const groups = {};
-                    jsonProd.data.forEach(p => {
+                    filteredProducts.forEach(p => {
                         let nameKey = p.name.trim().toUpperCase();
                         if(nameKey === 'WOOL - EYES') nameKey = 'WOOL-EYES';
                         if(!groups[nameKey]) {
@@ -217,9 +221,6 @@
                     });
                     globalGroupedProducts = groups;
                     
-                    // 📍 ถ้าแก้ใน index.html ให้เรียก renderHomeProducts()
-                    // 📍 ถ้าแก้ใน shop.html ให้เรียก renderShopProducts()
-                    if (typeof renderHomeProducts === 'function') renderHomeProducts();
                     if (typeof renderShopProducts === 'function') renderShopProducts();
                 }
             } catch (err) {
@@ -235,7 +236,7 @@
             document.getElementById('item-count').innerText = `Items found: ${keys.length}`;
             
             if(keys.length === 0) {
-                container.innerHTML = `<div class="col-span-4 text-center p-10 font-bold bg-white border-2 border-black">ไม่พบสินค้าในหมวดหมู่นี้</div>`;
+                container.innerHTML = `<div class="col-span-full text-center p-10 font-bold bg-white border-2 border-black">ไม่พบสินค้าในหมวดหมู่นี้</div>`;
                 return;
             }
 
@@ -245,16 +246,19 @@
                 const btnClass = isOutOfStock ? "bg-gray-400 text-gray-700 cursor-not-allowed" : "bg-yellow-400 hover:bg-yellow-300";
                 const btnText = isOutOfStock ? "OUT OF STOCK" : "VIEW DETAILS";
 
+                // 📍 ปรับความสูงกล่องและรูปให้สวยงาม จัดระเบียบข้อความ
                 container.innerHTML += `
-                    <div onclick="${isOutOfStock ? '' : `openProductModal('${key}')`}" class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform ${isOutOfStock ? '' : 'cursor-pointer'}">
-                        <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-48 overflow-hidden relative">
-                            <img src="${group.image}" loading="lazy" onmouseover="this.src='${group.hoverImage}'" onmouseout="this.src='${group.image}'" class="object-cover h-full transition-opacity duration-300">
-                            ${isOutOfStock ? '<div class="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center font-bold text-red-600 border-4 border-red-600 transform -rotate-12 text-xl">SOLD OUT</div>' : ''}
+                    <div onclick="${isOutOfStock ? '' : `openProductModal('${key}')`}" class="retro-window p-2 md:p-4 bg-white flex flex-col items-center hover:scale-105 transition-transform ${isOutOfStock ? '' : 'cursor-pointer'} h-full">
+                        <div class="retro-content w-full p-2 mb-2 md:mb-4 bg-gray-100 flex justify-center items-center h-40 md:h-64 overflow-hidden relative border-2 border-gray-300">
+                            <img src="${group.image}" loading="lazy" onmouseover="this.src='${group.hoverImage}'" onmouseout="this.src='${group.image}'" class="object-contain w-full h-full transition-opacity duration-300">
+                            ${isOutOfStock ? '<div class="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center font-bold text-red-600 border-4 border-red-600 transform -rotate-12 text-lg md:text-xl z-10">SOLD OUT</div>' : ''}
                         </div>
-                        <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${group.name}</h3>
-                        <div class="w-full bg-black h-px my-2"></div>
-                        <p class="font-pixel text-xl text-red-600 font-bold mb-2">${formatPrice(group.price)}</p>
-                        <button class="retro-btn font-bold px-2 py-1 w-full text-sm ${btnClass}" ${isOutOfStock ? 'disabled' : ''}>${btnText}</button>
+                        <div class="flex-1 w-full flex flex-col justify-end text-center">
+                            <h3 class="font-bold text-base md:text-xl text-blue-800 font-pixel tracking-wide uppercase mb-1 line-clamp-2">${group.name}</h3>
+                            <div class="w-full bg-black h-px my-1 md:my-2"></div>
+                            <p class="font-pixel text-lg md:text-2xl text-red-600 font-bold mb-2 md:mb-3">${formatPrice(group.price)}</p>
+                            <button class="retro-btn font-bold px-2 md:px-4 py-1 md:py-2 w-full text-xs md:text-base ${btnClass}" ${isOutOfStock ? 'disabled' : ''}>${btnText}</button>
+                        </div>
                     </div>`;
             });
         }
@@ -339,7 +343,6 @@
         }
         function removeItem(index) { cart.splice(index, 1); updateCartCount(); renderCart(); }
 
-        // 📍 ฟังก์ชันนี้ไว้รับค่าจาก Radio Button ของ Payment Method ตัวใหม่
         function updatePaymentMethod(radio) {
             document.getElementById('payment-method').value = radio.value;
             calculateShipping(); 
@@ -349,7 +352,10 @@
             const selectedCountry = document.getElementById('cust-country').value;
             const subtotalTHB = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb')) || 0;
             const rateInfo = shipmentRates.find(r => r.countryEN === selectedCountry);
-            const paymentMethod = document.getElementById('payment-method').value;
+            
+            const paymentMethodInput = document.getElementById('payment-method');
+            const paymentMethod = paymentMethodInput ? paymentMethodInput.value : 'Manual';
+            
             let finalFeeTHB = 0;
             let conditionText = "";
 
@@ -386,36 +392,38 @@
             const payBox = document.getElementById('payment-info-box');
             const slipBox = document.getElementById('slip-upload-box');
             
-            if (paymentMethod === 'Payso') {
-                payBox.innerHTML = `
-                    <p class="text-sm font-bold text-blue-800">Secure Online Payment</p>
-                    <p class="text-xs mt-2 text-gray-600">ระบบจะพาคุณไปยังหน้าชำระเงินออนไลน์ (รับบัตรเครดิต, PayPal, Alipay และอื่นๆ) หลังจากกด PLACE ORDER_</p>
-                `;
-                slipBox.classList.add('hidden'); // ซ่อนอัปโหลดสลิป
-            } else {
-                if(selectedCountry.toLowerCase() === 'thailand') {
+            if (payBox && slipBox) {
+                if (paymentMethod === 'Payso') {
                     payBox.innerHTML = `
-                        <p class="text-sm font-bold text-blue-800">PromptPay QR Code</p>
-                        <img src="https://i.postimg.cc/YSD8w90Y/7763E006-D927-4A3E-BC60-D7904417EB1E.jpg" class="w-48 h-48 mx-auto my-2 border-2 border-black object-contain p-1 bg-white">
-                        <p class="text-xs">Scan to pay <b class="text-red-600 text-lg">฿${subtotalTHB + finalFeeTHB}</b></p>
+                        <p class="text-sm font-bold text-blue-800">Secure Online Payment</p>
+                        <p class="text-xs mt-2 text-gray-600">ระบบจะพาคุณไปยังหน้าชำระเงินออนไลน์ (รับบัตรเครดิต, PayPal, Alipay และอื่นๆ) หลังจากกด PLACE ORDER_</p>
                     `;
+                    slipBox.classList.add('hidden'); 
                 } else {
-                    payBox.innerHTML = `
-                        <p class="text-sm font-bold text-blue-800 mb-1 border-b border-blue-300 pb-1">International Bank Transfer</p>
-                        <div class="text-left text-xs space-y-1 mt-2">
-                            <p><b>Bank:</b> Kasikornbank (KBank)</p>
-                            <p><b>Name:</b> Kairin Satjawiso</p>
-                            <p><b>Account No:</b> 236-188167-5</p>
-                            <p><b>SWIFT:</b> KASITHBK</p>
-                            <p class="text-red-600 mt-2">*Import taxes in your country are the buyer's responsibility.</p>
-                        </div>
-                    `;
+                    if(selectedCountry.toLowerCase() === 'thailand') {
+                        payBox.innerHTML = `
+                            <p class="text-sm font-bold text-blue-800">PromptPay QR Code</p>
+                            <img src="https://i.postimg.cc/YSD8w90Y/7763E006-D927-4A3E-BC60-D7904417EB1E.jpg" class="w-48 h-48 mx-auto my-2 border-2 border-black object-contain p-1 bg-white">
+                            <p class="text-xs">Scan to pay <b class="text-red-600 text-lg">฿${subtotalTHB + finalFeeTHB}</b></p>
+                        `;
+                    } else {
+                        payBox.innerHTML = `
+                            <p class="text-sm font-bold text-blue-800 mb-1 border-b border-blue-300 pb-1">International Bank Transfer</p>
+                            <div class="text-left text-xs space-y-1 mt-2">
+                                <p><b>Bank:</b> Kasikornbank (KBank)</p>
+                                <p><b>Name:</b> Kairin Satjawiso</p>
+                                <p><b>Account No:</b> 236-188167-5</p>
+                                <p><b>SWIFT:</b> KASITHBK</p>
+                                <p class="text-red-600 mt-2">*Import taxes in your country are the buyer's responsibility.</p>
+                            </div>
+                        `;
+                    }
+                    slipBox.classList.remove('hidden'); 
                 }
-                slipBox.classList.remove('hidden'); // โชว์อัปโหลดสลิป
+                
+                if(cart.length > 0) { payBox.classList.remove('hidden'); } 
+                else { payBox.classList.add('hidden'); slipBox.classList.add('hidden'); }
             }
-            
-            if(cart.length > 0) { payBox.classList.remove('hidden'); } 
-            else { payBox.classList.add('hidden'); slipBox.classList.add('hidden'); }
         }
 
         let currentSlipBase64 = '';
@@ -437,7 +445,9 @@
             const phone = document.getElementById('cust-phone').value;
             const addr = document.getElementById('cust-addr').value;
             const country = document.getElementById('cust-country').value;
-            const paymentMethod = document.getElementById('payment-method').value;
+            
+            const paymentMethodInput = document.getElementById('payment-method');
+            const paymentMethod = paymentMethodInput ? paymentMethodInput.value : 'Manual';
             
             if(!name || !email || !addr || !phone) { alert("Please enter Name, Email, Phone, and Address."); return; }
             if(cart.length === 0) { alert("Cart is empty."); return; }
@@ -489,14 +499,24 @@
                         paysoForm.method = 'post';
                         paysoForm.action = 'https://payments.paysolutions.asia/payment';
                         
+                        // 📍 คำนวณเงินและภาษาที่จะส่งไป PaySo อัตโนมัติ
+                        const isEnglish = (currentLang === 'EN');
+                        const currencyCode = isEnglish ? '01' : '00'; 
+                        const paysoLang = isEnglish ? 'EN' : 'TH';
+                        
+                        let finalTotal = result.total;
+                        if (isEnglish) {
+                            finalTotal = (result.total / exchangeRate).toFixed(2);
+                        }
+
                         const paysoData = {
                             merchantid: '72854232', 
                             refno: result.message,  
                             customeremail: result.email,
                             productdetail: 'Turning Turtle Order',
-                            total: result.total,
-                            cc: '00',
-                            lang: 'TH'
+                            total: finalTotal,
+                            cc: currencyCode,
+                            lang: paysoLang
                         };
                         
                         for (const key in paysoData) {
@@ -527,7 +547,6 @@
             btn.innerText = "PLACE ORDER_"; btn.disabled = false;
         }
 
-        // 📍 ฟังก์ชันผูก Event ให้เมนู
         function bindSidebarEvents() {
             const menuBtn = document.getElementById('menu-btn');
             const closeBtn = document.getElementById('close-btn');
@@ -544,7 +563,6 @@
             if(shopDropdownBtn) shopDropdownBtn.addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
         }
 
-        // 📍 ฟังก์ชันดึงชิ้นส่วนมาประกอบร่าง
         async function loadComponents() {
             try {
                 const [headerRes, sidebarRes, cartRes] = await Promise.all([
@@ -558,13 +576,12 @@
                 document.getElementById('cart-modal-container').innerHTML = await cartRes.text();
 
                 bindSidebarEvents();
-                initApp(); // เริ่มรันระบบสินค้าหลังจากดึงชิ้นส่วนเสร็จแล้ว
+                initApp(); 
             } catch (err) {
                 console.error("Error loading components:", err);
             }
         }
 
-        // เริ่มต้นการทำงาน!
         loadComponents();
     </script>
 </body>
