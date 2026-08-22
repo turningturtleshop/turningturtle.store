@@ -269,13 +269,12 @@
                                 price: p.price,
                                 colors: new Set(), 
                                 sizes: new Set(),
-                                colorData: {} // 📍 แอบเก็บรูปตามสีไว้ตรงนี้
+                                colorData: {} 
                             };
                         }
                         groups[nameKey].colors.add(p.color);
                         groups[nameKey].sizes.add(p.size);
                         
-                        // 📍 บันทึกรูปของแต่ละสี (คอลัมน์ L และ A)
                         if (!groups[nameKey].colorData[p.color]) {
                             groups[nameKey].colorData[p.color] = {
                                 imgL: (p.images && p.images[1]) ? p.images[1] : p.image,
@@ -331,8 +330,8 @@
             
             // สร้างรูปเล็ก Thumbnail 2 รูป
             document.getElementById('modal-thumbnails').innerHTML = `
-                <img src="${cData.imgL}" loading="lazy" onclick="..." class="w-14 h-14 object-cover...">
-                <img src="${cData.imgA}" loading="lazy" onclick="..." class="w-14 h-14 object-cover...">
+                <img src="${cData.imgL}" loading="lazy" onclick="document.getElementById('modal-img').src=this.src" class="w-14 h-14 object-cover border border-gray-400 cursor-pointer hover:opacity-80">
+                <img src="${cData.imgA}" loading="lazy" onclick="document.getElementById('modal-img').src=this.src" class="w-14 h-14 object-cover border border-gray-400 cursor-pointer hover:opacity-80">
             `;
         }
 
@@ -421,10 +420,13 @@
                         conditionText = conditionText.replace(numberMatch[0], '฿' + conditionAmount);
                     }
 
-                    if (rateInfo.condition.includes('<')) { 
-                        if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; 
-                    } else if (subtotalTHB >= conditionAmount) { 
-                        finalFeeTHB = 0; 
+                    // --- เพิ่มเงื่อนไขแยกระบบจัดส่งฟรีเฉพาะประเทศไทย ---
+                    if (selectedCountry.toLowerCase() === 'thailand') {
+                        if (rateInfo.condition.includes('<')) { 
+                            if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; 
+                        } else if (subtotalTHB >= conditionAmount) { 
+                            finalFeeTHB = 0; 
+                        }
                     }
                 }
                 
@@ -491,12 +493,29 @@
             const subtotal = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb'));
             const rateInfo = shipmentRates.find(r => r.countryEN === country);
             let shipFee = rateInfo ? rateInfo.fee : 0;
+            
             if(rateInfo) {
                 const numMatch = rateInfo.condition.match(/\d+/);
                 if (numMatch) {
                     const condAmt = parseInt(numMatch[0]);
-                    if (rateInfo.condition.includes('<')) { if (subtotal >= condAmt) shipFee = 0; } 
-                    else if (subtotal >= condAmt) { shipFee = 0; }
+                    
+                    if (country.toLowerCase() === 'thailand') {
+                        // 1. ถ้าเป็นไทย: นำตัวเลขไปคำนวณโปรจัดส่งฟรี
+                        if (rateInfo.condition.includes('<')) { 
+                            if (subtotal >= condAmt) shipFee = 0; 
+                        } else if (subtotal >= condAmt) { 
+                            shipFee = 0; 
+                        }
+                    } else {
+                        // 2. ถ้าเป็นต่างประเทศ: นำตัวเลขไปตั้งเป็นยอดขั้นต่ำ (Minimum order)
+                        if (subtotal < condAmt) {
+                            let alertMsg = currentLang === 'EN' 
+                                ? `System message: International shipping requires a minimum order of $${(condAmt / exchangeRate).toFixed(2)}. Please add more items to your cart. 🐢`
+                                : `System message: จัดส่งต่างประเทศต้องมียอดสั่งซื้อขั้นต่ำ ฿${condAmt} กรุณาเพิ่มสินค้าลงตะกร้า 🐢`;
+                            alert(alertMsg);
+                            return; // สั่งให้หยุดการทำงานตรงนี้ ไม่ส่งข้อมูลออเดอร์
+                        }
+                    }
                 }
             }
 
