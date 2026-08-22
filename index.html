@@ -295,20 +295,24 @@
             const container = document.getElementById('product-container');
             container.innerHTML = ''; 
             const targetNames = ['ZORA', 'WOOL-EYES', 'GEORGE', 'LAMBS'];
-            targetNames.map(n => globalGroupedProducts[n]).filter(Boolean).forEach(group => {
-                container.innerHTML += `
-                    <div onclick="openProductModal('${group.name.trim().toUpperCase()}')" class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
-                        <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-48 overflow-hidden">
-                            <img src="${group.image}" loading="lazy" onmouseover="this.src='${group.hoverImage}'" onmouseout="this.src='${group.image}'" class="object-cover h-full transition-opacity duration-300">
-                        </div>
-                        <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${group.name}</h3>
-                        <div class="w-full bg-black h-px my-2"></div>
-                        <p class="font-pixel text-xl text-red-600 font-bold mb-2">${formatPrice(group.price)}</p>
-                        <button class="retro-btn bg-yellow-400 font-bold px-2 py-1 w-full text-sm">VIEW</button>
-                    </div>`;
+            
+            // เปลี่ยนวิธีการลูปข้อมูล เพื่อให้ส่งค่า key (ที่ไม่มีเว้นวรรค) ไปเปิด Pop up ได้ถูกต้อง
+            targetNames.forEach(key => {
+                const group = globalGroupedProducts[key];
+                if (group) {
+                    container.innerHTML += `
+                        <div onclick="openProductModal('${key}')" class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform cursor-pointer">
+                            <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-48 overflow-hidden">
+                                <img src="${group.image}" loading="lazy" onmouseover="this.src='${group.hoverImage}'" onmouseout="this.src='${group.image}'" class="object-cover h-full transition-opacity duration-300">
+                            </div>
+                            <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${group.name}</h3>
+                            <div class="w-full bg-black h-px my-2"></div>
+                            <p class="font-pixel text-xl text-red-600 font-bold mb-2">${formatPrice(group.price)}</p>
+                            <button class="retro-btn bg-yellow-400 font-bold px-2 py-1 w-full text-sm">VIEW</button>
+                        </div>`;
+                }
             });
         }
-
         // 🔍 ฟังก์ชันเปิด Zoom แบบเต็มจอ
         function openZoomModal(src) {
             if(!src) return;
