@@ -78,27 +78,20 @@
             <div class="retro-titlebar"><span id="modal-title" class="font-pixel text-xl tracking-widest">Product.exe</span><button onclick="closeModal('product-modal')" class="retro-btn bg-red-500 text-white px-2 py-0 font-bold hover:bg-red-400">X</button></div>
             <div class="retro-content p-4 m-2 flex-1 bg-white">
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- รูปภาพซ้ายมือ -->
                     <div class="space-y-2">
-                        <!-- รูปหลัก -->
                         <div class="bg-gray-100 border-2 border-gray-300 h-64 flex justify-center overflow-hidden relative group cursor-pointer" onclick="document.getElementById('modal-img').click()">
                             <img id="modal-img" src="" class="object-cover h-full">
                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 flex items-center justify-center transition-all pointer-events-none">
                                 <span class="text-white opacity-0 group-hover:opacity-100 font-bold bg-black bg-opacity-50 px-2 py-1 rounded">🔍 Zoom</span>
                             </div>
                         </div>
-                        
-                        <!-- รูปเล็ก (Thumbnails) -->
                         <div id="modal-thumbnails" class="flex justify-center space-x-2 p-1"></div>
-
-                        <!-- รูป Detail -->
                         <div id="modal-desc-box" class="bg-gray-100 border-2 border-dashed border-gray-300 p-1 hidden">
                             <p class="text-xs font-bold text-center bg-yellow-200 mb-1 cursor-pointer" onclick="document.getElementById('modal-desc-img').click()">Details (🔍 Click to Zoom)</p>
                             <img id="modal-desc-img" src="" class="w-full object-contain cursor-pointer hover:opacity-80 transition-opacity">
                         </div>
                     </div>
 
-                    <!-- ข้อมูลขวามือ -->
                     <div class="flex flex-col space-y-4">
                         <h2 id="modal-name" class="text-3xl font-pixel font-bold text-blue-800 uppercase"></h2>
                         <p id="modal-price" class="text-2xl font-pixel text-red-600 font-bold" data-thb="0"></p>
@@ -143,11 +136,24 @@
                     <h3 class="font-bold bg-yellow-400 border-b-2 border-black p-1 mb-2">Checkout Info</h3>
                     <div class="space-y-2 text-sm font-bold">
                         <input type="text" id="cust-name" placeholder="Full Name" class="retro-content w-full p-1">
+                        <input type="email" id="cust-email" placeholder="Email (For Payment Receipt)" class="retro-content w-full p-1">
                         <input type="tel" id="cust-phone" placeholder="Phone Number" class="retro-content w-full p-1">
                         <textarea id="cust-addr" placeholder="Full Address & Postal Code" class="retro-content w-full p-1 h-16"></textarea>
                         
                         <label class="block mt-2">Country:</label>
                         <select id="cust-country" class="retro-content w-full p-1 cursor-pointer" onchange="calculateShipping()"></select>
+
+                        <!-- เพิ่มเมนูเลือกวิธีชำระเงินแบบแยกย่อย 7 ข้อ -->
+                        <label class="block mt-2 text-blue-800">Payment Method:</label>
+                        <select id="payment-method" class="retro-content w-full p-1 cursor-pointer font-bold" onchange="calculateShipping()">
+                            <option value="Manual">1. QR PromptPay / SWIFT (โอนเงินแนบสลิป)</option>
+                            <option value="Payso">2. Credit / Debit Card (ตัดบัตร)</option>
+                            <option value="Payso">3. Digital Wallets (PayPal / Alipay)</option>
+                            <option value="Payso">4. Mobile Banking</option>
+                            <option value="Payso">5. QR PromptPay (Automatic)</option>
+                            <option value="Payso">6. TrueMoney Wallet</option>
+                            <option value="Payso">7. WeChat Pay</option>
+                        </select>
                         
                         <div class="bg-white border border-gray-300 p-2 mt-2">
                             <div class="flex justify-between text-xs text-gray-500"><span id="ship-platform">Shipping</span><span id="ship-cond"></span></div>
@@ -405,6 +411,7 @@
             const selectedCountry = document.getElementById('cust-country').value;
             const subtotalTHB = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb')) || 0;
             const rateInfo = shipmentRates.find(r => r.countryEN === selectedCountry);
+            const paymentMethod = document.getElementById('payment-method').value;
             let finalFeeTHB = 0;
             let conditionText = "";
 
@@ -424,7 +431,6 @@
                         conditionText = conditionText.replace(numberMatch[0], '฿' + conditionAmount);
                     }
 
-                    // --- เพิ่มเงื่อนไขแยกระบบจัดส่งฟรีเฉพาะประเทศไทย ---
                     if (selectedCountry.toLowerCase() === 'thailand') {
                         if (rateInfo.condition.includes('<')) { 
                             if (subtotalTHB >= conditionAmount) finalFeeTHB = 0; 
@@ -443,28 +449,36 @@
             const payBox = document.getElementById('payment-info-box');
             const slipBox = document.getElementById('slip-upload-box');
             
-            if(selectedCountry.toLowerCase() === 'thailand') {
+            if (paymentMethod === 'Payso') {
                 payBox.innerHTML = `
-                    <p class="text-sm font-bold text-blue-800">PromptPay QR Code</p>
-                    <img src="https://i.postimg.cc/YSD8w90Y/7763E006-D927-4A3E-BC60-D7904417EB1E.jpg" class="w-48 h-48 mx-auto my-2 border-2 border-black object-contain p-1 bg-white">
-                    <p class="text-xs">Scan to pay <b class="text-red-600 text-lg">฿${subtotalTHB + finalFeeTHB}</b></p>
+                    <p class="text-sm font-bold text-blue-800">Secure Online Payment</p>
+                    <p class="text-xs mt-2 text-gray-600">ระบบจะพาคุณไปยังหน้าชำระเงินออนไลน์ (รับบัตรเครดิต, PayPal, Alipay และอื่นๆ) หลังจากกด PLACE ORDER_</p>
                 `;
+                slipBox.classList.add('hidden'); // ซ่อนอัปโหลดสลิป
             } else {
-                payBox.innerHTML = `
-                    <p class="text-sm font-bold text-blue-800 mb-1 border-b border-blue-300 pb-1">International Bank Transfer</p>
-                    <div class="text-left text-xs space-y-1 mt-2">
-                        <p><b>Bank:</b> Kasikornbank (KBank)</p>
-                        <p><b>Name:</b> Kairin Satjawiso</p>
-                        <p><b>Account No:</b> 236-188167-5</p>
-                        <p><b>SWIFT:</b> KASITHBK</p>
-                        <p class="text-red-600 mt-2">*Import taxes in your country are the buyer's responsibility.</p>
-                    </div>
-                `;
+                if(selectedCountry.toLowerCase() === 'thailand') {
+                    payBox.innerHTML = `
+                        <p class="text-sm font-bold text-blue-800">PromptPay QR Code</p>
+                        <img src="https://i.postimg.cc/YSD8w90Y/7763E006-D927-4A3E-BC60-D7904417EB1E.jpg" class="w-48 h-48 mx-auto my-2 border-2 border-black object-contain p-1 bg-white">
+                        <p class="text-xs">Scan to pay <b class="text-red-600 text-lg">฿${subtotalTHB + finalFeeTHB}</b></p>
+                    `;
+                } else {
+                    payBox.innerHTML = `
+                        <p class="text-sm font-bold text-blue-800 mb-1 border-b border-blue-300 pb-1">International Bank Transfer</p>
+                        <div class="text-left text-xs space-y-1 mt-2">
+                            <p><b>Bank:</b> Kasikornbank (KBank)</p>
+                            <p><b>Name:</b> Kairin Satjawiso</p>
+                            <p><b>Account No:</b> 236-188167-5</p>
+                            <p><b>SWIFT:</b> KASITHBK</p>
+                            <p class="text-red-600 mt-2">*Import taxes in your country are the buyer's responsibility.</p>
+                        </div>
+                    `;
+                }
+                slipBox.classList.remove('hidden'); // โชว์อัปโหลดสลิป
             }
             
             if(cart.length > 0) {
                 payBox.classList.remove('hidden');
-                slipBox.classList.remove('hidden');
             } else {
                 payBox.classList.add('hidden');
                 slipBox.classList.add('hidden');
@@ -486,13 +500,19 @@
 
         async function placeOrder() {
             const name = document.getElementById('cust-name').value;
+            const email = document.getElementById('cust-email').value;
             const phone = document.getElementById('cust-phone').value;
             const addr = document.getElementById('cust-addr').value;
             const country = document.getElementById('cust-country').value;
+            const paymentMethod = document.getElementById('payment-method').value;
             
-            if(!name || !addr || !phone) { alert("Please enter Name, Phone, and Address."); return; }
+            if(!name || !email || !addr || !phone) { alert("Please enter Name, Email, Phone, and Address."); return; }
             if(cart.length === 0) { alert("Cart is empty."); return; }
-            if(!currentSlipBase64) { alert("Please attach your payment receipt / slip."); return; }
+            
+            // ดักจับสลิป เฉพาะตอนเลือกโอนเงินปกติ
+            if(paymentMethod === 'Manual' && !currentSlipBase64) { 
+                alert("Please attach your payment receipt / slip."); return; 
+            }
 
             const subtotal = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb'));
             const rateInfo = shipmentRates.find(r => r.countryEN === country);
@@ -504,29 +524,37 @@
                     const condAmt = parseInt(numMatch[0]);
                     
                     if (country.toLowerCase() === 'thailand') {
-                        // 1. ถ้าเป็นไทย: นำตัวเลขไปคำนวณโปรจัดส่งฟรี
                         if (rateInfo.condition.includes('<')) { 
                             if (subtotal >= condAmt) shipFee = 0; 
                         } else if (subtotal >= condAmt) { 
                             shipFee = 0; 
                         }
                     } else {
-                        // 2. ถ้าเป็นต่างประเทศ: นำตัวเลขไปตั้งเป็นยอดขั้นต่ำ (Minimum order)
                         if (subtotal < condAmt) {
                             let alertMsg = currentLang === 'EN' 
                                 ? `System message: International shipping requires a minimum order of $${(condAmt / exchangeRate).toFixed(2)}. Please add more items to your cart. 🐢`
                                 : `System message: จัดส่งต่างประเทศต้องมียอดสั่งซื้อขั้นต่ำ ฿${condAmt} กรุณาเพิ่มสินค้าลงตะกร้า 🐢`;
                             alert(alertMsg);
-                            return; // สั่งให้หยุดการทำงานตรงนี้ ไม่ส่งข้อมูลออเดอร์
+                            return;
                         }
                     }
                 }
             }
 
             const payload = {
-                action: 'checkout', customerName: name, address: addr, country: country, phone: phone,
-                shippingPlatform: document.getElementById('ship-platform').innerText, subtotal: subtotal,
-                shippingFee: shipFee, grandTotal: subtotal + shipFee, slipBase64: currentSlipBase64, items: cart
+                action: 'checkout', 
+                customerName: name, 
+                customerEmail: email,
+                address: addr, 
+                country: country, 
+                phone: phone,
+                shippingPlatform: document.getElementById('ship-platform').innerText, 
+                subtotal: subtotal,
+                shippingFee: shipFee, 
+                grandTotal: subtotal + shipFee, 
+                paymentMethod: paymentMethod === 'Payso' ? 'Paysolutions' : 'Manual Transfer',
+                slipBase64: paymentMethod === 'Payso' ? "-" : currentSlipBase64, 
+                items: cart
             };
 
             const btn = document.getElementById('place-order-btn');
@@ -535,12 +563,35 @@
             try {
                 const response = await fetch(API_URL_BASE, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                 const result = await response.json();
+                
                 if(result.status === 'success') {
+                    // ถ้าระบบส่งข้อมูล Payso กลับมา ให้พากระโดดไปหน้าจ่ายเงิน
+                    if (result.paysoData) {
+                        btn.innerText = "REDIRECTING TO PAYMENT...";
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = 'https://pay.paysolutions.asia/epaylink/payment.aspx';
+                        
+                        for (const key in result.paysoData) {
+                            const hiddenField = document.createElement('input');
+                            hiddenField.type = 'hidden';
+                            hiddenField.name = key;
+                            hiddenField.value = result.paysoData[key];
+                            form.appendChild(hiddenField);
+                        }
+                        document.body.appendChild(form);
+                        form.submit();
+                        return; // หยุดการทำงานตรงนี้ เพื่อให้เบราว์เซอร์พาไปหน้าชำระเงิน
+                    }
+
                     alert(`Order Placed Successfully!\nYour Order ID: ${result.message}`);
                     cart = []; updateCartCount();
                     
-                    document.getElementById('cust-name').value = ''; document.getElementById('cust-phone').value = '';
-                    document.getElementById('cust-addr').value = ''; document.getElementById('slip-file').value = '';
+                    document.getElementById('cust-name').value = ''; 
+                    document.getElementById('cust-email').value = ''; 
+                    document.getElementById('cust-phone').value = '';
+                    document.getElementById('cust-addr').value = ''; 
+                    document.getElementById('slip-file').value = '';
                     document.getElementById('slip-preview').classList.add('hidden'); currentSlipBase64 = '';
                     closeModal('cart-modal');
                 } else alert("Error: " + result.message);
