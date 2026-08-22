@@ -16,78 +16,24 @@
         .retro-content { background-color: white; border-top: 2px solid #808080; border-left: 2px solid #808080; border-right: 2px solid #ffffff; border-bottom: 2px solid #ffffff; }
     </style>
 </head>
-<body class="text-gray-900 overflow-x-hidden">
-    <header class="sticky top-0 z-50 retro-window px-2 py-2 flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-            <button id="menu-btn" class="retro-btn px-2 py-1 flex items-center justify-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
-            <a href="index.html" class="font-bold tracking-wider text-xl flex items-center space-x-2 font-pixel text-blue-800 ml-2"><span>Turning turtle</span><span class="text-3xl">🐢</span></a>
-        </div>
-        <!-- 💡 สำหรับหน้า Contact ปุ่มตะกร้าจะกดแล้วแจ้งเตือนให้กลับไปช้อปปิ้งหน้า Home -->
-        <div class="flex items-center space-x-3">
-            <button class="retro-btn p-1 bg-yellow-400 hover:bg-yellow-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
-            <button onclick="alert('Please go back to Home or Shop to view your cart!')" class="retro-btn p-1 bg-red-500 text-white hover:bg-red-400 relative">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            </button>
-            <button id="lang-btn" onclick="toggleLanguage()" class="retro-btn px-2 py-1 text-xs font-bold bg-white">EN / $</button>
-        </div>
-    </header>
+<body class="text-gray-900 overflow-x-hidden relative">
 
-    <!-- Sidebar Menu -->
-    <div id="sidebar" class="fixed inset-y-0 left-0 w-72 transform -translate-x-full transition-transform duration-300 z-50 flex flex-col p-2">
-        <div class="retro-window flex-1 flex flex-col shadow-2xl">
-            <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Menu.exe</span><button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 font-bold">X</button></div>
-            <nav class="p-3 space-y-3 retro-content m-2 flex-1">
-                <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 lang-home">Home</a>
-                <div>
-                    <button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center"><span class="lang-shop">Shop all</span><span class="text-xs">▼</span></button>
-                    <div id="shop-submenu" class="pl-4 mt-1 space-y-1 hidden bg-yellow-100 border-2 border-black p-2">
-                        <a href="shop.html?type=Tops" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Tops</a>
-                        <a href="shop.html?type=Bottoms" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Bottoms</a>
-                        <a href="shop.html?type=Underwears" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Underwears</a>
-                    </div>
-                </div>
-                <a href="contact.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 bg-blue-200 lang-contact">Contact</a>
-            </nav>
-        </div>
-    </div>
-    <div id="overlay" class="fixed inset-0 bg-black opacity-40 hidden z-40"></div>
+    <!-- 📍 พื้นที่รองรับ Components ที่เราแยกไฟล์ไว้ -->
+    <div id="header-container"></div>
+    <div id="sidebar-container"></div>
 
     <main class="p-4 mt-6 max-w-4xl mx-auto flex flex-col md:flex-row gap-6">
-        
         <!-- ข้อมูลติดต่อ -->
         <div class="retro-window flex-1 shadow-xl">
             <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Contact.exe</span></div>
             <div class="retro-content p-6 m-2 text-center h-full">
                 <h1 class="text-4xl font-bold font-pixel text-blue-800 drop-shadow-md mb-6">TURNING TURTLE</h1>
                 <div class="bg-gray-50 border-2 border-dashed border-gray-400 p-4 text-left space-y-4">
-                    
-                    <div class="flex items-center space-x-4">
-                        <span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">TEL</span>
-                        <a href="tel:0967695656" class="font-bold hover:text-red-500">096-7695656</a>
-                    </div>
-                    
-                    <div class="flex items-center space-x-4">
-                        <span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">IG</span>
-                        <a href="https://www.instagram.com/turningtur.tle" target="_blank" class="font-bold text-blue-600 hover:underline">@turningtur.tle</a>
-                    </div>
-                    
-                    <!-- 📍 LINE -->
-                    <div class="flex items-center space-x-4">
-                        <span class="bg-green-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">LINE</span>
-                        <a href="https://lin.ee/WK0JWg5" target="_blank" class="font-bold text-green-700 hover:underline">@turningturtle</a>
-                    </div>
-                    
-                    <!-- 📍 FB -->
-                    <div class="flex items-center space-x-4">
-                        <span class="bg-blue-600 text-white px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">FB</span>
-                        <a href="https://www.facebook.com/people/Truning-Turtle/61591955442495/" target="_blank" class="font-bold text-blue-800 hover:underline">Turning Turtle Shop</a>
-                    </div>
-                    
-                    <div class="flex items-center space-x-4">
-                        <span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">MAIL</span>
-                        <a href="mailto:turningturtle.shop@gmail.com" class="font-bold text-blue-600 hover:underline break-all text-sm md:text-base">turningturtle.shop@gmail.com</a>
-                    </div>
-
+                    <div class="flex items-center space-x-4"><span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">TEL</span><a href="tel:0967695656" class="font-bold hover:text-red-500">096-7695656</a></div>
+                    <div class="flex items-center space-x-4"><span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">IG</span><a href="https://www.instagram.com/turningtur.tle" target="_blank" class="font-bold text-blue-600 hover:underline">@turningtur.tle</a></div>
+                    <div class="flex items-center space-x-4"><span class="bg-green-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">LINE</span><a href="https://lin.ee/WK0JWg5" target="_blank" class="font-bold text-green-700 hover:underline">@turningturtle</a></div>
+                    <div class="flex items-center space-x-4"><span class="bg-blue-600 text-white px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">FB</span><a href="https://www.facebook.com/people/Truning-Turtle/61591955442495/" target="_blank" class="font-bold text-blue-800 hover:underline">Turning Turtle Shop</a></div>
+                    <div class="flex items-center space-x-4"><span class="bg-yellow-400 px-2 py-1 font-bold border-2 border-black w-14 text-center text-xs">MAIL</span><a href="mailto:turningturtle.shop@gmail.com" class="font-bold text-blue-600 hover:underline break-all text-sm md:text-base">turningturtle.shop@gmail.com</a></div>
                 </div>
             </div>
         </div>
@@ -120,8 +66,9 @@
     </main>
 
     <script>
-        // ระบบเปลี่ยนภาษาสำหรับหน้า Contact
         let currentLang = 'EN';
+        let cart = JSON.parse(localStorage.getItem('turtle_cart')) || [];
+
         function toggleLanguage() {
             currentLang = currentLang === 'EN' ? 'TH' : 'EN';
             const langBtn = document.getElementById('lang-btn');
@@ -137,16 +84,43 @@
             if(langContact) langContact.innerText = currentLang === 'EN' ? 'Contact' : 'ติดต่อเรา';
         }
 
-        // ระบบเปิดปิดเมนู
-        document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
-        const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
-        document.getElementById('close-btn').addEventListener('click', closeSidebar);
-        document.getElementById('overlay').addEventListener('click', closeSidebar);
-        document.getElementById('shop-dropdown-btn').addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
+        // หน้า Contact กดตะกร้าแล้วเด้งแจ้งเตือน
+        function openCart() {
+            alert('Please go back to Home or Shop to view your cart!');
+        }
 
-        // URL API ของ Google Apps Script
+        function updateCartCount() {
+            const countEl = document.getElementById('cart-count');
+            if(countEl) countEl.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+        }
+
+        function bindSidebarEvents() {
+            document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
+            const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
+            document.getElementById('close-btn').addEventListener('click', closeSidebar);
+            document.getElementById('overlay').addEventListener('click', closeSidebar);
+            document.getElementById('shop-dropdown-btn').addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
+        }
+
+        // 📍 ฟังก์ชันดึงชิ้นส่วนมาประกอบร่าง
+        async function loadComponents() {
+            try {
+                const [headerRes, sidebarRes] = await Promise.all([
+                    fetch('header.html'),
+                    fetch('sidebar.html')
+                ]);
+                document.getElementById('header-container').innerHTML = await headerRes.text();
+                document.getElementById('sidebar-container').innerHTML = await sidebarRes.text();
+
+                bindSidebarEvents();
+                updateCartCount();
+            } catch (err) { console.error("Error loading components:", err); }
+        }
+        
+        loadComponents();
+
+        // ระบบส่งรีวิว
         const API_URL_BASE = 'https://script.google.com/macros/s/AKfycbzddCdtxB9XxVntW4SMvCrrT9p-TzizEesL6PZF5Krejw2QcZsW4HrXpfjJogq4d4FjdA/exec';
-
         async function submitReview() {
             const name = document.getElementById('rev-name').value;
             const email = document.getElementById('rev-email').value;
@@ -160,20 +134,13 @@
             btn.innerText = "SENDING..."; btn.disabled = true;
 
             try {
-                const response = await fetch(API_URL_BASE, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify(payload)
-                });
+                const response = await fetch(API_URL_BASE, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                 const result = await response.json();
                 if(result.status === 'success') {
                     alert("Thank you for your review! 🐢💙");
-                    document.getElementById('rev-name').value = '';
-                    document.getElementById('rev-email').value = '';
-                    document.getElementById('rev-msg').value = '';
+                    document.getElementById('rev-name').value = ''; document.getElementById('rev-email').value = ''; document.getElementById('rev-msg').value = '';
                 } else alert("Error: " + result.message);
             } catch(e) { alert("Connection Error."); }
-            
             btn.innerText = "SEND REVIEW_"; btn.disabled = false;
         }
     </script>
