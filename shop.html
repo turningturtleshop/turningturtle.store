@@ -309,7 +309,7 @@
                 container.innerHTML += `
                     <div onclick="${isOutOfStock ? '' : `openProductModal('${key}')`}" class="retro-window p-2 bg-white flex flex-col items-center hover:scale-105 transition-transform ${isOutOfStock ? '' : 'cursor-pointer'}">
                         <div class="retro-content w-full p-1 mb-2 bg-gray-100 flex justify-center h-48 overflow-hidden relative">
-                            <img src="${group.image}" onmouseover="this.src='${group.hoverImage}'" onmouseout="this.src='${group.image}'" class="object-cover h-full transition-opacity duration-300">
+                            <img src="${group.image}" loading="lazy" onmouseover="this.src='${group.hoverImage}'" ...>
                             ${isOutOfStock ? '<div class="absolute inset-0 bg-white bg-opacity-70 flex items-center justify-center font-bold text-red-600 border-4 border-red-600 transform -rotate-12 text-xl">SOLD OUT</div>' : ''}
                         </div>
                         <h3 class="font-bold text-xl text-blue-800 font-pixel tracking-wide text-center uppercase">${group.name}</h3>
@@ -341,8 +341,8 @@
             
             // สร้างรูปเล็ก Thumbnail 2 รูป
             document.getElementById('modal-thumbnails').innerHTML = `
-                <img src="${cData.imgL}" onclick="document.getElementById('modal-img').src=this.src; document.getElementById('modal-img').setAttribute('onclick', 'openZoomModal(this.src)')" class="w-14 h-14 object-cover border-2 border-gray-400 cursor-pointer hover:border-blue-600">
-                <img src="${cData.imgA}" onclick="document.getElementById('modal-img').src=this.src; document.getElementById('modal-img').setAttribute('onclick', 'openZoomModal(this.src)')" class="w-14 h-14 object-cover border-2 border-gray-400 cursor-pointer hover:border-blue-600">
+                <img src="${cData.imgL}" loading="lazy" onclick=...>
+                <img src="${cData.imgA}" loading="lazy" onclick=...>
             `;
         }
 
