@@ -557,24 +557,42 @@
             try {
                 const response = await fetch(API_URL_BASE, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                 const result = await response.json();
+                
+                // 📍 จุดที่แก้ไข: เปลี่ยนโค้ดกระโดดไป Payso ให้รองรับ API เวอร์ชั่นใหม่
                 if(result.status === 'success') {
-                    // ถ้าระบบส่งข้อมูล Payso กลับมา ให้พากระโดดไปหน้าจ่ายเงิน
-                    if (result.paysoData) {
+                    
+                    if (paymentMethod === 'Payso') {
                         btn.innerText = "REDIRECTING TO PAYMENT...";
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = 'https://www.thaiepay.com/epaylink/payment.aspx';
                         
-                        for (const key in result.paysoData) {
+                        const paysoForm = document.createElement('form');
+                        paysoForm.method = 'post';
+                        paysoForm.action = 'https://payments.paysolutions.asia/payment';
+                        
+                        const paysoData = {
+                            merchantid: '72854232', 
+                            refno: result.message,  
+                            customeremail: result.email,
+                            productdetail: 'Turning Turtle Order',
+                            total: result.total,
+                            cc: '00',
+                            lang: 'TH'
+                        };
+                        
+                        for (const key in paysoData) {
                             const hiddenField = document.createElement('input');
                             hiddenField.type = 'hidden';
                             hiddenField.name = key;
-                            hiddenField.value = result.paysoData[key];
-                            form.appendChild(hiddenField);
+                            hiddenField.value = paysoData[key];
+                            paysoForm.appendChild(hiddenField);
                         }
-                        document.body.appendChild(form);
-                        form.submit();
-                        return; // หยุดการทำงานตรงนี้ เพื่อให้เบราว์เซอร์พาไปหน้าชำระเงิน
+                        
+                        document.body.appendChild(paysoForm);
+                        
+                        cart = []; updateCartCount();
+                        closeModal('cart-modal');
+                        
+                        paysoForm.submit();
+                        return; 
                     }
                     
                     alert(`Order Placed Successfully!\nYour Order ID: ${result.message}`);
