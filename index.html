@@ -155,10 +155,13 @@
                     jsonProd = JSON.parse(cachedProducts);
                     jsonShip = JSON.parse(cachedShipment);
                 } else {
-                    const resProd = await fetch(API_URL_BASE + '?action=getProducts');
-                    jsonProd = await resProd.json();
+                    // 📍 จุดที่แก้ไข: สั่งให้ยิง API ไปขอข้อมูลสินค้าและค่าส่ง "พร้อมกัน" (Promise.all)
+                    const [resProd, resShip] = await Promise.all([
+                        fetch(API_URL_BASE + '?action=getProducts'),
+                        fetch(API_URL_BASE + '?action=getShipment')
+                    ]);
                     
-                    const resShip = await fetch(API_URL_BASE + '?action=getShipment');
+                    jsonProd = await resProd.json();
                     jsonShip = await resShip.json();
 
                     sessionStorage.setItem('turtle_products', JSON.stringify(jsonProd));
@@ -168,12 +171,18 @@
                 shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
                 if(countrySelect) {
+                    // ล้างค่าเก่าก่อนเพื่อป้องกันการเบิ้ล
+                    countrySelect.innerHTML = ''; 
                     shipmentRates.forEach(rate => {
                         countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`;
                     });
                 }
 
                 if (jsonProd.status === 'success') {
+                    // (โค้ดส่วนแยกหมวดหมู่สำหรับ shop.html หรือจัดกลุ่มสินค้า จะอยู่ตรงนี้ ให้คงของเดิมไว้ได้เลยครับ)
+                    // ... 
+                    
+                    // ตัวอย่างโค้ดสำหรับ index.html (ถ้าเป็นหน้า shop.html ก็ใช้โค้ดจัดกลุ่มแบบเดิมของหน้านั้น)
                     const groups = {};
                     jsonProd.data.forEach(p => {
                         let nameKey = p.name.trim().toUpperCase();
@@ -185,11 +194,13 @@
                                 hoverImage: p.image,
                                 descImage: (p.images && p.images[2]) ? p.images[2] : '', 
                                 price: p.price,
+                                stock: 0, 
                                 colors: new Set(), 
                                 sizes: new Set(),
                                 colorData: {} 
                             };
                         }
+                        groups[nameKey].stock += (p.stock || 0);
                         groups[nameKey].colors.add(p.color);
                         groups[nameKey].sizes.add(p.size);
                         
@@ -201,7 +212,11 @@
                         }
                     });
                     globalGroupedProducts = groups;
-                    renderHomeProducts();
+                    
+                    // 📍 ถ้าแก้ใน index.html ให้เรียก renderHomeProducts()
+                    // 📍 ถ้าแก้ใน shop.html ให้เรียก renderShopProducts()
+                    if (typeof renderHomeProducts === 'function') renderHomeProducts();
+                    if (typeof renderShopProducts === 'function') renderShopProducts();
                 }
             } catch (err) {
                 console.error("Error loading app:", err);
