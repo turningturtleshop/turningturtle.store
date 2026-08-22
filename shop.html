@@ -21,38 +21,10 @@
 </head>
 <body class="text-gray-900 overflow-x-hidden relative">
 
-    <header class="sticky top-0 z-40 retro-window px-2 py-2 flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-            <button id="menu-btn" class="retro-btn px-2 py-1 flex items-center justify-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg></button>
-            <a href="index.html" class="font-bold tracking-wider text-xl flex items-center space-x-2 font-pixel text-blue-800 ml-2"><span>Turning turtle</span><span class="text-3xl turtle-roll">🐢</span></a>
-        </div>
-        <div class="flex items-center space-x-3">
-            <button class="retro-btn p-1 bg-yellow-400 hover:bg-yellow-300"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg></button>
-            <button onclick="openCart()" class="retro-btn p-1 bg-red-500 text-white hover:bg-red-400 relative">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                <span id="cart-count" class="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-1 border border-black rounded-full">0</span>
-            </button>
-            <button id="lang-btn" onclick="toggleLanguage()" class="retro-btn px-2 py-1 text-xs font-bold bg-white">EN / $</button>
-        </div>
-    </header>
-
-    <div id="sidebar" class="fixed inset-y-0 left-0 w-72 transform -translate-x-full transition-transform duration-300 z-50 flex flex-col p-2">
-        <div class="retro-window flex-1 flex flex-col shadow-2xl">
-            <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Menu.exe</span><button id="close-btn" class="retro-btn bg-gray-200 text-black px-2 py-0 hover:bg-red-500 hover:text-white font-bold">X</button></div>
-            <nav class="p-3 space-y-3 retro-content m-2 flex-1">
-                <a href="index.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 lang-home">Home</a>
-                <div><button id="shop-dropdown-btn" class="w-full text-left text-lg font-bold hover:bg-blue-600 hover:text-white p-1 flex justify-between items-center"><span class="lang-shop">Shop all</span><span class="text-xs">▼</span></button>
-                    <div id="shop-submenu" class="pl-4 mt-1 space-y-1 hidden bg-yellow-100 border-2 border-black p-2">
-                        <a href="shop.html?type=Tops" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Tops</a>
-                        <a href="shop.html?type=Bottoms" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Bottoms</a>
-                        <a href="shop.html?type=Underwears" class="block font-bold hover:bg-red-500 hover:text-white p-1 text-sm">► Underwears</a>
-                    </div>
-                </div>
-                <a href="contact.html" class="block text-lg font-bold hover:bg-blue-600 hover:text-white p-1 lang-contact">Contact</a>
-            </nav>
-        </div>
-    </div>
-    <div id="overlay" class="fixed inset-0 bg-black opacity-40 hidden z-40"></div>
+    <!-- 📍 พื้นที่รองรับ Components ที่เราแยกไฟล์ไว้ -->
+    <div id="header-container"></div>
+    <div id="sidebar-container"></div>
+    <div id="cart-modal-container"></div>
 
     <main class="p-4 mt-4 max-w-6xl mx-auto">
         <div class="retro-window">
@@ -80,18 +52,13 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <!-- รูปภาพซ้ายมือ -->
                     <div class="space-y-2">
-                        <!-- รูปหลัก -->
                         <div class="bg-gray-100 border-2 border-gray-300 h-64 flex justify-center overflow-hidden relative group cursor-pointer" onclick="document.getElementById('modal-img').click()">
                             <img id="modal-img" src="" class="object-cover h-full">
                             <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 flex items-center justify-center transition-all pointer-events-none">
                                 <span class="text-white opacity-0 group-hover:opacity-100 font-bold bg-black bg-opacity-50 px-2 py-1 rounded">🔍 Zoom</span>
                             </div>
                         </div>
-                        
-                        <!-- รูปเล็ก (Thumbnails) -->
                         <div id="modal-thumbnails" class="flex justify-center space-x-2 p-1"></div>
-
-                        <!-- รูป Detail -->
                         <div id="modal-desc-box" class="bg-gray-100 border-2 border-dashed border-gray-300 p-1 hidden">
                             <p class="text-xs font-bold text-center bg-yellow-200 mb-1 cursor-pointer" onclick="document.getElementById('modal-desc-img').click()">Details (🔍 Click to Zoom)</p>
                             <img id="modal-desc-img" src="" class="w-full object-contain cursor-pointer hover:opacity-80 transition-opacity">
@@ -123,77 +90,14 @@
         <img id="zoomed-img" src="" class="max-w-[95vw] max-h-[95vh] object-contain border-4 border-white shadow-2xl">
     </div>
 
-    <!-- Modal ตะกร้า & ชำระเงิน -->
-    <div id="cart-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-        <div class="absolute inset-0 bg-black opacity-60" onclick="closeModal('cart-modal')"></div>
-        <div class="retro-window w-11/12 md:w-3/4 max-h-[90vh] overflow-y-auto relative z-10 flex flex-col">
-            <div class="retro-titlebar"><span class="font-pixel text-xl tracking-widest">Cart_Checkout.exe</span><button onclick="closeModal('cart-modal')" class="retro-btn bg-red-500 text-white px-2 py-0 font-bold hover:bg-red-400">X</button></div>
-            <div class="retro-content p-4 m-2 bg-white flex flex-col md:flex-row gap-6">
-                <!-- ตะกร้า -->
-                <div class="flex-1 border-2 border-gray-300 p-2">
-                    <h3 class="font-bold bg-blue-800 text-white p-1 mb-2">Shopping Cart</h3>
-                    <div id="cart-items" class="space-y-2 max-h-60 overflow-y-auto"></div>
-                    <div class="mt-4 border-t-2 border-black pt-2 font-bold flex justify-between">
-                        <span>Subtotal:</span>
-                        <span id="cart-subtotal" class="text-red-600">฿0</span>
-                    </div>
-                </div>
-                <!-- Checkout Info -->
-                <div class="flex-1 border-2 border-gray-300 p-2 bg-gray-50 max-h-96 overflow-y-auto">
-                    <h3 class="font-bold bg-yellow-400 border-b-2 border-black p-1 mb-2">Checkout Info</h3>
-                    <div class="space-y-2 text-sm font-bold">
-                        <input type="text" id="cust-name" placeholder="Full Name" class="retro-content w-full p-1">
-                        <input type="email" id="cust-email" placeholder="Email (For Payment Receipt)" class="retro-content w-full p-1">
-                        <input type="tel" id="cust-phone" placeholder="Phone Number" class="retro-content w-full p-1">
-                        <textarea id="cust-addr" placeholder="Full Address & Postal Code" class="retro-content w-full p-1 h-16"></textarea>
-                        
-                        <label class="block mt-2">Country:</label>
-                        <select id="cust-country" class="retro-content w-full p-1 cursor-pointer" onchange="calculateShipping()"></select>
-
-                        <!-- เพิ่มเมนูเลือกวิธีชำระเงินแบบแยกย่อย 7 ข้อ -->
-                        <label class="block mt-2 text-blue-800">Payment Method:</label>
-                        <select id="payment-method" class="retro-content w-full p-1 cursor-pointer font-bold" onchange="calculateShipping()">
-                            <option value="Manual">1. QR PromptPay / SWIFT (โอนเงินแนบสลิป)</option>
-                            <option value="Payso">2. Credit / Debit Card (ตัดบัตร)</option>
-                            <option value="Payso">3. Digital Wallets (PayPal / Alipay)</option>
-                            <option value="Payso">4. Mobile Banking</option>
-                            <option value="Payso">5. QR PromptPay (Automatic)</option>
-                            <option value="Payso">6. TrueMoney Wallet</option>
-                            <option value="Payso">7. WeChat Pay</option>
-                        </select>
-                        
-                        <div class="bg-white border border-gray-300 p-2 mt-2">
-                            <div class="flex justify-between text-xs text-gray-500"><span id="ship-platform">Shipping</span><span id="ship-cond"></span></div>
-                            <div class="flex justify-between mt-1"><span>Shipping Fee:</span><span id="ship-fee" class="text-red-600">฿0</span></div>
-                            <div class="flex justify-between mt-2 text-lg"><span>TOTAL:</span><span id="grand-total" class="text-blue-800">฿0</span></div>
-                        </div>
-
-                        <!-- กล่องแสดงวิธีชำระเงิน -->
-                        <div id="payment-info-box" class="bg-blue-50 border border-blue-300 p-2 mt-2 hidden text-center"></div>
-
-                        <!-- กล่องอัปโหลดสลิป -->
-                        <div id="slip-upload-box" class="mt-2 hidden bg-gray-100 p-2 border border-dashed border-black">
-                            <label class="block text-xs font-bold mb-1">Attach Payment Receipt:</label>
-                            <input type="file" id="slip-file" accept="image/*" class="w-full text-xs cursor-pointer" onchange="previewSlip(event)">
-                            <img id="slip-preview" src="" class="mt-2 mx-auto max-h-32 hidden border-2 border-black">
-                        </div>
-                        
-                        <button id="place-order-btn" onclick="placeOrder()" class="retro-btn w-full bg-red-500 text-white hover:bg-red-400 font-bold py-2 mt-4 text-lg tracking-wider">
-                            PLACE ORDER_
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script>
         let currentLang = 'EN';
         const exchangeRate = 35; 
 
         function toggleLanguage() {
             currentLang = currentLang === 'EN' ? 'TH' : 'EN';
-            document.getElementById('lang-btn').innerText = currentLang === 'EN' ? 'EN / $' : 'TH / ฿';
+            const langBtn = document.getElementById('lang-btn');
+            if(langBtn) langBtn.innerText = currentLang === 'EN' ? 'EN / $' : 'TH / ฿';
             
             const langHome = document.querySelector('.lang-home');
             if(langHome) langHome.innerText = currentLang === 'EN' ? 'Home' : 'หน้าแรก';
@@ -206,7 +110,7 @@
             
             if(typeof renderShopProducts === 'function') renderShopProducts();
             updateCartCount();
-            if(!document.getElementById('cart-modal').classList.contains('hidden')) renderCart();
+            if(document.getElementById('cart-modal') && !document.getElementById('cart-modal').classList.contains('hidden')) renderCart();
         }
 
         function formatPrice(thbPrice) {
@@ -216,7 +120,8 @@
 
         let cart = JSON.parse(localStorage.getItem('turtle_cart')) || [];
         function updateCartCount() {
-            document.getElementById('cart-count').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+            const countEl = document.getElementById('cart-count');
+            if(countEl) countEl.innerText = cart.reduce((sum, item) => sum + item.qty, 0);
             localStorage.setItem('turtle_cart', JSON.stringify(cart));
         }
 
@@ -264,7 +169,9 @@
                 
                 shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
-                shipmentRates.forEach(rate => { countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`; });
+                if(countrySelect) {
+                    shipmentRates.forEach(rate => { countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`; });
+                }
 
                 if (jsonProd.status === 'success') {
                     let filteredProducts = jsonProd.data;
@@ -421,6 +328,12 @@
         }
         function removeItem(index) { cart.splice(index, 1); updateCartCount(); renderCart(); }
 
+        // 📍 ฟังก์ชันนี้ไว้รับค่าจาก Radio Button ของ Payment Method ตัวใหม่
+        function updatePaymentMethod(radio) {
+            document.getElementById('payment-method').value = radio.value;
+            calculateShipping(); 
+        }
+
         function calculateShipping() {
             const selectedCountry = document.getElementById('cust-country').value;
             const subtotalTHB = parseInt(document.getElementById('cart-subtotal').getAttribute('data-thb')) || 0;
@@ -558,12 +471,9 @@
                 const response = await fetch(API_URL_BASE, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                 const result = await response.json();
                 
-                // 📍 จุดที่แก้ไข: เปลี่ยนโค้ดกระโดดไป Payso ให้รองรับ API เวอร์ชั่นใหม่
                 if(result.status === 'success') {
-                    
                     if (paymentMethod === 'Payso') {
                         btn.innerText = "REDIRECTING TO PAYMENT...";
-                        
                         const paysoForm = document.createElement('form');
                         paysoForm.method = 'post';
                         paysoForm.action = 'https://payments.paysolutions.asia/payment';
@@ -587,10 +497,8 @@
                         }
                         
                         document.body.appendChild(paysoForm);
-                        
                         cart = []; updateCartCount();
                         closeModal('cart-modal');
-                        
                         paysoForm.submit();
                         return; 
                     }
@@ -608,12 +516,45 @@
             btn.innerText = "PLACE ORDER_"; btn.disabled = false;
         }
 
-        document.getElementById('menu-btn').addEventListener('click', () => { document.getElementById('sidebar').classList.remove('-translate-x-full'); document.getElementById('overlay').classList.remove('hidden'); });
-        const closeSidebar = () => { document.getElementById('sidebar').classList.add('-translate-x-full'); document.getElementById('overlay').classList.add('hidden'); };
-        document.getElementById('close-btn').addEventListener('click', closeSidebar); document.getElementById('overlay').addEventListener('click', closeSidebar);
-        document.getElementById('shop-dropdown-btn').addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
+        // 📍 ฟังก์ชันผูก Event ให้เมนู
+        function bindSidebarEvents() {
+            const menuBtn = document.getElementById('menu-btn');
+            const closeBtn = document.getElementById('close-btn');
+            const overlay = document.getElementById('overlay');
+            const sidebar = document.getElementById('sidebar');
+            const shopDropdownBtn = document.getElementById('shop-dropdown-btn');
 
-        initApp();
+            if(menuBtn) menuBtn.addEventListener('click', () => { sidebar.classList.remove('-translate-x-full'); overlay.classList.remove('hidden'); });
+            
+            const closeSidebar = () => { sidebar.classList.add('-translate-x-full'); overlay.classList.add('hidden'); };
+            if(closeBtn) closeBtn.addEventListener('click', closeSidebar); 
+            if(overlay) overlay.addEventListener('click', closeSidebar);
+            
+            if(shopDropdownBtn) shopDropdownBtn.addEventListener('click', () => { document.getElementById('shop-submenu').classList.toggle('hidden'); });
+        }
+
+        // 📍 ฟังก์ชันดึงชิ้นส่วนมาประกอบร่าง
+        async function loadComponents() {
+            try {
+                const [headerRes, sidebarRes, cartRes] = await Promise.all([
+                    fetch('header.html'),
+                    fetch('sidebar.html'),
+                    fetch('cart-modal.html')
+                ]);
+                
+                document.getElementById('header-container').innerHTML = await headerRes.text();
+                document.getElementById('sidebar-container').innerHTML = await sidebarRes.text();
+                document.getElementById('cart-modal-container').innerHTML = await cartRes.text();
+
+                bindSidebarEvents();
+                initApp(); // เริ่มรันระบบสินค้าหลังจากดึงชิ้นส่วนเสร็จแล้ว
+            } catch (err) {
+                console.error("Error loading components:", err);
+            }
+        }
+
+        // เริ่มต้นการทำงาน!
+        loadComponents();
     </script>
 </body>
 </html>
