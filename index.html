@@ -302,7 +302,6 @@
             container.innerHTML = ''; 
             const targetNames = ['ZORA', 'WOOL-EYES', 'GEORGE', 'LAMBS'];
             
-            // เปลี่ยนวิธีการลูปข้อมูล เพื่อให้ส่งค่า key (ที่ไม่มีเว้นวรรค) ไปเปิด Pop up ได้ถูกต้อง
             targetNames.forEach(key => {
                 const group = globalGroupedProducts[key];
                 if (group) {
@@ -319,14 +318,13 @@
                 }
             });
         }
-        // 🔍 ฟังก์ชันเปิด Zoom แบบเต็มจอ
+        
         function openZoomModal(src) {
             if(!src) return;
             document.getElementById('zoomed-img').src = src;
             document.getElementById('zoom-modal').classList.remove('hidden');
         }
 
-        // 📍 ฟังก์ชันจัดการเวลากดเปลี่ยนสี
         function updateModalImages(colorName) {
             const group = window.currentModalGroup;
             if(!group || !group.colorData[colorName]) return;
@@ -334,11 +332,9 @@
             const cData = group.colorData[colorName];
             const mainImg = document.getElementById('modal-img');
             
-            // ตั้งค่าให้รูปหลักเป็นคอลัมน์ L (ถ้าไม่มีให้ใช้คอลัมน์ A)
             mainImg.src = cData.imgL || cData.imgA;
             mainImg.setAttribute('onclick', `openZoomModal(this.src)`);
             
-            // สร้างรูปเล็ก Thumbnail 2 รูป
             document.getElementById('modal-thumbnails').innerHTML = `
                 <img src="${cData.imgL}" loading="lazy" onclick="document.getElementById('modal-img').src=this.src" class="w-14 h-14 object-cover border border-gray-400 cursor-pointer hover:opacity-80">
                 <img src="${cData.imgA}" loading="lazy" onclick="document.getElementById('modal-img').src=this.src" class="w-14 h-14 object-cover border border-gray-400 cursor-pointer hover:opacity-80">
@@ -353,7 +349,6 @@
             document.getElementById('modal-price').innerText = formatPrice(group.price);
             document.getElementById('modal-price').setAttribute('data-thb', group.price); 
             
-            // จัดการรูป Description
             const descBox = document.getElementById('modal-desc-box');
             if(group.descImage) { 
                 document.getElementById('modal-desc-img').src = group.descImage; 
@@ -363,15 +358,12 @@
                 descBox.classList.add('hidden'); 
             }
             
-            // ดึงสีและไซส์มาใส่ใน Dropdown
             const colorSelect = document.getElementById('modal-color');
             colorSelect.innerHTML = Array.from(group.colors).map(c => `<option value="${c}">${c}</option>`).join('');
             document.getElementById('modal-size').innerHTML = Array.from(group.sizes).map(s => `<option value="${s}">${s}</option>`).join('');
             
-            // 📍 จดจำสินค้าปัจจุบันไว้ เพื่อใช้ตอนสลับสี
             window.currentModalGroup = group;
             
-            // 📍 สั่งให้โหลดรูปล่าสุดทันทีที่เปิด และผูก Event ให้เปลี่ยนรูปเมื่อเปลี่ยนสี
             if(group.colors.size > 0) {
                 updateModalImages(colorSelect.value);
             }
@@ -454,7 +446,7 @@
                     <p class="text-sm font-bold text-blue-800">Secure Online Payment</p>
                     <p class="text-xs mt-2 text-gray-600">ระบบจะพาคุณไปยังหน้าชำระเงินออนไลน์ (รับบัตรเครดิต, PayPal, Alipay และอื่นๆ) หลังจากกด PLACE ORDER_</p>
                 `;
-                slipBox.classList.add('hidden'); // ซ่อนอัปโหลดสลิป
+                slipBox.classList.add('hidden'); 
             } else {
                 if(selectedCountry.toLowerCase() === 'thailand') {
                     payBox.innerHTML = `
@@ -474,7 +466,7 @@
                         </div>
                     `;
                 }
-                slipBox.classList.remove('hidden'); // โชว์อัปโหลดสลิป
+                slipBox.classList.remove('hidden'); 
             }
             
             if(cart.length > 0) {
@@ -509,7 +501,6 @@
             if(!name || !email || !addr || !phone) { alert("Please enter Name, Email, Phone, and Address."); return; }
             if(cart.length === 0) { alert("Cart is empty."); return; }
             
-            // ดักจับสลิป เฉพาะตอนเลือกโอนเงินปกติ
             if(paymentMethod === 'Manual' && !currentSlipBase64) { 
                 alert("Please attach your payment receipt / slip."); return; 
             }
@@ -564,24 +555,41 @@
                 const response = await fetch(API_URL_BASE, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
                 const result = await response.json();
                 
+                // 📍 โค้ดส่วนนี้เท่านั้นที่ถูกแก้ไข เพื่อพากระโดดไปหน้าชำระเงินของ Payso โดยรับค่ามาจาก Google Script ตัวใหม่
                 if(result.status === 'success') {
-                    // ถ้าระบบส่งข้อมูล Payso กลับมา ให้พากระโดดไปหน้าจ่ายเงิน
-                    if (result.paysoData) {
+                    
+                    if (paymentMethod === 'Payso') {
                         btn.innerText = "REDIRECTING TO PAYMENT...";
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = 'https://www.thaiepay.com/epaylink/payment.aspx';
                         
-                        for (const key in result.paysoData) {
+                        const paysoForm = document.createElement('form');
+                        paysoForm.method = 'post';
+                        paysoForm.action = 'https://payments.paysolutions.asia/payment';
+                        
+                        const paysoData = {
+                            merchantid: '72854232', 
+                            refno: result.message,  
+                            customeremail: result.email,
+                            productdetail: 'Turning Turtle Order',
+                            total: result.total,
+                            cc: '00',
+                            lang: 'TH'
+                        };
+                        
+                        for (const key in paysoData) {
                             const hiddenField = document.createElement('input');
                             hiddenField.type = 'hidden';
                             hiddenField.name = key;
-                            hiddenField.value = result.paysoData[key];
-                            form.appendChild(hiddenField);
+                            hiddenField.value = paysoData[key];
+                            paysoForm.appendChild(hiddenField);
                         }
-                        document.body.appendChild(form);
-                        form.submit();
-                        return; // หยุดการทำงานตรงนี้ เพื่อให้เบราว์เซอร์พาไปหน้าชำระเงิน
+                        
+                        document.body.appendChild(paysoForm);
+                        
+                        cart = []; updateCartCount();
+                        closeModal('cart-modal');
+                        
+                        paysoForm.submit();
+                        return; 
                     }
 
                     alert(`Order Placed Successfully!\nYour Order ID: ${result.message}`);
@@ -594,7 +602,9 @@
                     document.getElementById('slip-file').value = '';
                     document.getElementById('slip-preview').classList.add('hidden'); currentSlipBase64 = '';
                     closeModal('cart-modal');
-                } else alert("Error: " + result.message);
+                } else {
+                    alert("Error: " + result.message);
+                }
             } catch(e) { alert("Connection Error."); }
             btn.innerText = "PLACE ORDER_"; btn.disabled = false;
         }
