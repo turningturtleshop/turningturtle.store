@@ -159,31 +159,38 @@
                     jsonProd = JSON.parse(cachedProducts);
                     jsonShip = JSON.parse(cachedShipment);
                 } else {
-                    const resProd = await fetch(API_URL_BASE + '?action=getProducts');
+                    // 📍 จุดที่แก้ไข: สั่งให้ยิง API ไปขอข้อมูลสินค้าและค่าส่ง "พร้อมกัน" (Promise.all)
+                    const [resProd, resShip] = await Promise.all([
+                        fetch(API_URL_BASE + '?action=getProducts'),
+                        fetch(API_URL_BASE + '?action=getShipment')
+                    ]);
+                    
                     jsonProd = await resProd.json();
-                    const resShip = await fetch(API_URL_BASE + '?action=getShipment');
                     jsonShip = await resShip.json();
+
                     sessionStorage.setItem('turtle_products', JSON.stringify(jsonProd));
                     sessionStorage.setItem('turtle_shipment', JSON.stringify(jsonShip));
                 }
-                
+
                 shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
                 if(countrySelect) {
-                    shipmentRates.forEach(rate => { countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`; });
+                    // ล้างค่าเก่าก่อนเพื่อป้องกันการเบิ้ล
+                    countrySelect.innerHTML = ''; 
+                    shipmentRates.forEach(rate => {
+                        countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`;
+                    });
                 }
 
                 if (jsonProd.status === 'success') {
-                    let filteredProducts = jsonProd.data;
-                    if (productType) {
-                        filteredProducts = jsonProd.data.filter(item => item.type && item.type.toLowerCase() === productType.toLowerCase());
-                    }
-
+                    // (โค้ดส่วนแยกหมวดหมู่สำหรับ shop.html หรือจัดกลุ่มสินค้า จะอยู่ตรงนี้ ให้คงของเดิมไว้ได้เลยครับ)
+                    // ... 
+                    
+                    // ตัวอย่างโค้ดสำหรับ index.html (ถ้าเป็นหน้า shop.html ก็ใช้โค้ดจัดกลุ่มแบบเดิมของหน้านั้น)
                     const groups = {};
-                    filteredProducts.forEach(p => {
+                    jsonProd.data.forEach(p => {
                         let nameKey = p.name.trim().toUpperCase();
                         if(nameKey === 'WOOL - EYES') nameKey = 'WOOL-EYES';
-                        
                         if(!groups[nameKey]) {
                             groups[nameKey] = {
                                 name: p.name, 
@@ -209,7 +216,11 @@
                         }
                     });
                     globalGroupedProducts = groups;
-                    renderShopProducts();
+                    
+                    // 📍 ถ้าแก้ใน index.html ให้เรียก renderHomeProducts()
+                    // 📍 ถ้าแก้ใน shop.html ให้เรียก renderShopProducts()
+                    if (typeof renderHomeProducts === 'function') renderHomeProducts();
+                    if (typeof renderShopProducts === 'function') renderShopProducts();
                 }
             } catch (err) {
                 console.error("Error loading app:", err);
