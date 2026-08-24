@@ -18,67 +18,46 @@
         .turtle-roll { display: inline-block; transition: all 0.3s; }
         .turtle-roll:hover { animation: roll 1s linear infinite; cursor: pointer; }
         
-        /* 📍 อนิเมชันสำหรับหลอดโหลดข้อมูล */
+        /* 📍 อนิเมชันสำหรับหลอดโหลดข้อมูล (ปรับให้สมูทขึ้น) */
         @keyframes loadProgress {
             0% { width: 0%; }
-            50% { width: 70%; }
             100% { width: 100%; }
         }
         .animate-load-bar {
             animation: loadProgress 2.5s linear forwards;
         }
 
-        /* 📍 อนิเมชันเต่ากระโดดม้วนตัว (เพิ่มใหม่) */
-        .turtle-animation {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 15px auto;
-            position: relative;
+        /* 📍 อนิเมชันเต่าวิ่งตามแถบ (เพิ่มใหม่) */
+        @keyframes turtleRun {
+            0% { left: 0%; transform: translateX(0); }
+            100% { left: 100%; transform: translateX(-100%); } /* ให้วิ่งไปสุดขอบขวาแล้วไม่ทะลุกรอบ */
         }
-        .turtle {
-            width: 80px;
-            height: 80px;
-            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 10c22.1 0 40 17.9 40 40s-17.9 40-40 40-40-17.9-40-40 17.9-40 40-40zm-3 12a10 10 0 1 0 10 0 10 10 0 0 0-10 0zM22 68a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm56 0a6 6 0 1 0 6 6 6 6 0 0 0-6-6zm-42 6a6 6 0 1 0-6-6 6 6 0 0 0 6 6zM50 82c-15.5 0-28 12.5-28 28h56c0-15.5-12.5-28-28-28zm2 0h-4s-30 4-30 30v2h68v-2s0-30-30-30zM50 4a46 46 0 1 1-46 46A46 46 0 0 1 50 4z" fill="%23228B22" /><path d="M50 20a30 30 0 1 0 30 30 30 30 0 0 0-30-30zm-3 12a6 6 0 1 1 6 6 6 6 0 0 1-6-6zm25.5 31.5a4 4 0 1 1 4 4 4 4 0 0 1-4-4zM22 68a4 4 0 1 1 4 4 4 4 0 0 1-4-4zm56 0a4 4 0 1 1 4 4 4 4 0 0 1-4-4zm-42 6a4 4 0 1 1-4-4 4 4 0 0 1 4 4zM50 78c-10 0-18 8-18 18h36c0-10-8-18-18-18z" fill="%238B4513"/></svg>');
-            background-size: contain;
-            background-repeat: no-repeat;
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            animation: jumpAndRoll 2s linear infinite;
-        }
-        @keyframes jumpAndRoll {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            10% { transform: translateY(-5px) rotate(0deg); }
-            20% { transform: translateY(-30px) rotate(30deg); }
-            30% { transform: translateY(-55px) rotate(90deg); }
-            40% { transform: translateY(-60px) rotate(180deg); }
-            50% { transform: translateY(-55px) rotate(270deg); }
-            60% { transform: translateY(-30px) rotate(330deg); }
-            70% { transform: translateY(-5px) rotate(360deg); }
-            80%, 90% { transform: translateY(0) rotate(360deg); }
+        .animate-turtle-run {
+            animation: turtleRun 2.5s linear forwards;
         }
     </style>
 </head>
 <body class="text-gray-900 overflow-x-hidden relative">
     
-  <!-- 📍 หน้าต่างถ่วงเวลา Loading Screen (Retro Theme) พร้อมเต่ากระโดด -->
+  <!-- 📍 หน้าต่างถ่วงเวลา Loading Screen (Retro Theme) พร้อมเต่าวิ่ง -->
   <div id="retro-loader" class="fixed inset-0 z-[9999] bg-[#008080] flex items-center justify-center transition-opacity duration-500">
     <div class="retro-window w-11/12 md:w-1/3 shadow-2xl">
       <div class="retro-titlebar">
         <span class="font-pixel text-xl tracking-widest">Loading.exe</span>
       </div>
       <div class="retro-content p-6 m-2 bg-white text-center">
-          
-        <!-- น้องเต่ากระโดดม้วนตัว -->
-        <div class="turtle-animation">
-            <div class="turtle"></div>
-        </div>
 
-        <p class="font-pixel text-xl text-blue-800 animate-pulse mb-4">> Fetching Data from Mainframe...</p>
+        <!-- 📍 เปลี่ยนข้อความตรงนี้ -->
+        <p class="font-pixel text-xl text-blue-800 animate-pulse mb-8">> Made For Fun 💛❤️💙</p>
         
-        <!-- หลอดโหลดข้อมูล -->
-        <div class="w-full h-6 border-2 border-gray-400 bg-gray-200 p-0.5 relative">
-          <div class="h-full bg-blue-800 w-0" id="loading-bar"></div>
+        <!-- โครงสร้างหลอดโหลดใหม่ที่มีเต่าเกาะ -->
+        <div class="relative w-full h-6 border-2 border-gray-400 bg-gray-200 p-0.5 mt-8 mb-4">
+            
+            <!-- 🐢 น้องเต่าวิ่ง (ปรับขนาดเป็น text-[4rem] ให้ใหญ่ขึ้น 2 เท่า) และปรับ -top ให้พอดี -->
+            <div class="absolute -top-[4.5rem] text-[4rem] animate-turtle-run" style="line-height: 1;">🐢</div>
+            
+            <!-- หลอดสีน้ำเงิน -->
+            <div class="h-full bg-blue-800 w-0 animate-load-bar" id="loading-bar"></div>
         </div>
       </div>
     </div>
