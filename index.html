@@ -18,7 +18,7 @@
         .turtle-roll { display: inline-block; transition: all 0.3s; }
         .turtle-roll:hover { animation: roll 1s linear infinite; cursor: pointer; }
         
-        /* 📍 อนิเมชันสำหรับหลอดโหลดข้อมูล (ปรับให้สมูทขึ้น) */
+        /* 📍 อนิเมชันสำหรับหลอดโหลดข้อมูล */
         @keyframes loadProgress {
             0% { width: 0%; }
             100% { width: 100%; }
@@ -27,19 +27,30 @@
             animation: loadProgress 2.5s linear forwards;
         }
 
-        /* 📍 อนิเมชันเต่าวิ่งตามแถบ (เพิ่มใหม่) */
+        /* 📍 อนิเมชันเคลื่อนที่ซ้ายไปขวา */
         @keyframes turtleRun {
             0% { left: 0%; transform: translateX(0); }
-            100% { left: 100%; transform: translateX(-100%); } /* ให้วิ่งไปสุดขอบขวาแล้วไม่ทะลุกรอบ */
+            100% { left: 100%; transform: translateX(-100%); } 
         }
         .animate-turtle-run {
             animation: turtleRun 2.5s linear forwards;
+        }
+
+        /* 📍 อนิเมชันสำหรับทำให้เต่ากลับด้าน (scaleX) และเดินดุ๊กดิ๊ก (Wobble) */
+        @keyframes turtleWalk {
+            0%, 100% { transform: scaleX(-1) translateY(0) rotate(0deg); }
+            25% { transform: scaleX(-1) translateY(-4px) rotate(10deg); }
+            75% { transform: scaleX(-1) translateY(-4px) rotate(-10deg); }
+        }
+        .turtle-walker {
+            display: inline-block;
+            animation: turtleWalk 0.4s ease-in-out infinite; /* ทำให้ขยับรัวๆ เหมือนกำลังเดิน */
         }
     </style>
 </head>
 <body class="text-gray-900 overflow-x-hidden relative">
     
-  <!-- 📍 หน้าต่างถ่วงเวลา Loading Screen (Retro Theme) พร้อมเต่าวิ่ง -->
+  <!-- 📍 หน้าต่างถ่วงเวลา Loading Screen (Retro Theme) พร้อมเต่าเดิน -->
   <div id="retro-loader" class="fixed inset-0 z-[9999] bg-[#008080] flex items-center justify-center transition-opacity duration-500">
     <div class="retro-window w-11/12 md:w-1/3 shadow-2xl">
       <div class="retro-titlebar">
@@ -47,14 +58,15 @@
       </div>
       <div class="retro-content p-6 m-2 bg-white text-center">
 
-        <!-- 📍 เปลี่ยนข้อความตรงนี้ -->
         <p class="font-pixel text-xl text-blue-800 animate-pulse mb-8">> Made For Fun 💛❤️💙</p>
         
-        <!-- โครงสร้างหลอดโหลดใหม่ที่มีเต่าเกาะ -->
         <div class="relative w-full h-6 border-2 border-gray-400 bg-gray-200 p-0.5 mt-8 mb-4">
             
-            <!-- 🐢 น้องเต่าวิ่ง (ปรับขนาดเป็น text-[4rem] ให้ใหญ่ขึ้น 2 เท่า) และปรับ -top ให้พอดี -->
-            <div class="absolute -top-[4.5rem] text-[4rem] animate-turtle-run" style="line-height: 1;">🐢</div>
+            <!-- 🐢 ตัวคุมให้เลื่อนซ้ายไปขวา -->
+            <div class="absolute -top-[2.75rem] animate-turtle-run">
+                <!-- 🐢 ตัวคุมให้เต่าพลิกกลับด้าน และขยับเดิน (ปรับขนาดลงเหลือ text-4xl) -->
+                <div class="turtle-walker text-4xl" style="line-height: 1;">🐢</div>
+            </div>
             
             <!-- หลอดสีน้ำเงิน -->
             <div class="h-full bg-blue-800 w-0 animate-load-bar" id="loading-bar"></div>
@@ -197,7 +209,6 @@
                     jsonProd = JSON.parse(cachedProducts);
                     jsonShip = JSON.parse(cachedShipment);
                 } else {
-                    // 📍 จุดที่แก้ไข: สั่งให้ยิง API ไปขอข้อมูลสินค้าและค่าส่ง "พร้อมกัน" (Promise.all)
                     const [resProd, resShip] = await Promise.all([
                         fetch(API_URL_BASE + '?action=getProducts'),
                         fetch(API_URL_BASE + '?action=getShipment')
@@ -213,7 +224,6 @@
                 shipmentRates = jsonShip.data || [];
                 const countrySelect = document.getElementById('cust-country');
                 if(countrySelect) {
-                    // ล้างค่าเก่าก่อนเพื่อป้องกันการเบิ้ล
                     countrySelect.innerHTML = ''; 
                     shipmentRates.forEach(rate => {
                         countrySelect.innerHTML += `<option value="${rate.countryEN}">${rate.countryEN} / ${rate.countryTH}</option>`;
@@ -221,10 +231,6 @@
                 }
 
                 if (jsonProd.status === 'success') {
-                    // (โค้ดส่วนแยกหมวดหมู่สำหรับ shop.html หรือจัดกลุ่มสินค้า จะอยู่ตรงนี้ ให้คงของเดิมไว้ได้เลยครับ)
-                    // ... 
-                    
-                    // ตัวอย่างโค้ดสำหรับ index.html (ถ้าเป็นหน้า shop.html ก็ใช้โค้ดจัดกลุ่มแบบเดิมของหน้านั้น)
                     const groups = {};
                     jsonProd.data.forEach(p => {
                         let nameKey = p.name.trim().toUpperCase();
@@ -255,8 +261,6 @@
                     });
                     globalGroupedProducts = groups;
                     
-                    // 📍 ถ้าแก้ใน index.html ให้เรียก renderHomeProducts()
-                    // 📍 ถ้าแก้ใน shop.html ให้เรียก renderShopProducts()
                     if (typeof renderHomeProducts === 'function') renderHomeProducts();
                     if (typeof renderShopProducts === 'function') renderShopProducts();
                 }
