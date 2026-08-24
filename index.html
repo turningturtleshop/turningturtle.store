@@ -17,9 +17,34 @@
         @keyframes roll { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(180deg) scale(1.2); } 100% { transform: rotate(360deg) scale(1); } }
         .turtle-roll { display: inline-block; transition: all 0.3s; }
         .turtle-roll:hover { animation: roll 1s linear infinite; cursor: pointer; }
+        /* 📍 อนิเมชันสำหรับหลอดโหลดข้อมูล */
+  @keyframes loadProgress {
+    0% { width: 0%; }
+    50% { width: 70%; }
+    100% { width: 100%; }
+  }
+  .animate-load-bar {
+    animation: loadProgress 2.5s linear forwards;
+  }
     </style>
 </head>
 <body class="text-gray-900 overflow-x-hidden relative">
+    <!-- 📍 หน้าต่างถ่วงเวลา Loading Screen (Retro Theme) -->
+  <div id="retro-loader" class="fixed inset-0 z-[9999] bg-[#008080] flex items-center justify-center transition-opacity duration-500">
+    <div class="retro-window w-11/12 md:w-1/3 shadow-2xl">
+      <div class="retro-titlebar">
+        <span class="font-pixel text-xl tracking-widest">Loading.exe</span>
+      </div>
+      <div class="retro-content p-6 m-2 bg-white text-center">
+        <p class="font-pixel text-xl text-blue-800 animate-pulse mb-4">> Fetching Data from Mainframe...</p>
+        
+        <!-- หลอดโหลดข้อมูล -->
+        <div class="w-full h-6 border-2 border-gray-400 bg-gray-200 p-0.5 relative">
+          <div class="h-full bg-blue-800 w-0" id="loading-bar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
 
     <!-- 📍 พื้นที่รองรับ Components ที่เราแยกไฟล์ไว้ -->
     <div id="header-container"></div>
@@ -580,6 +605,23 @@
 
         // โหลดชิ้นส่วนทั้งหมดทันทีที่หน้าเว็บรัน
         loadComponents();
+        // 📍 ระบบถ่วงเวลา Loading Screen 2.5 วินาที
+  window.addEventListener('load', function() {
+    // ให้หลอดโหลดเริ่มวิ่ง
+    const loadBar = document.getElementById('loading-bar');
+    if (loadBar) loadBar.classList.add('animate-load-bar');
+
+    // ถ่วงเวลา 2500 มิลลิวินาที (2.5 วินาที)
+    setTimeout(function() {
+      const loader = document.getElementById('retro-loader');
+      if (loader) {
+        loader.style.opacity = '0'; // สั่งให้เฟดจางหายไป
+        setTimeout(() => {
+          loader.style.display = 'none'; // เอาหน้าต่างออก เพื่อให้กดใช้งานเว็บได้ปกติ
+        }, 500); // รอให้เอฟเฟกต์เฟดทำงานเสร็จ (0.5 วินาที)
+      }
+    }, 2500); // ⏱️ ปรับแก้เวลาถ่วงตรงนี้ได้เลย (1000 = 1 วินาที)
+  });
     </script>
 </body>
 </html>
